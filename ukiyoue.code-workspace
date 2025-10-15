@@ -1,0 +1,40 @@
+{
+  "folders": [
+    {
+      "name": "🎨 Ukiyoue Framework",
+      "path": "."
+    },
+    {
+      "name": "🔧 Tools (CLI & Validator)",
+      "path": "tools"
+    },
+    {
+      "name": "📘 Examples & Templates",
+      "path": "examples"
+    }
+  ],
+  "settings": {
+    "files.exclude": {
+      "**/node_modules": true,
+      "**/dist": true,
+      "**/.DS_Store": true,
+      "**/*.pyc": true,
+      "**/__pycache__": true,
+      "tools": true,
+      "examples": true
+    },
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+      "source.fixAll": "explicit"
+    },
+    "[typescript]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[json]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[jsonc]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
+    }
+  }
+}
