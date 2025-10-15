@@ -100,28 +100,35 @@ await jsonld.expand(doc);
 
 ## Anti-Patterns to Avoid
 
-### ❌ DO NOT
-- Use Markdown for editing (display only!)
-- Use Node.js (use Bun)
-- Use Python unless for AI/NLP plugins
-- Add YAML front matter to documentation
-- Add manual version/date footers
+### ❌ DO NOT (Framework Development)
+- Use Node.js or npm (use Bun per ADR-004)
+- Use Python for core tools (reserve for AI/NLP plugins only)
+- Add YAML front matter to specs/ documentation
+- Add manual version/date footers to any files
 - Duplicate content across specs documents
-- Use `any` type in TypeScript
-- Assume file contents without reading
-- Use JSON Schema 2019-09 or 2020-12 (use Draft-07)
-- Use JSON-LD 1.0 (use 1.1)
+- Use `any` type in TypeScript code
+- Assume file contents without reading them first
+- Use JSON Schema 2019-09 or 2020-12 (use Draft-07 per ADR-002)
+- Use JSON-LD 1.0 (use 1.1 per ADR-003)
 
-### ✅ DO
-- Edit JSON files, generate Markdown from them
+### ✅ DO (Framework Development)
+- For framework specs (specs/): Edit Markdown directly (conventional documentation)
+- For framework code (tools/): Use TypeScript with strict types
 - Use Bun for all JavaScript/TypeScript execution
-- Rely on Git for all metadata
+- Rely on Git for all metadata (dates, versions, authors)
 - Keep concept.md lightweight (WHY/WHAT only)
 - Keep architecture.md detailed (HOW with ADR links)
-- Use strict TypeScript types
-- Read context before editing
-- Use Draft-07 JSON Schema
-- Use JSON-LD 1.1
+- Use strict TypeScript types everywhere
+- Read context before making edits
+- Use Draft-07 JSON Schema with ajv
+- Use JSON-LD 1.1 with jsonld.js
+
+### 📘 Examples Project Exception
+- In `examples/` directory, **this is where the new framework approach is demonstrated**
+- Edit JSON source files → Validate with schemas → Generate Markdown for display
+- Example Markdown files are auto-generated outputs (read-only demonstration)
+- This project showcases how users should use the Ukiyoue framework (per ADR-001)
+- Templates in `examples/templates/` provide starting points for framework users
 
 ## Reasoning Chain
 
