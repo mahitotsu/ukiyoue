@@ -1,0 +1,238 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://ukiyoue.dev/schemas/document-base.schema.json",
+  "title": "Document Base Schema",
+  "description": "Base schema for all Ukiyoue framework documents. Provides common metadata and structure.",
+  "type": "object",
+  "required": ["@context", "id", "type", "title", "metadata"],
+  "properties": {
+    "@context": {
+      "description": "JSON-LD context for semantic interpretation",
+      "oneOf": [
+        { "type": "string", "format": "uri" },
+        { "type": "object" },
+        {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              { "type": "string", "format": "uri" },
+              { "type": "object" }
+            ]
+          }
+        }
+      ]
+    },
+    "id": {
+      "type": "string",
+      "description": "Unique identifier for this document (URI format recommended)",
+      "pattern": "^[a-zA-Z0-9_\\-:/\\.]+$"
+    },
+    "type": {
+      "type": "string",
+      "description": "Document type identifier",
+      "pattern": "^[A-Z][a-zA-Z0-9]+$"
+    },
+    "title": {
+      "type": "string",
+      "description": "Human-readable title of the document",
+      "minLength": 1,
+      "maxLength": 200
+    },
+    "description": {
+      "type": "string",
+      "description": "Brief description of the document's purpose and content",
+      "maxLength": 1000
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Document metadata",
+      "required": ["version", "status", "created", "authors"],
+      "properties": {
+        "version": {
+          "type": "string",
+          "description": "Semantic version of the document (e.g., 1.0.0)",
+          "pattern": "^\\d+\\.\\d+\\.\\d+(-[a-zA-Z0-9\\.]+)?$"
+        },
+        "status": {
+          "type": "string",
+          "description": "Current status of the document",
+          "enum": ["draft", "review", "approved", "published", "deprecated", "archived"]
+        },
+        "created": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO 8601 date-time when document was created"
+        },
+        "modified": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO 8601 date-time when document was last modified"
+        },
+        "authors": {
+          "type": "array",
+          "description": "List of document authors",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["name"],
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": "Author's name",
+                "minLength": 1
+              },
+              "email": {
+                "type": "string",
+                "format": "email",
+                "description": "Author's email address"
+              },
+              "role": {
+                "type": "string",
+                "description": "Author's role in document creation",
+                "enum": ["author", "contributor", "reviewer", "approver"]
+              }
+            }
+          }
+        },
+        "tags": {
+          "type": "array",
+          "description": "Keywords for categorization and search",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 50
+          },
+          "uniqueItems": true
+        },
+        "language": {
+          "type": "string",
+          "description": "Primary language of the document (ISO 639-1 code)",
+          "pattern": "^[a-z]{2}(-[A-Z]{2})?$",
+          "default": "ja"
+        },
+        "audience": {
+          "type": "array",
+          "description": "Intended audience for this document",
+          "items": {
+            "type": "string",
+            "enum": [
+              "developer",
+              "designer",
+              "project-manager",
+              "business-analyst",
+              "stakeholder",
+              "end-user",
+              "support",
+              "all"
+            ]
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "confidentiality": {
+          "type": "string",
+          "description": "Confidentiality level of the document",
+          "enum": ["public", "internal", "confidential", "restricted"],
+          "default": "internal"
+        }
+      }
+    },
+    "relationships": {
+      "type": "array",
+      "description": "Relationships to other documents",
+      "items": {
+        "type": "object",
+        "required": ["type", "target"],
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "Type of relationship",
+            "enum": [
+              "dependsOn",
+              "relatedTo",
+              "implements",
+              "derivedFrom",
+              "supersedes",
+              "supersededBy",
+              "references",
+              "referencedBy"
+            ]
+          },
+          "target": {
+            "type": "string",
+            "description": "Target document ID or URI",
+            "pattern": "^[a-zA-Z0-9_\\-:/\\.]+$"
+          },
+          "description": {
+            "type": "string",
+            "description": "Optional description of the relationship",
+            "maxLength": 200
+          }
+        }
+      }
+    },
+    "attachments": {
+      "type": "array",
+      "description": "Related files and resources",
+      "items": {
+        "type": "object",
+        "required": ["name", "url"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Attachment name",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "url": {
+            "type": "string",
+            "format": "uri",
+            "description": "URL to the attachment"
+          },
+          "type": {
+            "type": "string",
+            "description": "MIME type of the attachment"
+          },
+          "description": {
+            "type": "string",
+            "description": "Brief description of the attachment",
+            "maxLength": 200
+          }
+        }
+      }
+    },
+    "changelog": {
+      "type": "array",
+      "description": "History of document changes",
+      "items": {
+        "type": "object",
+        "required": ["version", "date", "changes"],
+        "properties": {
+          "version": {
+            "type": "string",
+            "description": "Version number",
+            "pattern": "^\\d+\\.\\d+\\.\\d+(-[a-zA-Z0-9\\.]+)?$"
+          },
+          "date": {
+            "type": "string",
+            "format": "date",
+            "description": "Date of change (YYYY-MM-DD)"
+          },
+          "author": {
+            "type": "string",
+            "description": "Person who made the change"
+          },
+          "changes": {
+            "type": "array",
+            "description": "List of changes made",
+            "minItems": 1,
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,86 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://ukiyoue.dev/schemas/components/stakeholder.schema.json",
+  "title": "Stakeholder Schema",
+  "description": "Reusable schema component for defining project stakeholders",
+  "type": "object",
+  "required": ["id", "name", "role"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique identifier for the stakeholder",
+      "pattern": "^SH-[A-Z0-9\\-]+$"
+    },
+    "name": {
+      "type": "string",
+      "description": "Name or title of the stakeholder",
+      "minLength": 1,
+      "maxLength": 100
+    },
+    "role": {
+      "type": "string",
+      "description": "Stakeholder's role in the project",
+      "minLength": 1,
+      "maxLength": 100
+    },
+    "description": {
+      "type": "string",
+      "description": "Detailed description of the stakeholder",
+      "maxLength": 1000
+    },
+    "needs": {
+      "type": "array",
+      "description": "Stakeholder's needs and expectations",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 500
+      }
+    },
+    "successCriteria": {
+      "type": "array",
+      "description": "Criteria for stakeholder satisfaction",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 500
+      }
+    },
+    "contact": {
+      "type": "object",
+      "description": "Contact information",
+      "properties": {
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "Email address"
+        },
+        "phone": {
+          "type": "string",
+          "description": "Phone number",
+          "pattern": "^\\+?[0-9\\-\\(\\)\\s]+$"
+        },
+        "department": {
+          "type": "string",
+          "description": "Department or organization",
+          "maxLength": 100
+        }
+      }
+    },
+    "priority": {
+      "type": "string",
+      "description": "Priority level of this stakeholder",
+      "enum": ["critical", "high", "medium", "low"]
+    },
+    "influence": {
+      "type": "string",
+      "description": "Level of influence on the project",
+      "enum": ["high", "medium", "low"]
+    },
+    "interest": {
+      "type": "string",
+      "description": "Level of interest in the project",
+      "enum": ["high", "medium", "low"]
+    }
+  }
+}

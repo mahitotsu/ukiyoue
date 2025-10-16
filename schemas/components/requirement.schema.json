@@ -1,0 +1,135 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://ukiyoue.dev/schemas/components/requirement.schema.json",
+  "title": "Requirement Schema",
+  "description": "Reusable schema component for functional and non-functional requirements",
+  "type": "object",
+  "required": ["id", "title", "description", "type", "priority"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique requirement identifier (e.g., FR-001, NFR-001)",
+      "pattern": "^(FR|NFR)-[A-Z0-9\\-]+(\\-[0-9]{2})?$"
+    },
+    "title": {
+      "type": "string",
+      "description": "Short title of the requirement",
+      "minLength": 1,
+      "maxLength": 200
+    },
+    "description": {
+      "type": "string",
+      "description": "Detailed description of the requirement",
+      "minLength": 1,
+      "maxLength": 2000
+    },
+    "type": {
+      "type": "string",
+      "description": "Type of requirement",
+      "enum": ["functional", "non-functional", "constraint", "business"]
+    },
+    "category": {
+      "type": "string",
+      "description": "Category or domain of the requirement",
+      "maxLength": 100
+    },
+    "priority": {
+      "type": "string",
+      "description": "Implementation priority",
+      "enum": ["critical", "high", "medium", "low"]
+    },
+    "status": {
+      "type": "string",
+      "description": "Current status of the requirement",
+      "enum": ["proposed", "approved", "in-progress", "implemented", "tested", "deployed", "rejected"],
+      "default": "proposed"
+    },
+    "rationale": {
+      "type": "string",
+      "description": "Reasoning behind this requirement",
+      "maxLength": 1000
+    },
+    "acceptanceCriteria": {
+      "type": "array",
+      "description": "Testable acceptance criteria",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 500
+      },
+      "minItems": 1
+    },
+    "dependencies": {
+      "type": "array",
+      "description": "IDs of requirements this depends on",
+      "items": {
+        "type": "string",
+        "pattern": "^(FR|NFR)-[A-Z0-9\\-]+(\\-[0-9]{2})?$"
+      },
+      "uniqueItems": true
+    },
+    "relatedRequirements": {
+      "type": "array",
+      "description": "IDs of related requirements",
+      "items": {
+        "type": "string",
+        "pattern": "^(FR|NFR)-[A-Z0-9\\-]+(\\-[0-9]{2})?$"
+      },
+      "uniqueItems": true
+    },
+    "stakeholders": {
+      "type": "array",
+      "description": "Stakeholder IDs who requested this requirement",
+      "items": {
+        "type": "string",
+        "pattern": "^SH-[A-Z0-9\\-]+$"
+      },
+      "uniqueItems": true
+    },
+    "metrics": {
+      "type": "object",
+      "description": "Measurable metrics for this requirement",
+      "properties": {
+        "targetValue": {
+          "type": "string",
+          "description": "Target value to achieve"
+        },
+        "currentValue": {
+          "type": "string",
+          "description": "Current measured value"
+        },
+        "unit": {
+          "type": "string",
+          "description": "Unit of measurement"
+        }
+      }
+    },
+    "implementationNotes": {
+      "type": "string",
+      "description": "Technical notes for implementation",
+      "maxLength": 2000
+    },
+    "testCases": {
+      "type": "array",
+      "description": "Associated test case IDs",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "estimatedEffort": {
+      "type": "object",
+      "description": "Estimated effort for implementation",
+      "properties": {
+        "value": {
+          "type": "number",
+          "minimum": 0
+        },
+        "unit": {
+          "type": "string",
+          "enum": ["hours", "days", "weeks", "story-points"]
+        }
+      }
+    }
+  }
+}

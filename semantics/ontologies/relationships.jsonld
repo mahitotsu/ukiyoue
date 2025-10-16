@@ -1,0 +1,183 @@
+{
+  "@context": {
+    "@version": 1.1,
+    "@vocab": "https://ukiyoue.dev/vocab#",
+    "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+    "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+    "owl": "http://www.w3.org/2002/07/owl#"
+  },
+  "@graph": [
+    {
+      "@id": "ukiyoue:dependsOn",
+      "@type": "rdf:Property",
+      "rdfs:label": "depends on",
+      "rdfs:comment": "Indicates that this resource depends on another resource. The dependent resource cannot exist or function without the target resource.",
+      "rdfs:domain": "ukiyoue:Document",
+      "rdfs:range": "ukiyoue:Document",
+      "owl:inverseOf": "ukiyoue:requiredBy"
+    },
+    {
+      "@id": "ukiyoue:requiredBy",
+      "@type": "rdf:Property",
+      "rdfs:label": "required by",
+      "rdfs:comment": "Indicates that this resource is required by another resource (inverse of dependsOn)",
+      "rdfs:domain": "ukiyoue:Document",
+      "rdfs:range": "ukiyoue:Document",
+      "owl:inverseOf": "ukiyoue:dependsOn"
+    },
+    {
+      "@id": "ukiyoue:relatedTo",
+      "@type": ["rdf:Property", "owl:SymmetricProperty"],
+      "rdfs:label": "related to",
+      "rdfs:comment": "Indicates a general relationship between two resources. This is a symmetric relationship.",
+      "rdfs:domain": "ukiyoue:Document",
+      "rdfs:range": "ukiyoue:Document"
+    },
+    {
+      "@id": "ukiyoue:implements",
+      "@type": "rdf:Property",
+      "rdfs:label": "implements",
+      "rdfs:comment": "Indicates that this resource implements or realizes another resource (typically a requirement or specification)",
+      "rdfs:range": "ukiyoue:Document",
+      "owl:inverseOf": "ukiyoue:implementedBy"
+    },
+    {
+      "@id": "ukiyoue:implementedBy",
+      "@type": "rdf:Property",
+      "rdfs:label": "implemented by",
+      "rdfs:comment": "Indicates that this resource is implemented by another resource (inverse of implements)",
+      "rdfs:domain": "ukiyoue:Document",
+      "owl:inverseOf": "ukiyoue:implements"
+    },
+    {
+      "@id": "ukiyoue:derivedFrom",
+      "@type": "rdf:Property",
+      "rdfs:label": "derived from",
+      "rdfs:comment": "Indicates that this resource is derived from another resource. The source resource served as a basis or template.",
+      "rdfs:domain": "ukiyoue:Document",
+      "rdfs:range": "ukiyoue:Document",
+      "owl:inverseOf": "ukiyoue:sourceOf"
+    },
+    {
+      "@id": "ukiyoue:sourceOf",
+      "@type": "rdf:Property",
+      "rdfs:label": "source of",
+      "rdfs:comment": "Indicates that this resource is the source of another resource (inverse of derivedFrom)",
+      "rdfs:domain": "ukiyoue:Document",
+      "rdfs:range": "ukiyoue:Document",
+      "owl:inverseOf": "ukiyoue:derivedFrom"
+    },
+    {
+      "@id": "ukiyoue:supersedes",
+      "@type": "rdf:Property",
+      "rdfs:label": "supersedes",
+      "rdfs:comment": "Indicates that this resource replaces or makes obsolete another resource",
+      "rdfs:domain": "ukiyoue:Document",
+      "rdfs:range": "ukiyoue:Document",
+      "owl:inverseOf": "ukiyoue:supersededBy"
+    },
+    {
+      "@id": "ukiyoue:supersededBy",
+      "@type": "rdf:Property",
+      "rdfs:label": "superseded by",
+      "rdfs:comment": "Indicates that this resource is replaced by another resource (inverse of supersedes)",
+      "rdfs:domain": "ukiyoue:Document",
+      "rdfs:range": "ukiyoue:Document",
+      "owl:inverseOf": "ukiyoue:supersedes"
+    },
+    {
+      "@id": "ukiyoue:references",
+      "@type": "rdf:Property",
+      "rdfs:label": "references",
+      "rdfs:comment": "Indicates that this resource mentions or cites another resource",
+      "rdfs:domain": "ukiyoue:Document",
+      "rdfs:range": "ukiyoue:Document",
+      "owl:inverseOf": "ukiyoue:referencedBy"
+    },
+    {
+      "@id": "ukiyoue:referencedBy",
+      "@type": "rdf:Property",
+      "rdfs:label": "referenced by",
+      "rdfs:comment": "Indicates that this resource is mentioned or cited by another resource (inverse of references)",
+      "rdfs:domain": "ukiyoue:Document",
+      "rdfs:range": "ukiyoue:Document",
+      "owl:inverseOf": "ukiyoue:references"
+    },
+    {
+      "@id": "ukiyoue:partOf",
+      "@type": ["rdf:Property", "owl:TransitiveProperty"],
+      "rdfs:label": "part of",
+      "rdfs:comment": "Indicates that this resource is a component or section of another resource. This is a transitive relationship.",
+      "rdfs:domain": "ukiyoue:Document",
+      "rdfs:range": "ukiyoue:Document",
+      "owl:inverseOf": "ukiyoue:hasPart"
+    },
+    {
+      "@id": "ukiyoue:hasPart",
+      "@type": ["rdf:Property", "owl:TransitiveProperty"],
+      "rdfs:label": "has part",
+      "rdfs:comment": "Indicates that this resource contains another resource as a component or section (inverse of partOf)",
+      "rdfs:domain": "ukiyoue:Document",
+      "rdfs:range": "ukiyoue:Document",
+      "owl:inverseOf": "ukiyoue:partOf"
+    },
+    {
+      "@id": "ukiyoue:validates",
+      "@type": "rdf:Property",
+      "rdfs:label": "validates",
+      "rdfs:comment": "Indicates that this resource (typically a test or validation document) validates another resource",
+      "rdfs:range": "ukiyoue:Document",
+      "owl:inverseOf": "ukiyoue:validatedBy"
+    },
+    {
+      "@id": "ukiyoue:validatedBy",
+      "@type": "rdf:Property",
+      "rdfs:label": "validated by",
+      "rdfs:comment": "Indicates that this resource is validated by another resource (inverse of validates)",
+      "rdfs:domain": "ukiyoue:Document",
+      "owl:inverseOf": "ukiyoue:validates"
+    },
+    {
+      "@id": "ukiyoue:conflicts",
+      "@type": ["rdf:Property", "owl:SymmetricProperty"],
+      "rdfs:label": "conflicts with",
+      "rdfs:comment": "Indicates that this resource has a conflict or incompatibility with another resource. This is a symmetric relationship.",
+      "rdfs:domain": "ukiyoue:Document",
+      "rdfs:range": "ukiyoue:Document"
+    },
+    {
+      "@id": "ukiyoue:extends",
+      "@type": "rdf:Property",
+      "rdfs:label": "extends",
+      "rdfs:comment": "Indicates that this resource extends or builds upon another resource",
+      "rdfs:domain": "ukiyoue:Document",
+      "rdfs:range": "ukiyoue:Document",
+      "owl:inverseOf": "ukiyoue:extendedBy"
+    },
+    {
+      "@id": "ukiyoue:extendedBy",
+      "@type": "rdf:Property",
+      "rdfs:label": "extended by",
+      "rdfs:comment": "Indicates that this resource is extended by another resource (inverse of extends)",
+      "rdfs:domain": "ukiyoue:Document",
+      "rdfs:range": "ukiyoue:Document",
+      "owl:inverseOf": "ukiyoue:extends"
+    },
+    {
+      "@id": "ukiyoue:documentsThe",
+      "@type": "rdf:Property",
+      "rdfs:label": "documents",
+      "rdfs:comment": "Indicates that this document describes or specifies another resource",
+      "rdfs:domain": "ukiyoue:Document",
+      "owl:inverseOf": "ukiyoue:documentedBy"
+    },
+    {
+      "@id": "ukiyoue:documentedBy",
+      "@type": "rdf:Property",
+      "rdfs:label": "documented by",
+      "rdfs:comment": "Indicates that this resource is documented by another document (inverse of documents)",
+      "rdfs:range": "ukiyoue:Document",
+      "owl:inverseOf": "ukiyoue:documents"
+    }
+  ]
+}
