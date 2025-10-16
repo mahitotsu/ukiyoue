@@ -14,25 +14,18 @@
       "【受入基準2】",
       "【受入基準3】"
     ],
-    "dependencies": [
-      "【依存する要件ID（オプション）】"
-    ],
+    "dependencies": ["【依存する要件ID（オプション）】"],
     "relatedRequirements": [
       "【関連する機能要件ID: この非機能要件が影響する機能要件】"
     ],
-    "stakeholders": [
-      "【関係するステークホルダーID】"
-    ],
+    "stakeholders": ["【関係するステークホルダーID】"],
     "metrics": {
       "targetValue": "【目標値: 具体的な数値】",
       "currentValue": "【現在値（オプション）: 既存システムがある場合】",
       "unit": "【単位: 秒、%、件など】"
     },
     "implementationNotes": "【実装ノート: 技術的なアプローチ、使用するツールや手法など】",
-    "testCases": [
-      "TC-NFR-XXX-01",
-      "TC-NFR-XXX-02"
-    ],
+    "testCases": ["TC-NFR-XXX-01", "TC-NFR-XXX-02"],
     "estimatedEffort": {
       "value": 0,
       "unit": "hours"
@@ -55,19 +48,14 @@
     ],
     "dependencies": [],
     "relatedRequirements": [],
-    "stakeholders": [
-      "SH-CUSTOMER",
-      "SH-STAFF"
-    ],
+    "stakeholders": ["SH-CUSTOMER", "SH-STAFF"],
     "metrics": {
       "targetValue": "2秒以内",
       "currentValue": "未測定",
       "unit": "秒"
     },
     "implementationNotes": "CDN活用、キャッシュ戦略、データベースインデックス最適化",
-    "testCases": [
-      "TC-NFR-001-01"
-    ],
+    "testCases": ["TC-NFR-001-01"],
     "estimatedEffort": {
       "value": 30,
       "unit": "hours"
@@ -89,19 +77,14 @@
     ],
     "dependencies": [],
     "relatedRequirements": [],
-    "stakeholders": [
-      "SH-SYSADMIN",
-      "SH-EXECUTIVE"
-    ],
+    "stakeholders": ["SH-SYSADMIN", "SH-EXECUTIVE"],
     "metrics": {
       "targetValue": "99.9%",
       "currentValue": "未測定",
       "unit": "%"
     },
     "implementationNotes": "冗長化、自動フェイルオーバー、定期バックアップ",
-    "testCases": [
-      "TC-NFR-002-01"
-    ],
+    "testCases": ["TC-NFR-002-01"],
     "estimatedEffort": {
       "value": 40,
       "unit": "hours"
@@ -124,19 +107,14 @@
     ],
     "dependencies": [],
     "relatedRequirements": [],
-    "stakeholders": [
-      "SH-SYSADMIN",
-      "SH-EXECUTIVE"
-    ],
+    "stakeholders": ["SH-SYSADMIN", "SH-EXECUTIVE"],
     "metrics": {
       "targetValue": "0件",
       "currentValue": "未測定",
       "unit": "セキュリティインシデント件数"
     },
     "implementationNotes": "SSL/TLS証明書、データベース暗号化、CSRF対策、XSS対策",
-    "testCases": [
-      "TC-NFR-003-01"
-    ],
+    "testCases": ["TC-NFR-003-01"],
     "estimatedEffort": {
       "value": 50,
       "unit": "hours"

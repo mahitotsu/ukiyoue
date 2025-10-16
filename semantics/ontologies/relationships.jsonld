@@ -27,7 +27,10 @@
     },
     {
       "@id": "ukiyoue:relatedTo",
-      "@type": ["rdf:Property", "owl:SymmetricProperty"],
+      "@type": [
+        "rdf:Property",
+        "owl:SymmetricProperty"
+      ],
       "rdfs:label": "related to",
       "rdfs:comment": "Indicates a general relationship between two resources. This is a symmetric relationship.",
       "rdfs:domain": "ukiyoue:Document",
@@ -105,7 +108,10 @@
     },
     {
       "@id": "ukiyoue:partOf",
-      "@type": ["rdf:Property", "owl:TransitiveProperty"],
+      "@type": [
+        "rdf:Property",
+        "owl:TransitiveProperty"
+      ],
       "rdfs:label": "part of",
       "rdfs:comment": "Indicates that this resource is a component or section of another resource. This is a transitive relationship.",
       "rdfs:domain": "ukiyoue:Document",
@@ -114,7 +120,10 @@
     },
     {
       "@id": "ukiyoue:hasPart",
-      "@type": ["rdf:Property", "owl:TransitiveProperty"],
+      "@type": [
+        "rdf:Property",
+        "owl:TransitiveProperty"
+      ],
       "rdfs:label": "has part",
       "rdfs:comment": "Indicates that this resource contains another resource as a component or section (inverse of partOf)",
       "rdfs:domain": "ukiyoue:Document",
@@ -139,7 +148,10 @@
     },
     {
       "@id": "ukiyoue:conflicts",
-      "@type": ["rdf:Property", "owl:SymmetricProperty"],
+      "@type": [
+        "rdf:Property",
+        "owl:SymmetricProperty"
+      ],
       "rdfs:label": "conflicts with",
       "rdfs:comment": "Indicates that this resource has a conflict or incompatibility with another resource. This is a symmetric relationship.",
       "rdfs:domain": "ukiyoue:Document",

@@ -27,12 +27,8 @@
     "name": "【別のステークホルダー名】",
     "role": "【役割】",
     "description": "【説明】",
-    "needs": [
-      "【ニーズ1】"
-    ],
-    "successCriteria": [
-      "【成功基準1】"
-    ],
+    "needs": ["【ニーズ1】"],
+    "successCriteria": ["【成功基準1】"],
     "priority": "【優先度】",
     "influence": "【影響力】",
     "interest": "【関心度】"

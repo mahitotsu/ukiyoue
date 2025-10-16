@@ -62,9 +62,7 @@
         ]
       }
     ],
-    "relatedRequirements": [
-      "【関連する要件ID: FR-XXXなど】"
-    ],
+    "relatedRequirements": ["【関連する要件ID: FR-XXXなど】"],
     "priority": "【優先度: critical/high/medium/low】",
     "frequency": "【頻度: very-high/high/medium/low - どれくらいの頻度で実行されるか】"
   },

@@ -16,25 +16,14 @@
       "ダブルブッキングが発生しないこと"
     ],
     "dependencies": [],
-    "relatedRequirements": [
-      "FR-004",
-      "NFR-001",
-      "NFR-003"
-    ],
-    "stakeholders": [
-      "SH-CUSTOMER",
-      "SH-STAFF"
-    ],
+    "relatedRequirements": ["FR-004", "NFR-001", "NFR-003"],
+    "stakeholders": ["SH-CUSTOMER", "SH-STAFF"],
     "metrics": {
       "targetValue": "3分以内",
       "unit": "分"
     },
     "implementationNotes": "カレンダーUIライブラリの選定が必要。リアルタイムで空き状況を確認するため、Websocketまたはポーリングの検討が必要。トランザクション管理を徹底し、同時アクセス時のダブルブッキングを防止すること。",
-    "testCases": [
-      "TC-FR-001-01",
-      "TC-FR-001-02",
-      "TC-FR-001-03"
-    ],
+    "testCases": ["TC-FR-001-01", "TC-FR-001-02", "TC-FR-001-03"],
     "estimatedEffort": {
       "value": 40,
       "unit": "hours"
@@ -55,15 +44,9 @@
       "選択した日時が確認画面に正しく反映されること",
       "過去の日時は選択できないこと"
     ],
-    "dependencies": [
-      "FR-004"
-    ],
-    "relatedRequirements": [
-      "NFR-001"
-    ],
-    "stakeholders": [
-      "SH-CUSTOMER"
-    ],
+    "dependencies": ["FR-004"],
+    "relatedRequirements": ["NFR-001"],
+    "stakeholders": ["SH-CUSTOMER"],
     "implementationNotes": "レスポンシブ対応のカレンダーライブラリを使用。モバイルでもタップしやすいUI設計が必要。",
     "estimatedEffort": {
       "value": 12,
@@ -85,13 +68,9 @@
       "選択したサービスの合計所要時間が表示されること",
       "所要時間に応じて終了予定時刻が計算されること"
     ],
-    "dependencies": [
-      "FR-004"
-    ],
+    "dependencies": ["FR-004"],
     "relatedRequirements": [],
-    "stakeholders": [
-      "SH-CUSTOMER"
-    ],
+    "stakeholders": ["SH-CUSTOMER"],
     "implementationNotes": "サービスマスタから所要時間を取得し、合計時間を計算する。",
     "estimatedEffort": {
       "value": 8,
@@ -115,13 +94,8 @@
       "入力エラーが即座に表示されること"
     ],
     "dependencies": [],
-    "relatedRequirements": [
-      "NFR-003"
-    ],
-    "stakeholders": [
-      "SH-CUSTOMER",
-      "SH-STAFF"
-    ],
+    "relatedRequirements": ["NFR-003"],
+    "stakeholders": ["SH-CUSTOMER", "SH-STAFF"],
     "implementationNotes": "クライアント側とサーバー側の両方でバリデーションを実施。個人情報は暗号化して保存。",
     "estimatedEffort": {
       "value": 10,
@@ -142,17 +116,9 @@
       "「戻る」ボタンで前画面に戻れること",
       "「確定」ボタンで予約が確定されること"
     ],
-    "dependencies": [
-      "FR-001-01",
-      "FR-001-02",
-      "FR-001-03"
-    ],
-    "relatedRequirements": [
-      "NFR-004"
-    ],
-    "stakeholders": [
-      "SH-CUSTOMER"
-    ],
+    "dependencies": ["FR-001-01", "FR-001-02", "FR-001-03"],
+    "relatedRequirements": ["NFR-004"],
+    "stakeholders": ["SH-CUSTOMER"],
     "implementationNotes": "モバイルでもスクロールなしで全内容が確認できるレイアウトにする。",
     "estimatedEffort": {
       "value": 5,
@@ -174,18 +140,9 @@
       "予約確定に失敗した場合はエラーメッセージが表示されること",
       "トランザクションがロールバックされること"
     ],
-    "dependencies": [
-      "FR-001-04"
-    ],
-    "relatedRequirements": [
-      "NFR-001",
-      "NFR-002",
-      "NFR-003"
-    ],
-    "stakeholders": [
-      "SH-CUSTOMER",
-      "SH-STAFF"
-    ],
+    "dependencies": ["FR-001-04"],
+    "relatedRequirements": ["NFR-001", "NFR-002", "NFR-003"],
+    "stakeholders": ["SH-CUSTOMER", "SH-STAFF"],
     "implementationNotes": "楽観的ロックまたは悲観的ロックを実装。同時アクセス時のロック競合を考慮したエラーハンドリングが必要。",
     "estimatedEffort": {
       "value": 15,
@@ -207,16 +164,9 @@
       "予約番号が8-12桁の英数字であること",
       "予約番号がデータベースに保存されること"
     ],
-    "dependencies": [
-      "FR-001-05"
-    ],
-    "relatedRequirements": [
-      "FR-002"
-    ],
-    "stakeholders": [
-      "SH-CUSTOMER",
-      "SH-STAFF"
-    ],
+    "dependencies": ["FR-001-05"],
+    "relatedRequirements": ["FR-002"],
+    "stakeholders": ["SH-CUSTOMER", "SH-STAFF"],
     "implementationNotes": "UUID、または日付+連番のハイブリッド形式を検討。読みやすさと一意性のバランスが重要。",
     "estimatedEffort": {
       "value": 5,
@@ -241,26 +191,15 @@
       "キャンセル期限内であればワンクリックでキャンセル可能であること",
       "変更完了後、即座に更新が反映されること"
     ],
-    "dependencies": [
-      "FR-001"
-    ],
-    "relatedRequirements": [
-      "NFR-001"
-    ],
-    "stakeholders": [
-      "SH-CUSTOMER",
-      "SH-STAFF"
-    ],
+    "dependencies": ["FR-001"],
+    "relatedRequirements": ["NFR-001"],
+    "stakeholders": ["SH-CUSTOMER", "SH-STAFF"],
     "metrics": {
       "targetValue": "即座に反映",
       "unit": "秒"
     },
     "implementationNotes": "変更・キャンセル期限は店舗側で設定可能にする。キャンセル時は予約枠を即座に解放し、他の顧客が予約できるようにする。",
-    "testCases": [
-      "TC-FR-002-01",
-      "TC-FR-002-02",
-      "TC-FR-002-03"
-    ],
+    "testCases": ["TC-FR-002-01", "TC-FR-002-02", "TC-FR-002-03"],
     "estimatedEffort": {
       "value": 30,
       "unit": "hours"
@@ -283,9 +222,7 @@
     ],
     "dependencies": [],
     "relatedRequirements": [],
-    "stakeholders": [
-      "SH-CUSTOMER"
-    ],
+    "stakeholders": ["SH-CUSTOMER"],
     "implementationNotes": "予約番号の入力形式をバリデーション。検索APIは適切なインデックスを使用して高速化。",
     "estimatedEffort": {
       "value": 8,
@@ -308,15 +245,9 @@
       "予約ステータスが表示されること",
       "「変更」「キャンセル」ボタンが表示されること"
     ],
-    "dependencies": [
-      "FR-002-01"
-    ],
-    "relatedRequirements": [
-      "NFR-004"
-    ],
-    "stakeholders": [
-      "SH-CUSTOMER"
-    ],
+    "dependencies": ["FR-002-01"],
+    "relatedRequirements": ["NFR-004"],
+    "stakeholders": ["SH-CUSTOMER"],
     "implementationNotes": "モバイル表示に最適化したレイアウト。",
     "estimatedEffort": {
       "value": 5,
@@ -340,16 +271,9 @@
       "確定後、予約データが更新されること",
       "元の予約枠が解放されること"
     ],
-    "dependencies": [
-      "FR-002-02",
-      "FR-004"
-    ],
-    "relatedRequirements": [
-      "NFR-001"
-    ],
-    "stakeholders": [
-      "SH-CUSTOMER"
-    ],
+    "dependencies": ["FR-002-02", "FR-004"],
+    "relatedRequirements": ["NFR-001"],
+    "stakeholders": ["SH-CUSTOMER"],
     "implementationNotes": "トランザクション管理により、元の枠の解放と新しい枠の確保を原子的に実行。",
     "estimatedEffort": {
       "value": 12,
@@ -371,14 +295,9 @@
       "予約枠が即座に解放されること",
       "キャンセル期限を過ぎた予約はキャンセルできないこと"
     ],
-    "dependencies": [
-      "FR-002-02"
-    ],
+    "dependencies": ["FR-002-02"],
     "relatedRequirements": [],
-    "stakeholders": [
-      "SH-CUSTOMER",
-      "SH-STAFF"
-    ],
+    "stakeholders": ["SH-CUSTOMER", "SH-STAFF"],
     "implementationNotes": "キャンセル期限は店舗設定に基づく。キャンセル履歴はログとして保存。",
     "estimatedEffort": {
       "value": 8,
@@ -399,16 +318,9 @@
       "キャンセル完了メッセージが表示されること",
       "更新後の予約内容が表示されること（変更の場合）"
     ],
-    "dependencies": [
-      "FR-002-03",
-      "FR-002-04"
-    ],
-    "relatedRequirements": [
-      "NFR-004"
-    ],
-    "stakeholders": [
-      "SH-CUSTOMER"
-    ],
+    "dependencies": ["FR-002-03", "FR-002-04"],
+    "relatedRequirements": ["NFR-004"],
+    "stakeholders": ["SH-CUSTOMER"],
     "implementationNotes": "明確で分かりやすいメッセージ表示。",
     "estimatedEffort": {
       "value": 3,
@@ -434,24 +346,14 @@
       "当日予約が色分けされて表示されること"
     ],
     "dependencies": [],
-    "relatedRequirements": [
-      "NFR-001",
-      "NFR-004"
-    ],
-    "stakeholders": [
-      "SH-STAFF",
-      "SH-MANAGER"
-    ],
+    "relatedRequirements": ["NFR-001", "NFR-004"],
+    "stakeholders": ["SH-STAFF", "SH-MANAGER"],
     "metrics": {
       "targetValue": "1秒以内",
       "unit": "秒"
     },
     "implementationNotes": "データベースクエリの最適化が必要。インデックスを適切に設定し、ページネーションを実装。リアルタイム更新はWebsocketまたはポーリングで実現。",
-    "testCases": [
-      "TC-FR-003-01",
-      "TC-FR-003-02",
-      "TC-FR-003-03"
-    ],
+    "testCases": ["TC-FR-003-01", "TC-FR-003-02", "TC-FR-003-03"],
     "estimatedEffort": {
       "value": 35,
       "unit": "hours"
@@ -473,9 +375,7 @@
     ],
     "dependencies": [],
     "relatedRequirements": [],
-    "stakeholders": [
-      "SH-STAFF"
-    ],
+    "stakeholders": ["SH-STAFF"],
     "implementationNotes": "タイムライン形式のUIが望ましい。",
     "estimatedEffort": {
       "value": 10,
@@ -498,10 +398,7 @@
     ],
     "dependencies": [],
     "relatedRequirements": [],
-    "stakeholders": [
-      "SH-STAFF",
-      "SH-MANAGER"
-    ],
+    "stakeholders": ["SH-STAFF", "SH-MANAGER"],
     "implementationNotes": "カレンダー形式またはテーブル形式のUIを検討。",
     "estimatedEffort": {
       "value": 10,
@@ -524,9 +421,7 @@
     ],
     "dependencies": [],
     "relatedRequirements": [],
-    "stakeholders": [
-      "SH-STAFF"
-    ],
+    "stakeholders": ["SH-STAFF"],
     "implementationNotes": "チェックボックスまたはドロップダウンでステータスを選択。",
     "estimatedEffort": {
       "value": 6,
@@ -548,12 +443,8 @@
       "検索結果が即座に表示されること"
     ],
     "dependencies": [],
-    "relatedRequirements": [
-      "NFR-001"
-    ],
-    "stakeholders": [
-      "SH-STAFF"
-    ],
+    "relatedRequirements": ["NFR-001"],
+    "stakeholders": ["SH-STAFF"],
     "implementationNotes": "データベースのLIKE検索またはフルテキスト検索を使用。インデックスで高速化。",
     "estimatedEffort": {
       "value": 5,
@@ -578,9 +469,7 @@
     ],
     "dependencies": [],
     "relatedRequirements": [],
-    "stakeholders": [
-      "SH-STAFF"
-    ],
+    "stakeholders": ["SH-STAFF"],
     "implementationNotes": "モーダルまたはサイドパネルで詳細を表示。",
     "estimatedEffort": {
       "value": 8,
@@ -607,22 +496,14 @@
       "設定変更が5分以内に完了できること"
     ],
     "dependencies": [],
-    "relatedRequirements": [
-      "NFR-001"
-    ],
-    "stakeholders": [
-      "SH-MANAGER"
-    ],
+    "relatedRequirements": ["NFR-001"],
+    "stakeholders": ["SH-MANAGER"],
     "metrics": {
       "targetValue": "5分以内",
       "unit": "分"
     },
     "implementationNotes": "設定変更時は予約枠を再生成。既存予約との整合性チェックが必要。UIは直感的で分かりやすいものにする。",
-    "testCases": [
-      "TC-FR-004-01",
-      "TC-FR-004-02",
-      "TC-FR-004-03"
-    ],
+    "testCases": ["TC-FR-004-01", "TC-FR-004-02", "TC-FR-004-03"],
     "estimatedEffort": {
       "value": 45,
       "unit": "hours"
@@ -645,9 +526,7 @@
     ],
     "dependencies": [],
     "relatedRequirements": [],
-    "stakeholders": [
-      "SH-MANAGER"
-    ],
+    "stakeholders": ["SH-MANAGER"],
     "implementationNotes": "休業日には予約枠を生成しない。",
     "estimatedEffort": {
       "value": 12,
@@ -671,9 +550,7 @@
     ],
     "dependencies": [],
     "relatedRequirements": [],
-    "stakeholders": [
-      "SH-MANAGER"
-    ],
+    "stakeholders": ["SH-MANAGER"],
     "implementationNotes": "曜日別設定のデータ構造を設計。",
     "estimatedEffort": {
       "value": 10,
@@ -695,9 +572,7 @@
     ],
     "dependencies": [],
     "relatedRequirements": [],
-    "stakeholders": [
-      "SH-MANAGER"
-    ],
+    "stakeholders": ["SH-MANAGER"],
     "implementationNotes": "時間間隔に基づいて予約可能時間のスロットを生成。",
     "estimatedEffort": {
       "value": 8,
@@ -720,9 +595,7 @@
     ],
     "dependencies": [],
     "relatedRequirements": [],
-    "stakeholders": [
-      "SH-MANAGER"
-    ],
+    "stakeholders": ["SH-MANAGER"],
     "implementationNotes": "サービスマスタテーブルで管理。",
     "estimatedEffort": {
       "value": 6,
@@ -744,9 +617,7 @@
     ],
     "dependencies": [],
     "relatedRequirements": [],
-    "stakeholders": [
-      "SH-MANAGER"
-    ],
+    "stakeholders": ["SH-MANAGER"],
     "implementationNotes": "予約枠管理テーブルで現在の予約数をカウント。",
     "estimatedEffort": {
       "value": 9,
@@ -772,22 +643,14 @@
       "過去1年分のデータを参照できること"
     ],
     "dependencies": [],
-    "relatedRequirements": [
-      "NFR-001"
-    ],
-    "stakeholders": [
-      "SH-MANAGER",
-      "SH-EXECUTIVE"
-    ],
+    "relatedRequirements": ["NFR-001"],
+    "stakeholders": ["SH-MANAGER", "SH-EXECUTIVE"],
     "metrics": {
       "targetValue": "5秒以内",
       "unit": "秒"
     },
     "implementationNotes": "集計処理はバックグラウンドで実行。キャッシュを活用して高速化。グラフ表示にはチャートライブラリを使用。",
-    "testCases": [
-      "TC-FR-005-01",
-      "TC-FR-005-02"
-    ],
+    "testCases": ["TC-FR-005-01", "TC-FR-005-02"],
     "estimatedEffort": {
       "value": 40,
       "unit": "hours"
@@ -809,9 +672,7 @@
     ],
     "dependencies": [],
     "relatedRequirements": [],
-    "stakeholders": [
-      "SH-MANAGER"
-    ],
+    "stakeholders": ["SH-MANAGER"],
     "implementationNotes": "グラフは棒グラフまたは折れ線グラフで表示。",
     "estimatedEffort": {
       "value": 12,
@@ -834,9 +695,7 @@
     ],
     "dependencies": [],
     "relatedRequirements": [],
-    "stakeholders": [
-      "SH-MANAGER"
-    ],
+    "stakeholders": ["SH-MANAGER"],
     "implementationNotes": "集計クエリを最適化。",
     "estimatedEffort": {
       "value": 10,
@@ -858,9 +717,7 @@
     ],
     "dependencies": [],
     "relatedRequirements": [],
-    "stakeholders": [
-      "SH-MANAGER"
-    ],
+    "stakeholders": ["SH-MANAGER"],
     "implementationNotes": "1時間または2時間単位で集計。",
     "estimatedEffort": {
       "value": 8,
@@ -882,9 +739,7 @@
     ],
     "dependencies": [],
     "relatedRequirements": [],
-    "stakeholders": [
-      "SH-MANAGER"
-    ],
+    "stakeholders": ["SH-MANAGER"],
     "implementationNotes": "キャンセル率 = キャンセル数 / 全予約数 × 100",
     "estimatedEffort": {
       "value": 6,
@@ -905,16 +760,9 @@
       "クリックするとCSVファイルがダウンロードされること",
       "文字コードはUTF-8（BOM付き）であること"
     ],
-    "dependencies": [
-      "FR-005-01",
-      "FR-005-02",
-      "FR-005-03",
-      "FR-005-04"
-    ],
+    "dependencies": ["FR-005-01", "FR-005-02", "FR-005-03", "FR-005-04"],
     "relatedRequirements": [],
-    "stakeholders": [
-      "SH-MANAGER"
-    ],
+    "stakeholders": ["SH-MANAGER"],
     "implementationNotes": "Excel対応のためBOM付きUTF-8を使用。",
     "estimatedEffort": {
       "value": 5,

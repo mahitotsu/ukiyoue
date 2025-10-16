@@ -129,9 +129,7 @@
         ]
       }
     ],
-    "relatedRequirements": [
-      "FR-001"
-    ],
+    "relatedRequirements": ["FR-001"],
     "priority": "critical",
     "frequency": "very-high"
   },
@@ -145,10 +143,7 @@
       "予約がキャンセルされていない",
       "変更可能な期限内である"
     ],
-    "postconditions": [
-      "予約内容が更新される",
-      "変更完了画面が表示される"
-    ],
+    "postconditions": ["予約内容が更新される", "変更完了画面が表示される"],
     "mainFlow": [
       {
         "step": 1,
@@ -245,9 +240,7 @@
       }
     ],
     "exceptionFlows": [],
-    "relatedRequirements": [
-      "FR-002"
-    ],
+    "relatedRequirements": ["FR-002"],
     "priority": "high",
     "frequency": "high"
   },
@@ -336,9 +329,7 @@
       }
     ],
     "exceptionFlows": [],
-    "relatedRequirements": [
-      "FR-002"
-    ],
+    "relatedRequirements": ["FR-002"],
     "priority": "high",
     "frequency": "medium"
   },
@@ -347,13 +338,8 @@
     "title": "予約一覧確認",
     "actor": "SH-STAFF",
     "description": "店舗スタッフが当日または特定期間の予約一覧を確認する。",
-    "preconditions": [
-      "店舗スタッフが管理画面にログインしている"
-    ],
-    "postconditions": [
-      "予約一覧が表示される",
-      "予約詳細を確認できる"
-    ],
+    "preconditions": ["店舗スタッフが管理画面にログインしている"],
+    "postconditions": ["予約一覧が表示される", "予約詳細を確認できる"],
     "mainFlow": [
       {
         "step": 1,
@@ -431,9 +417,7 @@
       }
     ],
     "exceptionFlows": [],
-    "relatedRequirements": [
-      "FR-003"
-    ],
+    "relatedRequirements": ["FR-003"],
     "priority": "high",
     "frequency": "very-high"
   },
@@ -446,9 +430,7 @@
       "店舗スタッフが管理画面にログインしている",
       "更新対象の予約が存在する"
     ],
-    "postconditions": [
-      "予約ステータスが更新される"
-    ],
+    "postconditions": ["予約ステータスが更新される"],
     "mainFlow": [
       {
         "step": 1,
@@ -488,9 +470,7 @@
     ],
     "alternativeFlows": [],
     "exceptionFlows": [],
-    "relatedRequirements": [
-      "FR-003"
-    ],
+    "relatedRequirements": ["FR-003"],
     "priority": "medium",
     "frequency": "high"
   },
@@ -588,9 +568,7 @@
       }
     ],
     "exceptionFlows": [],
-    "relatedRequirements": [
-      "FR-004"
-    ],
+    "relatedRequirements": ["FR-004"],
     "priority": "medium",
     "frequency": "low"
   },
@@ -603,10 +581,7 @@
       "店舗管理者が管理画面にログインしている",
       "予約データが存在する"
     ],
-    "postconditions": [
-      "レポートが表示される",
-      "必要に応じてCSV出力される"
-    ],
+    "postconditions": ["レポートが表示される", "必要に応じてCSV出力される"],
     "mainFlow": [
       {
         "step": 1,
@@ -675,9 +650,7 @@
         ]
       }
     ],
-    "relatedRequirements": [
-      "FR-005"
-    ],
+    "relatedRequirements": ["FR-005"],
     "priority": "low",
     "frequency": "medium"
   }

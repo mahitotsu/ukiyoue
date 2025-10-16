@@ -19,18 +19,13 @@
     "relatedRequirements": [
       "【関連する要件ID: 強い依存はないが関連がある要件】"
     ],
-    "stakeholders": [
-      "【関係するステークホルダーID: SH-XXXなど】"
-    ],
+    "stakeholders": ["【関係するステークホルダーID: SH-XXXなど】"],
     "metrics": {
       "targetValue": "【目標値（オプション）: 数値で測定できる場合】",
       "unit": "【単位（オプション）】"
     },
     "implementationNotes": "【実装ノート: 技術的な実装ガイダンス、考慮事項など】",
-    "testCases": [
-      "TC-XXX-01",
-      "TC-XXX-02"
-    ],
+    "testCases": ["TC-XXX-01", "TC-XXX-02"],
     "estimatedEffort": {
       "value": 0,
       "unit": "hours"
@@ -45,22 +40,12 @@
     "priority": "【優先度】",
     "status": "【ステータス】",
     "rationale": "【根拠】",
-    "acceptanceCriteria": [
-      "【受入基準1】"
-    ],
-    "dependencies": [
-      "【依存要件ID】"
-    ],
-    "relatedRequirements": [
-      "【親要件ID: FR-XXX】"
-    ],
-    "stakeholders": [
-      "【ステークホルダーID】"
-    ],
+    "acceptanceCriteria": ["【受入基準1】"],
+    "dependencies": ["【依存要件ID】"],
+    "relatedRequirements": ["【親要件ID: FR-XXX】"],
+    "stakeholders": ["【ステークホルダーID】"],
     "implementationNotes": "【実装ノート】",
-    "testCases": [
-      "TC-XXX-01-01"
-    ],
+    "testCases": ["TC-XXX-01-01"],
     "estimatedEffort": {
       "value": 8,
       "unit": "hours"

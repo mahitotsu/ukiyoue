@@ -41,7 +41,15 @@
     "status": {
       "type": "string",
       "description": "Current status of the requirement",
-      "enum": ["proposed", "approved", "in-progress", "implemented", "tested", "deployed", "rejected"],
+      "enum": [
+        "proposed",
+        "approved",
+        "in-progress",
+        "implemented",
+        "tested",
+        "deployed",
+        "rejected"
+      ],
       "default": "proposed"
     },
     "rationale": {

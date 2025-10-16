@@ -56,7 +56,14 @@
         "status": {
           "type": "string",
           "description": "Current status of the document",
-          "enum": ["draft", "review", "approved", "published", "deprecated", "archived"]
+          "enum": [
+            "draft",
+            "review",
+            "approved",
+            "published",
+            "deprecated",
+            "archived"
+          ]
         },
         "created": {
           "type": "string",
