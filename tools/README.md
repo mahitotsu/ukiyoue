@@ -1,233 +1,246 @@
-# Tools
+# Ukiyoue Framework Tools
 
-このディレクトリには、新しいプロジェクトドキュメントを扱うための**ツール群**が含まれます。
+Ukiyoueフレームワーク用のCLIツール群 - バリデーション、リンクチェック、ドキュメント処理
 
 ## 📋 概要
 
-**目的**: ドキュメントの整形、妥当性検証、定量評価、定性評価などを自動化するツールを提供
+**目的**: JSON形式のドキュメントの妥当性検証と品質管理を自動化
 
 ## 📁 構成
 
 ```
 tools/
 ├── README.md              # このファイル
-├── cli/                   # コマンドラインツール
-│   ├── ukiyoue-cli.js     # メインCLI
-│   └── commands/          # サブコマンド
-├── validators/            # バリデーター
-│   ├── schema-validator.js
-│   ├── link-checker.js
-│   └── consistency-checker.js
-├── generators/            # ジェネレーター
-│   ├── template-generator.js
-│   └── doc-generator.js
-├── analyzers/             # 分析ツール
-│   ├── impact-analyzer.js
-│   ├── quality-analyzer.js
-│   └── semantic-search.js
-└── formatters/            # フォーマッター
-    └── json-to-markdown.js
+├── TOOLS_USAGE.md         # 詳細な使用方法
+├── package.json           # プロジェクト定義
+├── tsconfig.json          # TypeScript設定
+├── bun.lock               # 依存関係ロック
+└── src/
+    ├── cli.ts             # CLIエントリポイント
+    └── commands/
+        ├── validate.ts    # バリデーションツール
+        └── check-links.ts # リンクチェックツール
 ```
 
-## 🛠️ ツールカテゴリ
+## 🛠️ 実装済みツール
 
-### 1. バリデーション (Validation)
+### 1. Validation Tool (`validate`)
 
-ドキュメントの妥当性を検証します。
+JSON Schema Draft-07による構造検証
 
-**提供する機能**:
+**機能**:
 
-- ✅ JSON Schema による構造検証
-- ✅ リンク切れチェック
-- ✅ 用語の一貫性チェック
-- ✅ メタデータの必須項目チェック
+- ✅ JSON Schemaによる厳密な検証（Ajv使用）
+- ✅ スキーマの自動検出（`type`フィールド、ファイル名パターン）
+- ✅ 配列データの自動検出と各要素の検証
+- ✅ 依存スキーマの自動読み込み（`$ref`解決）
+- ✅ 詳細なエラー出力（--verboseオプション）
 
 **使用例**:
 
 ```bash
-# スキーマ検証
-ukiyoue validate --schema schemas/technical-spec.schema.json \
-                 --document examples/my-spec.json
+# 基本的な検証（スキーマ自動検出）
+bun run src/cli.ts validate ../examples/reservation-system/stakeholders.json
 
-# リンク切れチェック
-ukiyoue check-links --directory examples/
+# カスタムスキーマを指定
+bun run src/cli.ts validate my-doc.json --schema ../schemas/custom.schema.json
 
-# 一貫性チェック
-ukiyoue check-consistency --documents "examples/**/*.json"
+# 詳細出力
+bun run src/cli.ts validate my-doc.json --verbose
 ```
 
-### 2. 生成 (Generation)
+**スキーマ自動検出ルール**:
 
-ドキュメントやテンプレートを生成します。
+1. `type`または`@type`フィールドで判定
+   - `BusinessRequirements` → `types/business-requirements.schema.json`
+   - `Stakeholder` → `components/stakeholder.schema.json`
+   - `Requirement` → `components/requirement.schema.json`
+   - `UseCase` → `components/use-case.schema.json`
+2. ファイル名パターンで判定
+   - `stakeholders.json` → stakeholder schema
+   - `use-cases.json` → use-case schema
+   - `*requirements*.json` → requirement schema
+3. フォールバック → `document-base.schema.json`
 
-**提供する機能**:
+### 2. Link Checking Tool (`check-links`)
 
-- ✅ テンプレートからのドキュメント生成
-- ✅ スキーマからのドキュメント骨格生成
-- ✅ マークダウンへの変換
+ドキュメント間のクロスリファレンス検証
+
+**機能**:
+
+- ✅ ID参照の存在確認（SH-_, UC-_, FR-_, NFR-_）
+- ✅ 再帰的ディレクトリスキャン
+- ✅ 複数の関連フィールドに対応
+- ✅ 壊れたリンクの詳細レポート
 
 **使用例**:
 
 ```bash
-# テンプレートから生成
-ukiyoue generate --template technical-spec \
-                 --output my-spec.json
+# ディレクトリ内の全リンクをチェック
+bun run src/cli.ts check-links ../examples/reservation-system
 
-# JSONからMarkdownへ変換
-ukiyoue convert --from json --to markdown \
-                --input my-spec.json \
-                --output my-spec.md
+# 詳細出力
+bun run src/cli.ts check-links ../examples/reservation-system --verbose
 ```
 
-### 3. 分析 (Analysis)
+**チェック対象フィールド**:
 
-ドキュメントを分析し、品質や影響範囲を評価します。
-
-**提供する機能**:
-
-- ✅ 品質スコアの算出
-- ✅ 影響範囲の分析
-- ✅ セマンティック検索
-- ✅ 依存関係の可視化
-
-**使用例**:
-
-```bash
-# 品質分析
-ukiyoue analyze quality --document my-spec.json
-
-# 影響範囲分析
-ukiyoue analyze impact --document architecture.json
-
-# セマンティック検索
-ukiyoue search --query "認証の実装方法" \
-               --directory examples/
-
-# 依存関係グラフ生成
-ukiyoue graph dependencies --output deps.svg
-```
-
-### 4. フォーマット (Formatting)
-
-ドキュメントを整形します。
-
-**提供する機能**:
-
-- ✅ JSON の整形
-- ✅ フォーマット統一
-- ✅ メタデータの自動補完
-
-**使用例**:
-
-```bash
-# フォーマット
-ukiyoue format --document my-spec.json
-
-# メタデータ補完
-ukiyoue complete-metadata --document my-spec.json
-```
-
-## 📊 評価機能
-
-### 定量評価 (Quantitative Evaluation)
-
-数値で測定可能な指標を評価します。
-
-**指標例**:
-
-```yaml
-metrics:
-  - completeness: 必須項目の充足率 (0-100%)
-  - link_health: リンクの有効率 (0-100%)
-  - freshness: 最終更新からの経過日数
-  - reuse_count: 再利用された回数
-  - consistency_score: 用語の一貫性スコア
-```
+- `stakeholders`, `stakeholderIds`, `relatedStakeholders`
+- `useCaseIds`, `relatedUseCases`
+- `dependencies`, `relatedRequirements`
+- `implements`, `dependsOn`, `relatedTo`, `conflicts`
 
 **出力例**:
 
-```json
-{
-  "document": "my-spec.json",
-  "score": 85,
-  "metrics": {
-    "completeness": 100,
-    "link_health": 95,
-    "freshness": 2,
-    "reuse_count": 5,
-    "consistency_score": 80
-  }
-}
+```
+✓ All links are valid
 ```
 
-### 定性評価 (Qualitative Evaluation)
+または壊れたリンクがある場合:
 
-品質の質的側面を評価します。
+```
+✗ Found 3 broken links
 
-**評価項目例**:
-
-```yaml
-criteria:
-  - clarity: 明確さ（理解しやすさ）
-  - relevance: 関連性（目的との適合度）
-  - usability: 使いやすさ（実用性）
-  - maintainability: 保守性（更新のしやすさ）
+/path/to/file.json
+  stakeholderIds[0]: stakeholder "SH-INVALID" not found
+  requirementIds[1]: requirement "FR-999" not found
 ```
 
-**評価方法**:
+## 🚀 セットアップ
 
-- AI による自動評価
-- チェックリストによる評価
-- レビュアーによる評価
+### インストール
 
-## 🚀 実装予定
+```bash
+cd tools
+bun install
+```
 
-### Phase 1: 基本ツール
+### 動作確認
 
-- [ ] JSON Schema validator
-- [ ] Link checker
-- [ ] Basic CLI
+```bash
+# Validation test
+bun run src/cli.ts validate ../examples/reservation-system/stakeholders.json
 
-### Phase 2: 生成・変換
+# Link checking test
+bun run src/cli.ts check-links ../examples/reservation-system
+```
 
-- [ ] Template generator
-- [ ] JSON to Markdown converter
-- [ ] Metadata auto-completion
+### ビルド（オプション）
 
-### Phase 3: 分析・評価
-
-- [ ] Quality analyzer
-- [ ] Impact analyzer
-- [ ] Semantic search
-
-### Phase 4: 高度な機能
-
-- [ ] AI-powered evaluation
-- [ ] Dependency graph visualization
-- [ ] Real-time collaboration support
+```bash
+bun run build
+```
 
 ## 💻 技術スタック
 
 ```yaml
-runtime: Node.js
-language: JavaScript/TypeScript
+runtime: Bun v1.0+
+language: TypeScript (strict mode)
 dependencies:
-  - ajv: JSON Schema validation
-  - json-ld: JSON-LD processing
-  - commander: CLI framework
-  - chalk: Terminal styling
-  - ora: Loading spinners
+  - ajv: "^8.17.1" # JSON Schema validation (Draft-07)
+  - ajv-formats: "^3.0.1" # Format validation
+  - commander: "^12.1.0" # CLI framework
+  - chalk: "^5.6.2" # Terminal colors
+devDependencies:
+  - "@types/bun": latest
+  - typescript: "^5.6.3"
 ```
 
-## 📚 使用方法
+## 📊 検証実績
+
+**来店予約システム（Reservation System）の例**:
+
+- ✅ stakeholders.json - 6件のステークホルダー
+- ✅ use-cases.json - 8件のユースケース
+- ✅ functional-requirements.json - 45件の機能要件
+- ✅ non-functional-requirements.json - 8件の非機能要件
+- ✅ クロスリファレンス - 137件の参照を検証
+
+## � トラブルシューティング
+
+### 検証エラー: "must be array"
+
+**原因**: メインのbusiness-requirements.jsonは`$IMPORT(file.json)`構文を使用
+
+**解決策**: 各モジュールファイルを個別に検証
 
 ```bash
-# インストール
-npm install -g @ukiyoue/cli
+# メインファイルではなく
+# bun run src/cli.ts validate business-requirements.json
 
-# ヘルプ
-ukiyoue --help
-
-# バージョン確認
-ukiyoue --version
+# 各モジュールを検証
+bun run src/cli.ts validate stakeholders.json
+bun run src/cli.ts validate use-cases.json
+bun run src/cli.ts validate functional-requirements.json
 ```
+
+### スキーマ解決エラー
+
+**解決策**: ツールが自動的に`schemas/`ディレクトリから依存スキーマを読み込みます。以下を確認:
+
+1. スキーマファイルが正しい場所にある（`schemas/components/`, `schemas/types/`）
+2. `$id`フィールドが期待されるURIと一致
+3. `$ref`パスが正しい
+
+## 📚 詳細ドキュメント
+
+詳しい使用方法は [TOOLS_USAGE.md](./TOOLS_USAGE.md) を参照してください。
+
+## 🗺️ 今後の実装予定
+
+**完了済み** (Phase 1):
+
+- ✅ JSON Schema validator（Ajv使用、Draft-07対応）
+- ✅ Link checker（クロスリファレンス検証）
+- ✅ Basic CLI（Commander.js使用）
+
+**次期実装** (Phase 2):
+
+- ⏳ Statistics tool（ドキュメントメトリクス、要件数集計）
+- ⏳ Markdown generator（JSON → Markdown変換）
+- ⏳ Template generator（新規ドキュメントスカフォールド）
+- ⏳ $IMPORT resolver（バリデーション時の動的解決）
+
+**将来実装** (Phase 3):
+
+- 📋 Quality analyzer（品質スコア算出）
+- 📋 Impact analyzer（影響範囲分析）
+- 📋 Semantic search（セマンティック検索）
+- 📋 Dependency graph（依存関係可視化）
+
+## 📝 変更履歴
+
+### v0.1.0 (2025-10-17)
+
+**実装**:
+
+- Validation tool（JSON Schema検証）
+- Link-checking tool（クロスリファレンス検証）
+- CLI framework（Commander.js）
+
+**修正**:
+
+- スキーマの正規表現パターン修正（不要なエスケープ除去）
+- スキーマ重複読み込み問題の修正
+- リンクチェックのフィールド対応拡充（137件の参照を検証可能）
+
+**ドキュメント**:
+
+- TOOLS_USAGE.md追加（詳細な使用方法）
+- README.md更新（実装状況反映）
+
+## 🤝 貢献
+
+このツールはUkiyoueフレームワークの一部です。
+
+**開発ポリシー**:
+
+- TypeScript strict mode必須
+- Bunランタイム使用（Node.jsではない）
+- JSON Schema Draft-07準拠
+- JSON-LD 1.1対応
+- Git履歴でバージョン管理（手動メタデータ不要）
+
+## 📄 ライセンス
+
+MIT
