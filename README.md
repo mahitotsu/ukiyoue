@@ -313,6 +313,21 @@ bun install
 
 このプロジェクトでは [Prettier](https://prettier.io/) を使用してコードフォーマットを統一しています。
 
+#### 自動フォーマット（推奨）
+
+**Git commit時に自動実行**されます：
+
+```bash
+git add .
+git commit -m "your message"
+# ↑ コミット前に自動でフォーマットが実行されます
+# フォーマット失敗時はコミットが中止されます
+```
+
+[Husky](https://typicode.github.io/husky/) + [lint-staged](https://github.com/lint-staged/lint-staged) により、変更されたファイルのみが自動フォーマットされます。
+
+#### 手動フォーマット
+
 ```bash
 # すべてのファイルをフォーマット
 bun run format

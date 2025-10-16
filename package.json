@@ -16,12 +16,20 @@
     "format": "prettier --write \"**/*.{json,jsonld,md,ts,tsx}\"",
     "format:check": "prettier --check \"**/*.{json,jsonld,md,ts,tsx}\"",
     "format:json": "prettier --write \"**/*.{json,jsonld}\"",
-    "format:docs": "prettier --write \"**/*.md\""
+    "format:docs": "prettier --write \"**/*.md\"",
+    "prepare": "husky"
   },
   "devDependencies": {
+    "husky": "^9.1.7",
+    "lint-staged": "^15.2.11",
     "prettier": "^3.3.3"
   },
   "engines": {
     "bun": ">=1.0.0"
+  },
+  "lint-staged": {
+    "*.{json,jsonld}": "prettier --write",
+    "*.md": "prettier --write",
+    "*.{ts,tsx}": "prettier --write"
   }
 }
