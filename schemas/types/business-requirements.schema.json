@@ -114,72 +114,108 @@
           }
         },
         "stakeholders": {
-          "type": "array",
-          "description": "Project stakeholders",
-          "minItems": 1,
-          "items": {
-            "$ref": "https://ukiyoue.dev/schemas/components/stakeholder.schema.json"
-          }
+          "description": "Project stakeholders (array or $IMPORT reference)",
+          "oneOf": [
+            {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "$ref": "https://ukiyoue.dev/schemas/components/stakeholder.schema.json"
+              }
+            },
+            {
+              "type": "string",
+              "pattern": "^\\$IMPORT\\(.+\\.json\\)$",
+              "description": "Reference to external file using $IMPORT(filename.json) syntax"
+            }
+          ]
         },
         "useCases": {
-          "type": "array",
-          "description": "Use case definitions",
-          "items": {
-            "$ref": "https://ukiyoue.dev/schemas/components/use-case.schema.json"
-          }
+          "description": "Use case definitions (array or $IMPORT reference)",
+          "oneOf": [
+            {
+              "type": "array",
+              "items": {
+                "$ref": "https://ukiyoue.dev/schemas/components/use-case.schema.json"
+              }
+            },
+            {
+              "type": "string",
+              "pattern": "^\\$IMPORT\\(.+\\.json\\)$",
+              "description": "Reference to external file using $IMPORT(filename.json) syntax"
+            }
+          ]
         },
         "functionalRequirements": {
-          "type": "array",
-          "description": "Functional requirements (FR)",
-          "minItems": 1,
-          "items": {
-            "allOf": [
-              {
-                "$ref": "https://ukiyoue.dev/schemas/components/requirement.schema.json"
-              },
-              {
-                "type": "object",
-                "properties": {
-                  "type": {
-                    "const": "functional"
+          "description": "Functional requirements (array or $IMPORT reference)",
+          "oneOf": [
+            {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "allOf": [
+                  {
+                    "$ref": "https://ukiyoue.dev/schemas/components/requirement.schema.json"
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "const": "functional"
+                      }
+                    }
                   }
-                }
+                ]
               }
-            ]
-          }
+            },
+            {
+              "type": "string",
+              "pattern": "^\\$IMPORT\\(.+\\.json\\)$",
+              "description": "Reference to external file using $IMPORT(filename.json) syntax"
+            }
+          ]
         },
         "nonFunctionalRequirements": {
-          "type": "array",
-          "description": "Non-functional requirements (NFR)",
-          "items": {
-            "allOf": [
-              {
-                "$ref": "https://ukiyoue.dev/schemas/components/requirement.schema.json"
-              },
-              {
-                "type": "object",
-                "properties": {
-                  "type": {
-                    "const": "non-functional"
+          "description": "Non-functional requirements (array or $IMPORT reference)",
+          "oneOf": [
+            {
+              "type": "array",
+              "items": {
+                "allOf": [
+                  {
+                    "$ref": "https://ukiyoue.dev/schemas/components/requirement.schema.json"
                   },
-                  "subcategory": {
-                    "type": "string",
-                    "description": "NFR subcategory",
-                    "enum": [
-                      "performance",
-                      "availability",
-                      "security",
-                      "usability",
-                      "maintainability",
-                      "scalability",
-                      "reliability",
-                      "compatibility"
-                    ]
+                  {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "const": "non-functional"
+                      },
+                      "subcategory": {
+                        "type": "string",
+                        "description": "NFR subcategory",
+                        "enum": [
+                          "performance",
+                          "availability",
+                          "security",
+                          "usability",
+                          "maintainability",
+                          "scalability",
+                          "reliability",
+                          "compatibility"
+                        ]
+                      }
+                    }
                   }
-                }
+                ]
               }
-            ]
-          }
+            },
+            {
+              "type": "string",
+              "pattern": "^\\$IMPORT\\(.+\\.json\\)$",
+              "description": "Reference to external file using $IMPORT(filename.json) syntax"
+            }
+          ]
         },
         "glossary": {
           "type": "array",

@@ -1,9 +1,9 @@
 # Format staged files
 bunx lint-staged
 
-# Validate modular JSON files in examples (skip main files with $IMPORT)
+# Validate all JSON files in examples/reservation-system
 echo "🔍 Validating JSON files..."
-find examples/reservation-system -name "stakeholders.json" -o -name "use-cases.json" -o -name "functional-requirements.json" -o -name "non-functional-requirements.json" | while read -r file; do
+find examples/reservation-system -name "*.json" -type f | while read -r file; do
   cd tools && bun run src/cli.ts validate "../$file" || exit 1
   cd ..
 done
