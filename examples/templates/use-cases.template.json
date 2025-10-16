@@ -1,0 +1,91 @@
+[
+  {
+    "id": "UC-XXX",
+    "title": "【ユースケース名】",
+    "actor": "【アクター: SH-XXXのようなステークホルダーID】",
+    "description": "【ユースケースの概要説明】",
+    "preconditions": [
+      "【事前条件1: このユースケースを開始する前に満たすべき条件】",
+      "【事前条件2】"
+    ],
+    "postconditions": [
+      "【事後条件1: このユースケースが正常に完了した後の状態】",
+      "【事後条件2】"
+    ],
+    "mainFlow": [
+      {
+        "step": 1,
+        "description": "【ステップ1の説明】",
+        "actor": "【実行者: SH-XXXまたはSystem】"
+      },
+      {
+        "step": 2,
+        "description": "【ステップ2の説明】",
+        "actor": "【実行者】"
+      },
+      {
+        "step": 3,
+        "description": "【ステップ3の説明】",
+        "actor": "【実行者】"
+      }
+    ],
+    "alternativeFlows": [
+      {
+        "id": "ALT-XXX-01",
+        "branchFrom": 2,
+        "condition": "【分岐条件: どんな場合にこのフローになるか】",
+        "steps": [
+          {
+            "step": "2a",
+            "description": "【代替ステップの説明】",
+            "actor": "【実行者】"
+          },
+          {
+            "step": "2b",
+            "description": "【次の代替ステップ】",
+            "actor": "【実行者】"
+          }
+        ],
+        "returnTo": 3
+      }
+    ],
+    "exceptionFlows": [
+      {
+        "id": "EXC-XXX-01",
+        "condition": "【例外条件: エラーや異常な状況】",
+        "steps": [
+          {
+            "step": "E1",
+            "description": "【例外処理の説明】",
+            "actor": "System"
+          }
+        ]
+      }
+    ],
+    "relatedRequirements": [
+      "【関連する要件ID: FR-XXXなど】"
+    ],
+    "priority": "【優先度: critical/high/medium/low】",
+    "frequency": "【頻度: very-high/high/medium/low - どれくらいの頻度で実行されるか】"
+  },
+  {
+    "id": "UC-YYY",
+    "title": "【別のユースケース名】",
+    "actor": "【アクター】",
+    "description": "【説明】",
+    "preconditions": [],
+    "postconditions": [],
+    "mainFlow": [
+      {
+        "step": 1,
+        "description": "【ステップ説明】",
+        "actor": "【実行者】"
+      }
+    ],
+    "alternativeFlows": [],
+    "exceptionFlows": [],
+    "relatedRequirements": [],
+    "priority": "【優先度】",
+    "frequency": "【頻度】"
+  }
+]

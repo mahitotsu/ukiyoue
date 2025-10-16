@@ -1,0 +1,342 @@
+[
+  {
+    "id": "NFR-001",
+    "title": "パフォーマンス",
+    "description": "システムのレスポンス時間、処理速度、同時アクセス数に関する要件。顧客体験の質を左右する重要な非機能要件。",
+    "type": "non-functional",
+    "category": "パフォーマンス",
+    "subcategory": "performance",
+    "priority": "high",
+    "status": "proposed",
+    "rationale": "快適なユーザー体験を提供するため、応答時間とスループットの最適化が必須。",
+    "acceptanceCriteria": [
+      "ページ読み込み時間が2秒以内（PC、スマートフォンともに）",
+      "予約処理時間が1秒以内",
+      "同時アクセス100ユーザーまで対応",
+      "データベース応答時間が100ms以内",
+      "API応答時間が500ms以内（95パーセンタイル）"
+    ],
+    "dependencies": [],
+    "relatedRequirements": [
+      "FR-001",
+      "FR-002",
+      "FR-003"
+    ],
+    "stakeholders": [
+      "SH-CUSTOMER",
+      "SH-STAFF",
+      "SH-SYSADMIN"
+    ],
+    "metrics": {
+      "targetValue": "2秒以内（ページ読み込み）、1秒以内（予約処理）",
+      "currentValue": "未測定",
+      "unit": "秒"
+    },
+    "implementationNotes": "フロントエンド: コード分割、遅延ローディング、CDN活用。バックエンド: データベースインデックス最適化、キャッシュ（Redis）活用、クエリ最適化。負荷分散: ロードバランサー、オートスケーリング。パフォーマンステストツール: JMeter、Lighthouseを使用。",
+    "testCases": [
+      "TC-NFR-001-01",
+      "TC-NFR-001-02",
+      "TC-NFR-001-03"
+    ],
+    "estimatedEffort": {
+      "value": 30,
+      "unit": "hours"
+    }
+  },
+  {
+    "id": "NFR-002",
+    "title": "可用性",
+    "description": "システムの稼働率、メンテナンス時間、バックアップに関する要件。ビジネス継続性を確保するための要件。",
+    "type": "non-functional",
+    "category": "可用性",
+    "subcategory": "availability",
+    "priority": "high",
+    "status": "proposed",
+    "rationale": "24時間予約可能というサービス特性上、高い稼働率が必須。データ損失はビジネスに致命的な影響を与える。",
+    "acceptanceCriteria": [
+      "システム稼働率が99.9%以上（年間ダウンタイム8.76時間以内）",
+      "メンテナンス時間は月1回、深夜帯（2:00-4:00）のみ",
+      "バックアップが毎日自動実行される",
+      "バックアップデータが過去30日分保持される",
+      "障害発生時の復旧時間が30分以内（RTO: Recovery Time Objective）",
+      "データ損失が最大1時間以内（RPO: Recovery Point Objective）"
+    ],
+    "dependencies": [],
+    "relatedRequirements": [
+      "NFR-003"
+    ],
+    "stakeholders": [
+      "SH-SYSADMIN",
+      "SH-MANAGER",
+      "SH-EXECUTIVE"
+    ],
+    "metrics": {
+      "targetValue": "99.9%（稼働率）",
+      "currentValue": "未測定",
+      "unit": "%"
+    },
+    "implementationNotes": "冗長化: マルチAZ構成、データベースレプリケーション。監視: CloudWatch、Datadog等で24時間監視。バックアップ: 自動バックアップ（フル+増分）、リージョン間レプリケーション。障害対応: 自動フェイルオーバー、アラート通知。",
+    "testCases": [
+      "TC-NFR-002-01",
+      "TC-NFR-002-02",
+      "TC-NFR-002-03"
+    ],
+    "estimatedEffort": {
+      "value": 40,
+      "unit": "hours"
+    }
+  },
+  {
+    "id": "NFR-003",
+    "title": "セキュリティ",
+    "description": "通信の暗号化、個人情報保護、認証・認可、ログ記録に関する要件。法令遵守とデータ保護のための要件。",
+    "type": "non-functional",
+    "category": "セキュリティ",
+    "subcategory": "security",
+    "priority": "critical",
+    "status": "proposed",
+    "rationale": "個人情報を扱うため、セキュリティは最優先事項。法令遵守（個人情報保護法、GDPR）も必須。",
+    "acceptanceCriteria": [
+      "すべての通信がHTTPS（TLS 1.3以上）で暗号化されている",
+      "個人情報がデータベースで暗号化されている（AES-256）",
+      "パスワードがbcryptでハッシュ化されている（ソルト付き）",
+      "セッションタイムアウトが30分である",
+      "アクセスログとエラーログが記録されている",
+      "ログが最低6ヶ月間保持される",
+      "SQLインジェクション、XSS、CSRF対策が実装されている",
+      "定期的なセキュリティ診断が実施される（四半期に1回）"
+    ],
+    "dependencies": [],
+    "relatedRequirements": [
+      "FR-001",
+      "FR-002"
+    ],
+    "stakeholders": [
+      "SH-SYSADMIN",
+      "SH-EXECUTIVE"
+    ],
+    "metrics": {
+      "targetValue": "セキュリティインシデント0件",
+      "currentValue": "未測定",
+      "unit": "件"
+    },
+    "implementationNotes": "通信: SSL/TLS証明書の自動更新。暗号化: データベース暗号化（AWS RDS暗号化等）、アプリケーションレベル暗号化。認証: bcrypt、Argon2等の強力なハッシュ関数。CSRF対策: トークンベース。XSS対策: 入力サニタイゼーション、出力エスケープ。SQLインジェクション対策: パラメータ化クエリ、ORM使用。セキュリティヘッダー: CSP、HSTS、X-Frame-Options等。",
+    "testCases": [
+      "TC-NFR-003-01",
+      "TC-NFR-003-02",
+      "TC-NFR-003-03"
+    ],
+    "estimatedEffort": {
+      "value": 50,
+      "unit": "hours"
+    }
+  },
+  {
+    "id": "NFR-004",
+    "title": "ユーザビリティ",
+    "description": "レスポンシブデザイン、アクセシビリティ、多言語対応、ブラウザ対応に関する要件。ユーザー体験の質を決定する要件。",
+    "type": "non-functional",
+    "category": "ユーザビリティ",
+    "subcategory": "usability",
+    "priority": "high",
+    "status": "proposed",
+    "rationale": "多様なユーザーが快適に利用できることが、顧客満足度向上に不可欠。",
+    "acceptanceCriteria": [
+      "レスポンシブデザインでPC、タブレット、スマートフォンに対応している",
+      "WCAG 2.1 Level AA準拠のアクセシビリティが実装されている",
+      "日本語と英語に対応している",
+      "Chrome、Firefox、Safari、Edge（最新版および1つ前のバージョン）で動作する",
+      "タッチ操作に最適化されている（ボタンサイズ44x44px以上）",
+      "フォントサイズが調整可能である",
+      "色覚異常者にも配慮した色使いである"
+    ],
+    "dependencies": [],
+    "relatedRequirements": [
+      "FR-001",
+      "FR-002",
+      "FR-003"
+    ],
+    "stakeholders": [
+      "SH-CUSTOMER",
+      "SH-STAFF"
+    ],
+    "metrics": {
+      "targetValue": "顧客満足度4.5/5.0以上",
+      "currentValue": "未測定",
+      "unit": "スコア"
+    },
+    "implementationNotes": "フレームワーク: Reactでレスポンシブ対応。CSSフレームワーク: Tailwind CSS、Material-UI等。アクセシビリティ: WAI-ARIA属性、セマンティックHTML、キーボードナビゲーション。多言語: i18n（react-i18next）。ブラウザテスト: BrowserStack、Sauce Labs。デザインシステム: コンポーネントライブラリ構築。",
+    "testCases": [
+      "TC-NFR-004-01",
+      "TC-NFR-004-02",
+      "TC-NFR-004-03"
+    ],
+    "estimatedEffort": {
+      "value": 60,
+      "unit": "hours"
+    }
+  },
+  {
+    "id": "NFR-005",
+    "title": "保守性",
+    "description": "コード品質、テストカバレッジ、ドキュメント、ログに関する要件。長期的な保守性を確保するための要件。",
+    "type": "non-functional",
+    "category": "保守性",
+    "subcategory": "maintainability",
+    "priority": "medium",
+    "status": "proposed",
+    "rationale": "長期的な運用とメンテナンスのため、コード品質とドキュメントの整備が必須。",
+    "acceptanceCriteria": [
+      "TypeScript Strict Modeが有効である",
+      "ESLintとPrettierによるコード規約が適用されている",
+      "テストカバレッジが80%以上である",
+      "APIドキュメントが自動生成される（OpenAPI/Swagger）",
+      "コードレビューが実施されている",
+      "ログレベル（DEBUG、INFO、WARN、ERROR）が適切に使い分けられている",
+      "主要機能にコメントが記載されている"
+    ],
+    "dependencies": [],
+    "relatedRequirements": [],
+    "stakeholders": [
+      "SH-DEVELOPER",
+      "SH-SYSADMIN"
+    ],
+    "metrics": {
+      "targetValue": "テストカバレッジ80%以上",
+      "currentValue": "未測定",
+      "unit": "%"
+    },
+    "implementationNotes": "テスト: Jest、React Testing Library、Supertest。カバレッジ: Istanbul（nyc）。ドキュメント: Swagger/OpenAPI自動生成、JSDoc/TSDoc。CI/CD: GitHub Actions、テスト自動実行。静的解析: SonarQube、CodeClimate。バージョン管理: Git、コミット規約（Conventional Commits）。",
+    "testCases": [
+      "TC-NFR-005-01",
+      "TC-NFR-005-02"
+    ],
+    "estimatedEffort": {
+      "value": 45,
+      "unit": "hours"
+    }
+  },
+  {
+    "id": "NFR-006",
+    "title": "拡張性",
+    "description": "マイクロサービスアーキテクチャ、API設計、データベース設計、外部連携に関する要件。将来の機能拡張に備えた要件。",
+    "type": "non-functional",
+    "category": "拡張性",
+    "subcategory": "scalability",
+    "priority": "medium",
+    "status": "proposed",
+    "rationale": "将来の機能追加（決済、通知、会員管理等）や規模拡大に対応できる設計が必要。",
+    "acceptanceCriteria": [
+      "マイクロサービスアーキテクチャが採用されている",
+      "RESTful APIが設計されている",
+      "APIバージョニングが実装されている（/api/v1/...）",
+      "データベースが正規化されている",
+      "水平スケーリングが可能である",
+      "Webhook対応が実装されている",
+      "外部システム連携用のAPIが提供されている"
+    ],
+    "dependencies": [],
+    "relatedRequirements": [],
+    "stakeholders": [
+      "SH-DEVELOPER",
+      "SH-SYSADMIN",
+      "SH-EXECUTIVE"
+    ],
+    "metrics": {
+      "targetValue": "同時接続数1000ユーザーまでスケール可能",
+      "currentValue": "未測定",
+      "unit": "ユーザー"
+    },
+    "implementationNotes": "アーキテクチャ: マイクロサービス（予約サービス、ユーザーサービス、レポートサービス等）。API: RESTful、GraphQL検討。データベース: 読み書き分離（Read Replica）、シャーディング検討。キャッシュ: Redis、Memcached。メッセージキュー: RabbitMQ、AWS SQS。",
+    "testCases": [
+      "TC-NFR-006-01",
+      "TC-NFR-006-02"
+    ],
+    "estimatedEffort": {
+      "value": 50,
+      "unit": "hours"
+    }
+  },
+  {
+    "id": "NFR-007",
+    "title": "信頼性",
+    "description": "エラーハンドリング、トランザクション管理、データ整合性に関する要件。システムの信頼性を確保するための要件。",
+    "type": "non-functional",
+    "category": "信頼性",
+    "subcategory": "reliability",
+    "priority": "high",
+    "status": "proposed",
+    "rationale": "予約という重要なデータを扱うため、データの整合性とトランザクションの信頼性が必須。",
+    "acceptanceCriteria": [
+      "すべてのトランザクションがACID特性を満たしている",
+      "エラー発生時に適切なエラーメッセージが表示される",
+      "クリティカルなエラーは自動でログ記録される",
+      "データベース制約（外部キー、一意制約等）が設定されている",
+      "楽観的ロックまたは悲観的ロックが実装されている",
+      "リトライ機構が実装されている（べき等性を考慮）"
+    ],
+    "dependencies": [],
+    "relatedRequirements": [
+      "FR-001",
+      "FR-002",
+      "NFR-002"
+    ],
+    "stakeholders": [
+      "SH-DEVELOPER",
+      "SH-SYSADMIN"
+    ],
+    "metrics": {
+      "targetValue": "エラー発生率0.1%以下",
+      "currentValue": "未測定",
+      "unit": "%"
+    },
+    "implementationNotes": "トランザクション: データベーストランザクション、分散トランザクション（Saga パターン）。エラーハンドリング: try-catch、エラーバウンダリ（React）。ロギング: Winston、Bunyan等。リトライ: 指数バックオフ、サーキットブレーカーパターン。",
+    "testCases": [
+      "TC-NFR-007-01",
+      "TC-NFR-007-02"
+    ],
+    "estimatedEffort": {
+      "value": 35,
+      "unit": "hours"
+    }
+  },
+  {
+    "id": "NFR-008",
+    "title": "互換性",
+    "description": "既存システム連携、データ移行、APIバージョン管理に関する要件。",
+    "type": "non-functional",
+    "category": "互換性",
+    "subcategory": "compatibility",
+    "priority": "medium",
+    "status": "proposed",
+    "rationale": "既存の顧客管理システムとの連携が必要。将来的なシステム更新時に後方互換性を保つ必要がある。",
+    "acceptanceCriteria": [
+      "既存顧客管理システムとAPI連携が可能である",
+      "データ移行ツールが提供される",
+      "APIの後方互換性が1年間保たれる",
+      "非推奨APIには適切な警告が表示される",
+      "データエクスポート機能が提供される（CSV、JSON）"
+    ],
+    "dependencies": [],
+    "relatedRequirements": [
+      "NFR-006"
+    ],
+    "stakeholders": [
+      "SH-DEVELOPER",
+      "SH-MANAGER"
+    ],
+    "metrics": {
+      "targetValue": "データ移行成功率100%",
+      "currentValue": "未測定",
+      "unit": "%"
+    },
+    "implementationNotes": "API連携: REST API、認証（OAuth 2.0、API Key）。データ移行: ETLツール、バッチ処理。バージョン管理: セマンティックバージョニング、非推奨フラグ。",
+    "testCases": [
+      "TC-NFR-008-01"
+    ],
+    "estimatedEffort": {
+      "value": 25,
+      "unit": "hours"
+    }
+  }
+]

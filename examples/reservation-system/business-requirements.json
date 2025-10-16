@@ -1,0 +1,215 @@
+{
+  "@context": [
+    "https://ukiyoue.dev/semantics/context.jsonld",
+    {
+      "@version": 1.1,
+      "@base": "https://example.com/reservation-system/"
+    }
+  ],
+  "id": "reservation-system-br-v1.0.0",
+  "type": "BusinessRequirements",
+  "title": "来店予約システム 業務要件定義書",
+  "description": "飲食店や美容室、医療機関などの店舗向けオンライン予約システムの業務要件定義書。顧客による24時間予約、店舗スタッフによる予約管理、予約状況の可視化、予約枠の設定・管理機能を含む。",
+  "metadata": {
+    "version": "1.0.0",
+    "status": "approved",
+    "created": "2025-10-16T09:00:00+09:00",
+    "modified": "2025-10-16T15:30:00+09:00",
+    "authors": [
+      {
+        "name": "山田太郎",
+        "email": "yamada@example.com",
+        "role": "author"
+      },
+      {
+        "name": "佐藤花子",
+        "email": "sato@example.com",
+        "role": "reviewer"
+      }
+    ],
+    "tags": [
+      "reservation",
+      "booking",
+      "customer-service",
+      "business-requirements"
+    ],
+    "language": "ja",
+    "audience": [
+      "business-analyst",
+      "project-manager",
+      "developer",
+      "stakeholder"
+    ],
+    "confidentiality": "internal"
+  },
+  "projectOverview": {
+    "background": "飲食店や美容室、医療機関などの店舗において、電話やメールでの予約管理は煩雑で、ダブルブッキングや予約の見落としなどの問題が発生しやすい。また、顧客側も営業時間内に電話をする必要があり、利便性が低い。",
+    "objectives": [
+      "オンラインで24時間予約可能なシステムを構築する",
+      "店舗側の予約管理業務を効率化する",
+      "顧客の利便性を向上させる",
+      "ダブルブッキングを防止する",
+      "予約データの可視化と分析を可能にする"
+    ],
+    "scope": {
+      "included": [
+        "顧客による予約登録・変更・キャンセル機能",
+        "店舗スタッフによる予約管理機能",
+        "予約状況の可視化",
+        "予約枠の設定・管理"
+      ],
+      "excluded": [
+        "通知機能（メール、SMS）※将来の拡張として想定",
+        "決済機能（将来の拡張として想定）",
+        "顧客の会員管理システム（既存システムと連携）",
+        "在庫管理・POS連携"
+      ]
+    },
+    "constraints": {
+      "technical": [
+        "バックエンド: Node.js（Bun）+ TypeScript",
+        "フロントエンド: React + TypeScript",
+        "データベース: PostgreSQL",
+        "インフラ: クラウドサービス（AWS想定）"
+      ],
+      "business": [
+        "予算: 初期開発費用は500万円以内",
+        "期間: 開発期間は6ヶ月以内",
+        "リソース: 開発チーム3-5名"
+      ],
+      "legal": [
+        "個人情報保護法に準拠",
+        "予約情報の保存期間: 最大2年間",
+        "データ削除要求への対応（GDPR準拠）"
+      ]
+    },
+    "successMetrics": [
+      {
+        "name": "オンライン予約率",
+        "target": "80%以上（3ヶ月後）",
+        "category": "business"
+      },
+      {
+        "name": "予約キャンセル率",
+        "target": "10%以下",
+        "category": "business"
+      },
+      {
+        "name": "顧客満足度",
+        "target": "4.5/5.0以上",
+        "category": "user-satisfaction"
+      },
+      {
+        "name": "リピート率",
+        "target": "60%以上",
+        "category": "business"
+      },
+      {
+        "name": "システム稼働率",
+        "target": "99.9%以上",
+        "category": "operational"
+      },
+      {
+        "name": "平均応答時間",
+        "target": "1秒以内",
+        "category": "operational"
+      },
+      {
+        "name": "ダブルブッキング発生",
+        "target": "0件",
+        "category": "operational"
+      }
+    ]
+  },
+  "stakeholders": "$IMPORT(stakeholders.json)",
+  "useCases": "$IMPORT(use-cases.json)",
+  "functionalRequirements": "$IMPORT(functional-requirements.json)",
+  "nonFunctionalRequirements": "$IMPORT(non-functional-requirements.json)",
+  "glossary": [
+    {
+      "term": "予約枠",
+      "definition": "予約可能な時間帯の単位。サービス内容と所要時間により決定される。"
+    },
+    {
+      "term": "予約ステータス",
+      "definition": "予約の状態（確定、キャンセル、完了、ノーショー）を表す。"
+    },
+    {
+      "term": "ダブルブッキング",
+      "definition": "同じ時間帯に複数の予約が重複して入る状態。システムで防止する必要がある。"
+    },
+    {
+      "term": "ノーショー",
+      "definition": "予約したが来店しなかった状態。統計データとして記録される。"
+    },
+    {
+      "term": "営業カレンダー",
+      "definition": "営業日、休業日、営業時間を管理するカレンダー。予約枠の生成に使用される。"
+    },
+    {
+      "term": "予約番号",
+      "definition": "予約を一意に識別するための番号。予約確認やキャンセル時に使用される。"
+    }
+  ],
+  "assumptions": [
+    "顧客はスマートフォンまたはPCからインターネットにアクセス可能である",
+    "店舗スタッフは基本的なPC操作が可能である",
+    "既存の顧客データベースとAPI連携が可能である",
+    "クラウドインフラの利用が承認されている"
+  ],
+  "risks": [
+    {
+      "id": "RISK-001",
+      "description": "顧客の予約操作中にシステム障害が発生し、予約が失われる",
+      "probability": "low",
+      "impact": "high",
+      "mitigation": "トランザクション管理を徹底し、障害発生時は予約データを自動保存する"
+    },
+    {
+      "id": "RISK-002",
+      "description": "同時アクセス数が想定を超え、システムパフォーマンスが低下する",
+      "probability": "medium",
+      "impact": "high",
+      "mitigation": "負荷分散とオートスケーリングを実装し、定期的に負荷テストを実施する"
+    },
+    {
+      "id": "RISK-003",
+      "description": "個人情報漏洩のセキュリティインシデントが発生する",
+      "probability": "low",
+      "impact": "critical",
+      "mitigation": "暗号化、アクセス制御、監査ログを徹底し、定期的なセキュリティ診断を実施する"
+    },
+    {
+      "id": "RISK-004",
+      "description": "既存システムとのAPI連携が技術的に困難",
+      "probability": "medium",
+      "impact": "medium",
+      "mitigation": "早期に技術検証を実施し、必要に応じて代替案を準備する"
+    }
+  ],
+  "relationships": [
+    {
+      "type": "references",
+      "target": "system-architecture-v1.0.0",
+      "description": "システムアーキテクチャ設計書を参照"
+    },
+    {
+      "type": "derivedFrom",
+      "target": "project-proposal-v1.0.0",
+      "description": "プロジェクト提案書から導出"
+    }
+  ],
+  "changelog": [
+    {
+      "version": "1.0.0",
+      "date": "2025-10-16",
+      "author": "山田太郎",
+      "changes": [
+        "初版作成",
+        "ステークホルダー定義完了",
+        "機能要件・非機能要件定義完了",
+        "通知機能をスコープ外に変更"
+      ]
+    }
+  ]
+}

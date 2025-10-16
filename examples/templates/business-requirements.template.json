@@ -1,0 +1,156 @@
+{
+  "@context": {
+    "@version": 1.1,
+    "@import": "https://ukiyoue.dev/semantics/context.jsonld",
+    "@base": "https://example.com/projects/my-project/"
+  },
+  "id": "my-project",
+  "type": "BusinessRequirements",
+  "title": "【プロジェクト名を記入】業務要件定義書",
+  "description": "【プロジェクトの概要を簡潔に記入】",
+  "version": "1.0.0",
+  "status": "draft",
+  "metadata": {
+    "created": "【作成日: YYYY-MM-DD形式】",
+    "modified": "【最終更新日: YYYY-MM-DD形式】",
+    "authors": [
+      {
+        "name": "【作成者名】",
+        "email": "【メールアドレス】",
+        "role": "【役割: ビジネスアナリスト、プロジェクトマネージャーなど】"
+      }
+    ],
+    "reviewers": [
+      {
+        "name": "【レビュアー名】",
+        "email": "【メールアドレス】",
+        "role": "【役割】"
+      }
+    ],
+    "approvers": [
+      {
+        "name": "【承認者名】",
+        "email": "【メールアドレス】",
+        "role": "【役割】",
+        "approvedDate": "【承認日: YYYY-MM-DD形式】"
+      }
+    ]
+  },
+  "projectOverview": {
+    "background": "【プロジェクトの背景を記述。なぜこのプロジェクトが必要なのか、現状の課題は何か】",
+    "objectives": [
+      "【目的1: 具体的で測定可能な目標】",
+      "【目的2】",
+      "【目的3】"
+    ],
+    "scope": {
+      "included": [
+        "【スコープに含まれる項目1】",
+        "【スコープに含まれる項目2】",
+        "【スコープに含まれる項目3】"
+      ],
+      "excluded": [
+        "【スコープに含まれない項目1】",
+        "【スコープに含まれない項目2】"
+      ]
+    }
+  },
+  "constraints": {
+    "technical": [
+      "【技術的制約1: 使用技術、既存システムとの互換性など】",
+      "【技術的制約2】"
+    ],
+    "business": [
+      "【ビジネス制約1: 予算、スケジュール、リソースなど】",
+      "【ビジネス制約2】"
+    ],
+    "legal": [
+      "【法的制約1: 個人情報保護法、業界規制など】",
+      "【法的制約2】"
+    ]
+  },
+  "successMetrics": [
+    {
+      "id": "METRIC-001",
+      "name": "【指標名】",
+      "description": "【指標の説明】",
+      "target": "【目標値: 数値と単位】",
+      "measurement": "【測定方法】"
+    },
+    {
+      "id": "METRIC-002",
+      "name": "【指標名】",
+      "description": "【指標の説明】",
+      "target": "【目標値】",
+      "measurement": "【測定方法】"
+    }
+  ],
+  "stakeholders": "$IMPORT(stakeholders.json)",
+  "useCases": "$IMPORT(use-cases.json)",
+  "requirements": {
+    "functional": "$IMPORT(functional-requirements.json)",
+    "nonFunctional": "$IMPORT(non-functional-requirements.json)"
+  },
+  "glossary": [
+    {
+      "term": "【用語1】",
+      "definition": "【定義】",
+      "aliases": ["【別名1】", "【別名2】"]
+    },
+    {
+      "term": "【用語2】",
+      "definition": "【定義】",
+      "aliases": []
+    }
+  ],
+  "assumptions": [
+    "【前提条件1: プロジェクト遂行にあたっての前提】",
+    "【前提条件2】",
+    "【前提条件3】"
+  ],
+  "risks": [
+    {
+      "id": "RISK-001",
+      "title": "【リスク名】",
+      "description": "【リスクの詳細説明】",
+      "probability": "【発生確率: high/medium/low】",
+      "impact": "【影響度: high/medium/low】",
+      "mitigation": "【対策】"
+    },
+    {
+      "id": "RISK-002",
+      "title": "【リスク名】",
+      "description": "【リスクの詳細説明】",
+      "probability": "【発生確率】",
+      "impact": "【影響度】",
+      "mitigation": "【対策】"
+    }
+  ],
+  "relationships": [
+    {
+      "type": "relatedTo",
+      "target": "【関連ドキュメントのID】",
+      "description": "【関係性の説明】"
+    }
+  ],
+  "attachments": [
+    {
+      "id": "ATT-001",
+      "title": "【添付ファイル名】",
+      "type": "【ファイルタイプ: diagram/spreadsheet/documentなど】",
+      "url": "【ファイルのURL】",
+      "description": "【ファイルの説明】"
+    }
+  ],
+  "changelog": [
+    {
+      "version": "1.0.0",
+      "date": "【YYYY-MM-DD】",
+      "author": "【作成者名】",
+      "changes": [
+        "【変更内容1】",
+        "【変更内容2】"
+      ]
+    }
+  ]
+}

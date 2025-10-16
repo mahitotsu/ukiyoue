@@ -1,0 +1,69 @@
+[
+  {
+    "id": "FR-XXX",
+    "title": "【機能要件名】",
+    "description": "【機能の詳細説明】",
+    "type": "functional",
+    "category": "【カテゴリ: UI/ビジネスロジック/データ管理/レポートなど】",
+    "priority": "【優先度: critical/high/medium/low】",
+    "status": "【ステータス: proposed/approved/implemented/tested/deployed】",
+    "rationale": "【根拠: なぜこの機能が必要なのか】",
+    "acceptanceCriteria": [
+      "【受入基準1: テスト可能な形で記述】",
+      "【受入基準2】",
+      "【受入基準3】"
+    ],
+    "dependencies": [
+      "【依存する要件ID: この要件を実装する前に必要な他の要件】"
+    ],
+    "relatedRequirements": [
+      "【関連する要件ID: 強い依存はないが関連がある要件】"
+    ],
+    "stakeholders": [
+      "【関係するステークホルダーID: SH-XXXなど】"
+    ],
+    "metrics": {
+      "targetValue": "【目標値（オプション）: 数値で測定できる場合】",
+      "unit": "【単位（オプション）】"
+    },
+    "implementationNotes": "【実装ノート: 技術的な実装ガイダンス、考慮事項など】",
+    "testCases": [
+      "TC-XXX-01",
+      "TC-XXX-02"
+    ],
+    "estimatedEffort": {
+      "value": 0,
+      "unit": "hours"
+    }
+  },
+  {
+    "id": "FR-XXX-01",
+    "title": "【サブ要件名: FR-XXXの詳細要件】",
+    "description": "【サブ要件の説明】",
+    "type": "functional",
+    "category": "【カテゴリ】",
+    "priority": "【優先度】",
+    "status": "【ステータス】",
+    "rationale": "【根拠】",
+    "acceptanceCriteria": [
+      "【受入基準1】"
+    ],
+    "dependencies": [
+      "【依存要件ID】"
+    ],
+    "relatedRequirements": [
+      "【親要件ID: FR-XXX】"
+    ],
+    "stakeholders": [
+      "【ステークホルダーID】"
+    ],
+    "implementationNotes": "【実装ノート】",
+    "testCases": [
+      "TC-XXX-01-01"
+    ],
+    "estimatedEffort": {
+      "value": 8,
+      "unit": "hours"
+    }
+  }
+]
