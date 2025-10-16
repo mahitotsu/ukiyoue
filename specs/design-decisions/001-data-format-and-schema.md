@@ -1,6 +1,7 @@
 # ADR-001: データフォーマット・スキーマ定義・セマンティック定義の選定
 
 ## Status
+
 **承認済み** (Accepted)
 
 ## Context
@@ -19,24 +20,24 @@ Ukiyoueは、AI時代のドキュメント管理における以下の課題を�
 
 この決定は、以下のフレームワーク要件を満たす必要がある：
 
-| 要件ID | 要件名 | 関連性 |
-|--------|--------|--------|
-| **FR-AUTO-001** | 構造化された形式の定義 | 🔴 Critical - データ形式の根幹 |
-| **FR-AUTO-002** | 自動バリデーション | 🔴 Critical - 検証可能な形式が必須 |
-| **FR-CONV-002** | 動的な情報再構成 | 🟡 High - 構造化データが前提 |
-| **FR-REUSE-001** | コンポーネント化 | 🟡 High - 再利用可能な形式 |
-| **FR-CONV-001** | セマンティック検索 | 🟡 High - 意味定義が必要 |
+| 要件ID           | 要件名                 | 関連性                             |
+| ---------------- | ---------------------- | ---------------------------------- |
+| **FR-AUTO-001**  | 構造化された形式の定義 | 🔴 Critical - データ形式の根幹     |
+| **FR-AUTO-002**  | 自動バリデーション     | 🔴 Critical - 検証可能な形式が必須 |
+| **FR-CONV-002**  | 動的な情報再構成       | 🟡 High - 構造化データが前提       |
+| **FR-REUSE-001** | コンポーネント化       | 🟡 High - 再利用可能な形式         |
+| **FR-CONV-001**  | セマンティック検索     | 🟡 High - 意味定義が必要           |
 
 ### 要求される技術特性
 
-| 特性 | 説明 | 重要度 |
-|------|------|--------|
-| **厳密な構造化** | 曖昧さ・揺らぎの排除 | 🔴 Critical |
-| **検証可能性** | 妥当性・整合性の自動検証 | 🔴 Critical |
-| **AI可読性** | LLMが理解・生成しやすい | 🔴 Critical |
-| **人間可読性** | 人間も読みやすい（表示時） | 🟡 High |
-| **セマンティック** | 意味・関係性を明示的に定義 | 🟡 High |
-| **ツール支援** | エコシステムが充実 | 🟢 Medium |
+| 特性               | 説明                       | 重要度      |
+| ------------------ | -------------------------- | ----------- |
+| **厳密な構造化**   | 曖昧さ・揺らぎの排除       | 🔴 Critical |
+| **検証可能性**     | 妥当性・整合性の自動検証   | 🔴 Critical |
+| **AI可読性**       | LLMが理解・生成しやすい    | 🔴 Critical |
+| **人間可読性**     | 人間も読みやすい（表示時） | 🟡 High     |
+| **セマンティック** | 意味・関係性を明示的に定義 | 🟡 High     |
+| **ツール支援**     | エコシステムが充実         | 🟢 Medium   |
 
 ### 比較対象
 
@@ -54,14 +55,18 @@ Ukiyoueは、AI時代のドキュメント管理における以下の課題を�
 #### 問題1: 構造化の弱さ
 
 **Markdown例**:
+
 ```markdown
 ## Requirements
+
 ### REQ-001: OAuth Support
+
 Priority: High
 Status: Approved
 ```
 
 **問題点**:
+
 - ❌ "Priority"は必須？任意？ → 不明
 - ❌ "High"以外に何が許される？ → 曖昧
 - ❌ IDの形式は？（REQ-001? R001? Req-1?） → 揺らぎ
@@ -71,8 +76,9 @@ Status: Approved
 
 ```markdown
 ### REQ-001: OAuth Support
-Priorty: Hight  <!-- typo検出不可 -->
-Status: InProgress  <!-- 許可された値？ -->
+
+Priorty: Hight <!-- typo検出不可 -->
+Status: InProgress <!-- 許可された値？ -->
 ```
 
 - ❌ 必須フィールドの欠落を検出できない
@@ -90,6 +96,7 @@ Status: InProgress  <!-- 許可された値？ -->
 #### 結論: Markdownは**表示専用**
 
 Markdownは人間に優しいが、**構造化ドキュメントの編集フォーマットとしては不適切**。
+
 - ✅ 使用方法: JSONからの**一方向自動生成**（レンダリング結果）
 - ❌ 使用しない: ソースフォーマット（編集用）
 
@@ -134,6 +141,7 @@ Markdownは人間に優しいが、**構造化ドキュメントの編集フォ�
 #### 1. **厳密な構造化と完全な検証**
 
 **JSON + JSON Schema**:
+
 ```json
 {
   "$schema": "https://ukiyoue.dev/schemas/technical-spec.schema.json",
@@ -156,6 +164,7 @@ Markdownは人間に優しいが、**構造化ドキュメントの編集フォ�
 ```
 
 **スキーマによる強制**:
+
 ```json
 {
   "properties": {
@@ -177,6 +186,7 @@ Markdownは人間に優しいが、**構造化ドキュメントの編集フォ�
 ```
 
 **効果**:
+
 - ✅ `"priority": "Hight"` → エラー（enum違反）
 - ✅ `"id": "R001"` → エラー（パターン違反）
 - ✅ `"version": "1.0"` → エラー（セマンティックバージョニング違反）
@@ -184,24 +194,25 @@ Markdownは人間に優しいが、**構造化ドキュメントの編集フォ�
 
 #### 2. **AI時代の要件を満たす**
 
-| 要件 | JSONの利点 |
-|------|-----------|
-| **対話的** | LLMが最も得意とする形式 |
-| **自動生成** | AI生成→即座に検証→エラー検出 |
-| **再利用** | `$ref`で厳密なコンポーネント参照 |
-| **検証** | スキーマ違反を自動検出 |
-| **一貫性** | フォーマットの揺らぎゼロ |
+| 要件         | JSONの利点                       |
+| ------------ | -------------------------------- |
+| **対話的**   | LLMが最も得意とする形式          |
+| **自動生成** | AI生成→即座に検証→エラー検出     |
+| **再利用**   | `$ref`で厳密なコンポーネント参照 |
+| **検証**     | スキーマ違反を自動検出           |
+| **一貫性**   | フォーマットの揺らぎゼロ         |
 
 #### 3. **優れたツール支援**
 
 **VSCode統合**:
+
 ```json
 {
   "$schema": "https://ukiyoue.dev/schemas/technical-spec.schema.json",
   "metadata": {
     "type": "technical-specification",
-    "priority": "h"  // ← 自動補完: high, medium, low
-                     // ← リアルタイムエラー表示
+    "priority": "h" // ← 自動補完: high, medium, low
+    // ← リアルタイムエラー表示
   }
 }
 ```
@@ -213,13 +224,13 @@ Markdownは人間に優しいが、**構造化ドキュメントの編集フォ�
 
 #### 4. **Markdownの問題を解決**
 
-| 項目 | Markdown編集 | JSON編集 |
-|------|-------------|----------|
-| 構造化 | ❌ 弱い | ✅ 厳密 |
-| 検証 | ❌ 困難 | ✅ 完全 |
-| 揺らぎ | ❌ 発生 | ✅ ゼロ |
-| 整合性 | ❌ 不可 | ✅ 可能 |
-| ツール支援 | △ 限定的 | ✅ 充実 |
+| 項目       | Markdown編集 | JSON編集 |
+| ---------- | ------------ | -------- |
+| 構造化     | ❌ 弱い      | ✅ 厳密  |
+| 検証       | ❌ 困難      | ✅ 完全  |
+| 揺らぎ     | ❌ 発生      | ✅ ゼロ  |
+| 整合性     | ❌ 不可      | ✅ 可能  |
+| ツール支援 | △ 限定的     | ✅ 充実  |
 
 #### 5. **人間の可読性はMarkdownで担保**
 
@@ -251,9 +262,9 @@ cat docs/auth-api.md
     "created": "2025-10-15T10:00:00Z",
     "updated": "2025-10-15T10:00:00Z",
     "authors": [
-      { 
-        "name": "Alice", 
-        "email": "alice@example.com" 
+      {
+        "name": "Alice",
+        "email": "alice@example.com"
       }
     ],
     "tags": ["authentication", "api", "security"],
@@ -295,11 +306,11 @@ cat docs/auth-api.md
             "type": "object",
             "required": ["username", "password"],
             "properties": {
-              "username": { 
+              "username": {
                 "type": "string",
                 "minLength": 3
               },
-              "password": { 
+              "password": {
                 "type": "string",
                 "minLength": 8,
                 "format": "password"
@@ -311,7 +322,7 @@ cat docs/auth-api.md
               "type": "object",
               "properties": {
                 "token": { "type": "string" },
-                "expiresIn": { 
+                "expiresIn": {
                   "type": "integer",
                   "minimum": 0
                 }
@@ -329,12 +340,8 @@ cat docs/auth-api.md
     }
   },
   "relationships": {
-    "dependsOn": [
-      "https://docs.example.com/oauth-spec.json"
-    ],
-    "relatedTo": [
-      "https://docs.example.com/user-management.json"
-    ]
+    "dependsOn": ["https://docs.example.com/oauth-spec.json"],
+    "relatedTo": ["https://docs.example.com/user-management.json"]
   }
 }
 ```
@@ -350,24 +357,24 @@ cat docs/auth-api.md
   "type": "object",
   "required": ["$schema", "@context", "metadata", "content"],
   "properties": {
-    "$schema": { 
-      "type": "string", 
+    "$schema": {
+      "type": "string",
       "format": "uri",
       "description": "JSON Schema reference"
     },
-    "@context": { 
-      "type": "string", 
+    "@context": {
+      "type": "string",
       "format": "uri",
       "description": "JSON-LD context reference"
     },
-    "metadata": { 
-      "$ref": "#/definitions/metadata" 
+    "metadata": {
+      "$ref": "#/definitions/metadata"
     },
-    "content": { 
-      "$ref": "#/definitions/content" 
+    "content": {
+      "$ref": "#/definitions/content"
     },
-    "relationships": { 
-      "$ref": "#/definitions/relationships" 
+    "relationships": {
+      "$ref": "#/definitions/relationships"
     }
   },
   "definitions": {
@@ -375,11 +382,11 @@ cat docs/auth-api.md
       "type": "object",
       "required": ["type", "title", "version", "created"],
       "properties": {
-        "type": { 
+        "type": {
           "const": "technical-specification",
           "description": "Document type identifier"
         },
-        "title": { 
+        "title": {
           "type": "string",
           "minLength": 1,
           "maxLength": 200,
@@ -390,13 +397,13 @@ cat docs/auth-api.md
           "pattern": "^\\d+\\.\\d+\\.\\d+$",
           "description": "Semantic version (e.g., 1.0.0)"
         },
-        "created": { 
-          "type": "string", 
+        "created": {
+          "type": "string",
           "format": "date-time",
           "description": "Creation timestamp (ISO 8601)"
         },
-        "updated": { 
-          "type": "string", 
+        "updated": {
+          "type": "string",
           "format": "date-time",
           "description": "Last update timestamp (ISO 8601)"
         },
@@ -425,17 +432,17 @@ cat docs/auth-api.md
       "type": "object",
       "required": ["name"],
       "properties": {
-        "name": { 
+        "name": {
           "type": "string",
           "minLength": 1
         },
-        "email": { 
-          "type": "string", 
-          "format": "email" 
+        "email": {
+          "type": "string",
+          "format": "email"
         },
-        "url": { 
-          "type": "string", 
-          "format": "uri" 
+        "url": {
+          "type": "string",
+          "format": "uri"
         }
       }
     },
@@ -443,7 +450,7 @@ cat docs/auth-api.md
       "type": "object",
       "required": ["overview", "requirements"],
       "properties": {
-        "overview": { 
+        "overview": {
           "type": "string",
           "minLength": 10,
           "description": "High-level document overview"
@@ -454,7 +461,7 @@ cat docs/auth-api.md
           "items": { "$ref": "#/definitions/requirement" },
           "description": "List of requirements"
         },
-        "api": { 
+        "api": {
           "$ref": "#/definitions/api",
           "description": "API definition (optional)"
         }
@@ -464,12 +471,12 @@ cat docs/auth-api.md
       "type": "object",
       "required": ["id", "description", "priority"],
       "properties": {
-        "id": { 
+        "id": {
           "type": "string",
           "pattern": "^REQ-\\d{3}$",
           "description": "Requirement ID (format: REQ-XXX)"
         },
-        "description": { 
+        "description": {
           "type": "string",
           "minLength": 10,
           "description": "Requirement description"
@@ -486,11 +493,11 @@ cat docs/auth-api.md
         "validation": {
           "type": "object",
           "properties": {
-            "method": { 
+            "method": {
               "type": "string",
               "description": "Validation method"
             },
-            "criteria": { 
+            "criteria": {
               "type": "string",
               "description": "Validation criteria"
             }
@@ -528,11 +535,11 @@ cat docs/auth-api.md
           "pattern": "^/"
         },
         "description": { "type": "string" },
-        "request": { 
+        "request": {
           "type": "object",
           "description": "Request schema"
         },
-        "response": { 
+        "response": {
           "type": "object",
           "description": "Response schemas by status code"
         }
@@ -543,17 +550,17 @@ cat docs/auth-api.md
       "properties": {
         "dependsOn": {
           "type": "array",
-          "items": { 
-            "type": "string", 
-            "format": "uri" 
+          "items": {
+            "type": "string",
+            "format": "uri"
           },
           "description": "Dependencies (URIs)"
         },
         "relatedTo": {
           "type": "array",
-          "items": { 
-            "type": "string", 
-            "format": "uri" 
+          "items": {
+            "type": "string",
+            "format": "uri"
           },
           "description": "Related documents (URIs)"
         }
@@ -565,8 +572,8 @@ cat docs/auth-api.md
 
 ### 3. 表示用Markdown（自動生成・読み取り専用）
 
-```markdown
-<!-- 
+````markdown
+<!--
   ⚠️ AUTO-GENERATED - DO NOT EDIT MANUALLY ⚠️
   Source: data/authentication-api.json
   Generated: 2025-10-15T10:30:00Z
@@ -602,11 +609,13 @@ This document describes the user authentication API supporting OAuth 2.0.
 System shall support OAuth 2.0 authentication protocol
 
 **Details**:
+
 - Support Authorization Code Flow
 - Support Implicit Flow
 - Support Client Credentials Flow
 
 **Validation**:
+
 - **Method**: integration-test
 - **Criteria**: OAuth 2.0 flow completes successfully
 
@@ -629,24 +638,28 @@ System should support multi-factor authentication
 User login endpoint
 
 **Request**:
+
 ```json
 {
-  "username": "string",  // required, min length: 3
-  "password": "string"   // required, min length: 8
+  "username": "string", // required, min length: 3
+  "password": "string" // required, min length: 8
 }
 ```
+````
 
 **Responses**:
 
 **200 OK**:
+
 ```json
 {
   "token": "string",
-  "expiresIn": 3600  // seconds, minimum: 0
+  "expiresIn": 3600 // seconds, minimum: 0
 }
 ```
 
 **401 Unauthorized**:
+
 ```json
 {
   "error": "string"
@@ -658,9 +671,11 @@ User login endpoint
 ## 🔗 Relationships
 
 ### Dependencies
+
 - [OAuth Specification](https://docs.example.com/oauth-spec.json)
 
 ### Related Documents
+
 - [User Management](https://docs.example.com/user-management.json)
 
 ---
@@ -674,9 +689,10 @@ User login endpoint
 
 ---
 
-*This document was automatically generated from structured JSON data.  
-To update, edit `data/authentication-api.json` and regenerate.*
-```
+_This document was automatically generated from structured JSON data.  
+To update, edit `data/authentication-api.json` and regenerate._
+
+````
 
 ### 4. ツールワークフロー
 
@@ -765,7 +781,7 @@ ukiyoue impact REQ-001 \
 # 12. 品質レポート
 ukiyoue quality data/*.json \
   --output quality-report.html
-```
+````
 
 ---
 
@@ -779,28 +795,28 @@ TypeScript型定義は**ツール開発時**にのみ使用：
 
 export interface TechnicalSpecification {
   $schema: string;
-  '@context': string;
+  "@context": string;
   metadata: Metadata;
   content: Content;
   relationships?: Relationships;
 }
 
 export interface Metadata {
-  type: 'technical-specification';
+  type: "technical-specification";
   title: string;
   version: string;
   created: string;
   updated?: string;
   authors: Author[];
   tags?: string[];
-  audience?: ('developer' | 'pm' | 'stakeholder' | 'ai-agent')[];
+  audience?: ("developer" | "pm" | "stakeholder" | "ai-agent")[];
 }
 
 export interface Requirement {
-  id: string;  // pattern: ^REQ-\d{3}$
+  id: string; // pattern: ^REQ-\d{3}$
   description: string;
-  priority: 'critical' | 'high' | 'medium' | 'low';
-  status?: 'draft' | 'approved' | 'implemented' | 'deprecated';
+  priority: "critical" | "high" | "medium" | "low";
+  status?: "draft" | "approved" | "implemented" | "deprecated";
   validation?: {
     method: string;
     criteria: string;
@@ -809,14 +825,17 @@ export interface Requirement {
 }
 
 // ツール実装で使用
-import type { TechnicalSpecification } from './types';
+import type { TechnicalSpecification } from "./types";
 
-export function validateDocument(doc: TechnicalSpecification): ValidationResult {
+export function validateDocument(
+  doc: TechnicalSpecification
+): ValidationResult {
   // 型安全なツール実装
 }
 ```
 
 **用途**:
+
 - ✅ フレームワーク内部のツール実装
 - ✅ VSCodeエディタサポート
 - ❌ ドキュメント保存フォーマット（JSONを使用）
@@ -825,25 +844,26 @@ export function validateDocument(doc: TechnicalSpecification): ValidationResult 
 
 ## 比較マトリクス
 
-| 項目 | JSON+Schema | TypeScript | Markdown | YAML |
-|------|------------|------------|----------|------|
-| **厳密な構造化** | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐ | ⭐⭐⭐⭐⭐ |
-| **検証可能性** | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐ | ⭐ | ⭐⭐⭐⭐⭐ |
-| **曖昧さ排除** | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐ | ⭐⭐⭐⭐ |
-| **AI可読性** | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐ |
-| **編集体験（人間）** | ⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐ |
-| **表示（人間）** | ⭐⭐ | ⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐ |
-| **ツール支援** | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐ | ⭐⭐⭐⭐ |
-| **セマンティクス** | ⭐⭐⭐⭐⭐ | ⭐⭐⭐ | ⭐ | ⭐⭐⭐⭐ |
-| **標準化** | ⭐⭐⭐⭐⭐ | ⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐ |
-| **言語非依存** | ⭐⭐⭐⭐⭐ | ⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ |
-| **Total** | **48/50** | **42/50** | **31/50** | **44/50** |
+| 項目                 | JSON+Schema | TypeScript | Markdown   | YAML       |
+| -------------------- | ----------- | ---------- | ---------- | ---------- |
+| **厳密な構造化**     | ⭐⭐⭐⭐⭐  | ⭐⭐⭐⭐⭐ | ⭐         | ⭐⭐⭐⭐⭐ |
+| **検証可能性**       | ⭐⭐⭐⭐⭐  | ⭐⭐⭐⭐   | ⭐         | ⭐⭐⭐⭐⭐ |
+| **曖昧さ排除**       | ⭐⭐⭐⭐⭐  | ⭐⭐⭐⭐⭐ | ⭐         | ⭐⭐⭐⭐   |
+| **AI可読性**         | ⭐⭐⭐⭐⭐  | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐   |
+| **編集体験（人間）** | ⭐⭐⭐⭐    | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐   |
+| **表示（人間）**     | ⭐⭐        | ⭐⭐⭐     | ⭐⭐⭐⭐⭐ | ⭐⭐⭐     |
+| **ツール支援**       | ⭐⭐⭐⭐⭐  | ⭐⭐⭐⭐⭐ | ⭐⭐⭐     | ⭐⭐⭐⭐   |
+| **セマンティクス**   | ⭐⭐⭐⭐⭐  | ⭐⭐⭐     | ⭐         | ⭐⭐⭐⭐   |
+| **標準化**           | ⭐⭐⭐⭐⭐  | ⭐⭐⭐     | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐   |
+| **言語非依存**       | ⭐⭐⭐⭐⭐  | ⭐         | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ |
+| **Total**            | **48/50**   | **42/50**  | **31/50**  | **44/50**  |
 
 ---
 
 ## Consequences
 
 ### Positive
+
 - ✅ **完全な検証**: JSON Schemaによる厳密な妥当性・整合性検証
 - ✅ **曖昧さゼロ**: enum、pattern、required等で揺らぎを完全排除
 - ✅ **AI最適**: LLMが最も得意とする形式、生成後即座に検証可能
@@ -853,21 +873,21 @@ export function validateDocument(doc: TechnicalSpecification): ValidationResult 
 - ✅ **言語非依存**: 任意の言語から利用可能
 
 ### Negative
+
 - ⚠️ **JSON編集**: Markdownほど直感的ではない
 - ⚠️ **学習コスト**: JSON Schema、JSON-LDの学習が必要
 - ⚠️ **冗長性**: JSONは記述が冗長になる場合がある
 
 ### Mitigation
-- **JSON編集の課題**: 
+
+- **JSON編集の課題**:
   - VSCodeのJSON Schemaサポートで大幅改善
   - GUI編集ツールの提供も検討
   - テンプレート・ウィザードで初期作成を支援
-  
 - **学習コスト**:
   - ドキュメント・チュートリアルの充実
   - サンプルの提供
   - AIエージェント向けガイド
-  
 - **冗長性**:
   - デフォルト値の活用
   - `$ref`によるコンポーネント再利用
@@ -878,22 +898,26 @@ export function validateDocument(doc: TechnicalSpecification): ValidationResult 
 ## Implementation Plan
 
 ### Phase 1: 基本スキーマ定義
+
 - [ ] `document-base.schema.json` - 基底スキーマ
 - [ ] `technical-spec.schema.json` - 技術仕様書スキーマ
 - [ ] `api-doc.schema.json` - API仕様書スキーマ
 - [ ] VSCode用 `.vscode/settings.json` 設定
 
 ### Phase 2: 検証ツール
+
 - [ ] JSON Schema検証ツール
 - [ ] 整合性チェックツール
 - [ ] リンク検証ツール
 
 ### Phase 3: レンダリングツール
+
 - [ ] JSON → Markdown変換
 - [ ] JSON → HTML変換
 - [ ] テンプレートエンジン
 
 ### Phase 4: セマンティクス
+
 - [ ] JSON-LD context定義
 - [ ] セマンティック検索
 - [ ] 依存関係グラフ生成
@@ -905,7 +929,9 @@ export function validateDocument(doc: TechnicalSpecification): ValidationResult 
 この決定が満たすフレームワーク要件：
 
 ### FR-AUTO-001: 構造化された形式の定義 ✅
+
 **実現方法**:
+
 - JSON Schema により全ドキュメントの構造を形式的に定義
 - `document-base.schema.json` を基底とした型システム
 - スキーマの階層化により拡張性を確保
@@ -915,7 +941,9 @@ export function validateDocument(doc: TechnicalSpecification): ValidationResult 
 ---
 
 ### FR-AUTO-002: 自動バリデーション ✅
+
 **実現方法**:
+
 - JSON Schema による構文・構造の自動検証
 - `required`, `enum`, `pattern` 等で厳密なルール定義
 - CI/CD での自動検証が可能
@@ -925,7 +953,9 @@ export function validateDocument(doc: TechnicalSpecification): ValidationResult 
 ---
 
 ### FR-CONV-002: 動的な情報再構成 ✅
+
 **実現方法**:
+
 - JSON の機械可読性により動的フィルタリング・変換が容易
 - `audience`, `level` フィールドによる視点別レンダリング
 - プログラマティックなデータ操作が可能
@@ -935,7 +965,9 @@ export function validateDocument(doc: TechnicalSpecification): ValidationResult 
 ---
 
 ### FR-REUSE-001: コンポーネント化 ✅
+
 **実現方法**:
+
 - JSON Schema の `$ref` によるコンポーネント参照
 - 独立したJSONファイルとして管理可能
 - JSON-LD による意味的な再利用性
@@ -945,7 +977,9 @@ export function validateDocument(doc: TechnicalSpecification): ValidationResult 
 ---
 
 ### FR-CONV-001: セマンティック検索 ✅
+
 **実現方法**:
+
 - JSON-LD による明示的な意味定義
 - `@context`, `@type` によるセマンティック情報の付与
 - 語彙・オントロジー定義によるAI理解の向上
@@ -955,9 +989,11 @@ export function validateDocument(doc: TechnicalSpecification): ValidationResult 
 ---
 
 ## Related Decisions
+
 None (This is a foundational decision)
 
 ### Decisions Based on This
+
 - ADR-002: ツール実装言語・ランタイム選定
 - ADR-003: JSON Schema Draft版選定
 - ADR-004: JSON-LD バージョン選定
@@ -996,6 +1032,7 @@ None (This is a foundational decision)
 ```
 
 これにより、JSONファイルを開いた瞬間から：
+
 - ✅ 自動補完
 - ✅ リアルタイム検証
 - ✅ ホバーでドキュメント表示

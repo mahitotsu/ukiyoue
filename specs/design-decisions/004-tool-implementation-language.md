@@ -428,25 +428,21 @@ ukiyoue validate doc.json
 **理由**:
 
 1. **JSON Schema Draft-07 / JSON-LD 1.1 のファーストクラスサポート**
-
    - ajv: JSON Schema Draft-07 完全対応、最高性能バリデータ（ADR-002）
    - jsonld.js: W3C 公式 JSON-LD 1.1 実装、全機能対応（ADR-003）
    - 両ライブラリとも TypeScript で最高のパフォーマンスと機能性
 
 2. **卓越したパフォーマンス**
-
    - 起動時間が最速（CLI ツールとして重要）
    - JSON 処理が最速
    - 検証速度が最速
 
 3. **優れた開発体験**
-
    - TypeScript による型安全性
    - Bun のオールインワンツール（tsc, bundler, test runner 不要）
    - VSCode との完璧な統合
 
 4. **簡単な配布**
-
    - シングルバイナリ化が簡単
    - npm/bun パッケージとしても配布可能
    - クロスプラットフォームビルド

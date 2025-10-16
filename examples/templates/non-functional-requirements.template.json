@@ -15,9 +15,7 @@
       "【受入基準3】"
     ],
     "dependencies": ["【依存する要件ID（オプション）】"],
-    "relatedRequirements": [
-      "【関連する機能要件ID: この非機能要件が影響する機能要件】"
-    ],
+    "relatedRequirements": ["【関連する機能要件ID: この非機能要件が影響する機能要件】"],
     "stakeholders": ["【関係するステークホルダーID】"],
     "metrics": {
       "targetValue": "【目標値: 具体的な数値】",
@@ -71,10 +69,7 @@
     "priority": "high",
     "status": "proposed",
     "rationale": "ビジネス継続性を確保するため",
-    "acceptanceCriteria": [
-      "システム稼働率が99.9%以上",
-      "メンテナンス時間は月1回、深夜帯のみ"
-    ],
+    "acceptanceCriteria": ["システム稼働率が99.9%以上", "メンテナンス時間は月1回、深夜帯のみ"],
     "dependencies": [],
     "relatedRequirements": [],
     "stakeholders": ["SH-SYSADMIN", "SH-EXECUTIVE"],

@@ -1,0 +1,27 @@
+{
+  "name": "ukiyoue",
+  "version": "0.1.0",
+  "description": "AI-era documentation framework with conversational, auto-generatable, and reusable capabilities",
+  "type": "module",
+  "keywords": [
+    "documentation",
+    "json-schema",
+    "json-ld",
+    "semantic-web",
+    "business-requirements"
+  ],
+  "author": "mahitotsu",
+  "license": "MIT",
+  "scripts": {
+    "format": "prettier --write \"**/*.{json,jsonld,md,ts,tsx}\"",
+    "format:check": "prettier --check \"**/*.{json,jsonld,md,ts,tsx}\"",
+    "format:json": "prettier --write \"**/*.{json,jsonld}\"",
+    "format:docs": "prettier --write \"**/*.md\""
+  },
+  "devDependencies": {
+    "prettier": "^3.3.3"
+  },
+  "engines": {
+    "bun": ">=1.0.0"
+  }
+}

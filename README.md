@@ -292,6 +292,54 @@ ukiyoue evaluate docs/ --report=quality-report.json
 
 ---
 
+## 🛠️ 開発環境
+
+### 前提条件
+
+- [Bun](https://bun.sh/) v1.0.0 以上
+
+### セットアップ
+
+```bash
+# リポジトリのクローン
+git clone https://github.com/mahitotsu/ukiyoue.git
+cd ukiyoue
+
+# 依存関係のインストール
+bun install
+```
+
+### コードフォーマット
+
+このプロジェクトでは [Prettier](https://prettier.io/) を使用してコードフォーマットを統一しています。
+
+```bash
+# すべてのファイルをフォーマット
+bun run format
+
+# フォーマットをチェック（CIで使用）
+bun run format:check
+
+# JSONファイルのみフォーマット
+bun run format:json
+
+# Markdownファイルのみフォーマット
+bun run format:docs
+```
+
+**VS Code** を使用している場合、保存時に自動フォーマットが有効になります。
+
+### 推奨拡張機能
+
+`.vscode/extensions.json` に推奨拡張機能が定義されています：
+
+- **Prettier** - コードフォーマッター
+- **Markdown Lint** - Markdown 品質チェック
+- **YAML** - YAML サポート
+- **JSON Language Service** - JSON スキーマサポート
+
+---
+
 ## 🤝 コントリビューション
 
 このプロジェクトへの貢献を歓迎します！
@@ -299,6 +347,11 @@ ukiyoue evaluate docs/ --report=quality-report.json
 - Issue: バグ報告や機能要望
 - Pull Request: コードやドキュメントの改善
 - Discussion: アイデアや質問
+
+**貢献前に**:
+
+1. コードフォーマット: `bun run format` を実行してください
+2. フォーマットチェック: `bun run format:check` が通ることを確認してください
 
 詳細は [`docs/development/contributing.md`](docs/development/contributing.md) を参照してください。
 

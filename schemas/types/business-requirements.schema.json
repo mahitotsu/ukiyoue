@@ -106,12 +106,7 @@
                   "category": {
                     "type": "string",
                     "description": "Metric category",
-                    "enum": [
-                      "business",
-                      "operational",
-                      "development",
-                      "user-satisfaction"
-                    ]
+                    "enum": ["business", "operational", "development", "user-satisfaction"]
                   }
                 }
               }

@@ -27,19 +27,9 @@
         "role": "reviewer"
       }
     ],
-    "tags": [
-      "reservation",
-      "booking",
-      "customer-service",
-      "business-requirements"
-    ],
+    "tags": ["reservation", "booking", "customer-service", "business-requirements"],
     "language": "ja",
-    "audience": [
-      "business-analyst",
-      "project-manager",
-      "developer",
-      "stakeholder"
-    ],
+    "audience": ["business-analyst", "project-manager", "developer", "stakeholder"],
     "confidentiality": "internal"
   },
   "projectOverview": {
