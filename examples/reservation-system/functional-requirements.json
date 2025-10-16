@@ -768,5 +768,160 @@
       "value": 5,
       "unit": "hours"
     }
+  },
+  {
+    "id": "FR-006",
+    "title": "来店確認（受付処理）機能",
+    "description": "顧客が実際に店舗に来店した際に、店舗スタッフが予約情報を「来店済み」ステータスに更新する機能。予約番号または顧客名で検索し、ワンクリックで来店確認を完了できる。",
+    "type": "functional",
+    "category": "予約管理",
+    "priority": "high",
+    "status": "proposed",
+    "rationale": "来店確認機能により、予約ステータスをリアルタイムで更新し、正確な予約管理と顧客サービスの向上を実現する。来店実績データは稼働状況の分析にも活用できる。",
+    "acceptanceCriteria": [
+      "予約番号または顧客名で予約を検索できること",
+      "当日の予約一覧が表示されること",
+      "ワンクリックで来店確認ができること",
+      "来店確認時刻が自動記録されること",
+      "受付を行ったスタッフ情報が記録されること",
+      "来店確認後、予約ステータスが「来店済み」に更新されること",
+      "来店確認済みの予約が一覧で識別できること",
+      "操作完了が1秒以内であること"
+    ],
+    "dependencies": ["FR-003"],
+    "relatedRequirements": ["UC-008", "NFR-001"],
+    "stakeholders": ["SH-STAFF", "SH-MANAGER"],
+    "metrics": {
+      "targetValue": "1秒以内",
+      "unit": "秒"
+    },
+    "implementationNotes": "来店確認はトランザクション処理で実行し、確実にステータス更新を行う。来店時刻はサーバータイムスタンプを使用。スタッフ情報はログインセッションから取得。誤操作を防ぐため、確認ダイアログは簡潔にする。",
+    "testCases": ["TC-FR-006-01", "TC-FR-006-02", "TC-FR-006-03"],
+    "estimatedEffort": {
+      "value": 25,
+      "unit": "hours"
+    }
+  },
+  {
+    "id": "FR-006-01",
+    "title": "来店確認用予約検索",
+    "description": "顧客名または予約番号で予約を検索し、当日の予約を素早く見つける。",
+    "type": "functional",
+    "category": "来店確認",
+    "priority": "high",
+    "status": "proposed",
+    "rationale": "来店時の受付をスムーズに行うため、素早い検索機能が必要。",
+    "acceptanceCriteria": [
+      "検索フィールドが目立つ位置に配置されていること",
+      "予約番号での検索が可能であること",
+      "顧客名での部分一致検索が可能であること",
+      "検索結果が即座に表示されること（500ms以内）",
+      "当日の予約が優先的に表示されること"
+    ],
+    "dependencies": [],
+    "relatedRequirements": ["FR-003-04"],
+    "stakeholders": ["SH-STAFF"],
+    "implementationNotes": "データベースインデックスを活用して高速検索を実現。オートコンプリート機能も検討。",
+    "estimatedEffort": {
+      "value": 8,
+      "unit": "hours"
+    }
+  },
+  {
+    "id": "FR-006-02",
+    "title": "来店確認ボタンとステータス更新",
+    "description": "予約詳細画面に「来店確認」ボタンを表示し、クリックすることで予約ステータスを「来店済み」に更新する。",
+    "type": "functional",
+    "category": "来店確認",
+    "priority": "critical",
+    "status": "proposed",
+    "rationale": "ワンクリックで来店確認を完了できることで、受付業務の効率化を実現。",
+    "acceptanceCriteria": [
+      "予約詳細画面に「来店確認」ボタンが表示されること",
+      "ボタンが視認性の高いデザインであること",
+      "クリック時に確認ダイアログが表示されること",
+      "確定後、予約ステータスが「来店済み」に即座に更新されること",
+      "更新後、完了メッセージが表示されること",
+      "既に来店済みの予約にはボタンが無効化されていること"
+    ],
+    "dependencies": ["FR-006-01"],
+    "relatedRequirements": ["NFR-004"],
+    "stakeholders": ["SH-STAFF"],
+    "implementationNotes": "ボタンは大きく、タップしやすいサイズにする。確認ダイアログは簡潔に（「〇〇様の来店を確認しますか？」）。",
+    "estimatedEffort": {
+      "value": 10,
+      "unit": "hours"
+    }
+  },
+  {
+    "id": "FR-006-03",
+    "title": "来店時刻とスタッフ情報の記録",
+    "description": "来店確認を行った日時と、操作を行ったスタッフの情報を自動的に記録する。",
+    "type": "functional",
+    "category": "来店確認",
+    "priority": "high",
+    "status": "proposed",
+    "rationale": "来店実績データの正確性を確保し、後の分析や問い合わせ対応に活用するため。",
+    "acceptanceCriteria": [
+      "来店確認時刻が自動記録されること（サーバータイムスタンプ）",
+      "受付を行ったスタッフIDと名前が記録されること",
+      "記録されたデータが予約詳細画面で確認できること",
+      "記録されたデータがレポート機能で集計可能であること"
+    ],
+    "dependencies": ["FR-006-02"],
+    "relatedRequirements": ["FR-005"],
+    "stakeholders": ["SH-STAFF", "SH-MANAGER"],
+    "implementationNotes": "タイムゾーンを考慮したタイムスタンプ記録。スタッフ情報はログインセッションから取得。",
+    "estimatedEffort": {
+      "value": 7,
+      "unit": "hours"
+    }
+  },
+  {
+    "id": "FR-006-04",
+    "title": "来店済み予約の視覚的識別",
+    "description": "予約一覧画面で、来店済みの予約を色分けやアイコンで視覚的に識別できるようにする。",
+    "type": "functional",
+    "category": "来店確認",
+    "priority": "medium",
+    "status": "proposed",
+    "rationale": "来店済みと未来店の予約を一目で区別できることで、店舗スタッフの業務効率が向上する。",
+    "acceptanceCriteria": [
+      "来店済み予約が他の予約と異なる色で表示されること",
+      "来店済みアイコンが表示されること",
+      "ステータスフィルタで来店済み/未来店を切り替えられること"
+    ],
+    "dependencies": ["FR-006-02", "FR-003"],
+    "relatedRequirements": ["NFR-004"],
+    "stakeholders": ["SH-STAFF"],
+    "implementationNotes": "色覚異常者にも配慮した配色（緑系統＋チェックアイコン等）。",
+    "estimatedEffort": {
+      "value": 5,
+      "unit": "hours"
+    }
+  },
+  {
+    "id": "FR-006-05",
+    "title": "来店確認の取り消し機能",
+    "description": "誤って来店確認を行った場合に、管理者権限で来店確認を取り消すことができる。",
+    "type": "functional",
+    "category": "来店確認",
+    "priority": "low",
+    "status": "proposed",
+    "rationale": "誤操作に対するリカバリー機能を提供することで、データの正確性を維持する。",
+    "acceptanceCriteria": [
+      "管理者のみが来店確認取り消しボタンを表示できること",
+      "取り消し時に理由を入力できること",
+      "取り消し後、ステータスが元の状態に戻ること",
+      "取り消し操作がログに記録されること"
+    ],
+    "dependencies": ["FR-006-02"],
+    "relatedRequirements": [],
+    "stakeholders": ["SH-MANAGER"],
+    "implementationNotes": "権限管理機能が必要。取り消しログは監査証跡として保存。",
+    "estimatedEffort": {
+      "value": 8,
+      "unit": "hours"
+    }
   }
 ]

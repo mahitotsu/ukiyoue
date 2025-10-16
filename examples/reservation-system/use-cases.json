@@ -638,5 +638,166 @@
     "relatedRequirements": ["FR-005"],
     "priority": "low",
     "frequency": "medium"
+  },
+  {
+    "id": "UC-008",
+    "title": "来店確認（受付処理）",
+    "actor": "SH-STAFF",
+    "description": "顧客が実際に店舗に来店した際に、店舗スタッフが予約情報を来店済みステータスに更新する受付処理を行う。",
+    "preconditions": [
+      "店舗スタッフが管理画面にログインしている",
+      "顧客の予約が確定状態である",
+      "予約日時が当日である"
+    ],
+    "postconditions": [
+      "予約ステータスが「来店済み」に更新される",
+      "来店確認時刻が記録される",
+      "受付を行ったスタッフ情報が記録される"
+    ],
+    "mainFlow": [
+      {
+        "step": 1,
+        "description": "顧客が店舗に来店する",
+        "actor": "Customer"
+      },
+      {
+        "step": 2,
+        "description": "スタッフが顧客に予約の有無を確認する",
+        "actor": "Staff"
+      },
+      {
+        "step": 3,
+        "description": "スタッフが管理画面の予約一覧を開く",
+        "actor": "Staff"
+      },
+      {
+        "step": 4,
+        "description": "当日の予約一覧を表示する",
+        "actor": "System"
+      },
+      {
+        "step": 5,
+        "description": "スタッフが顧客名または予約番号で検索する",
+        "actor": "Staff"
+      },
+      {
+        "step": 6,
+        "description": "該当する予約を表示する",
+        "actor": "System"
+      },
+      {
+        "step": 7,
+        "description": "スタッフが予約詳細を確認する",
+        "actor": "Staff"
+      },
+      {
+        "step": 8,
+        "description": "予約内容（サービス、時間等）を顧客と確認する",
+        "actor": "Staff"
+      },
+      {
+        "step": 9,
+        "description": "スタッフが「来店確認」ボタンをクリックする",
+        "actor": "Staff"
+      },
+      {
+        "step": 10,
+        "description": "予約ステータスを「来店済み」に更新する",
+        "actor": "System"
+      },
+      {
+        "step": 11,
+        "description": "来店確認時刻と受付スタッフ情報を記録する",
+        "actor": "System"
+      },
+      {
+        "step": 12,
+        "description": "受付完了メッセージを表示する",
+        "actor": "System"
+      }
+    ],
+    "alternativeFlows": [
+      {
+        "id": "AF-1",
+        "description": "予約が見つからない場合",
+        "branchFrom": 6,
+        "steps": [
+          {
+            "step": 1,
+            "description": "予約が見つからないことを通知する"
+          },
+          {
+            "step": 2,
+            "description": "スタッフが顧客に予約番号を確認する"
+          },
+          {
+            "step": 3,
+            "description": "再度検索を行う、または予約なしとして新規登録を案内する"
+          }
+        ]
+      },
+      {
+        "id": "AF-2",
+        "description": "予約が既にキャンセルされている場合",
+        "branchFrom": 7,
+        "steps": [
+          {
+            "step": 1,
+            "description": "キャンセル済みであることを通知する"
+          },
+          {
+            "step": 2,
+            "description": "スタッフが顧客に状況を説明し、対応を協議する"
+          },
+          {
+            "step": 3,
+            "description": "必要に応じて新規予約を登録する"
+          }
+        ]
+      },
+      {
+        "id": "AF-3",
+        "description": "予約時間より早く来店した場合",
+        "branchFrom": 8,
+        "steps": [
+          {
+            "step": 1,
+            "description": "予約時間と現在時刻の差を表示する"
+          },
+          {
+            "step": 2,
+            "description": "スタッフが待ち時間を顧客に案内する"
+          },
+          {
+            "step": 3,
+            "description": "スタッフの判断で来店確認を行うか、予定時刻まで待機してもらう"
+          }
+        ],
+        "returnTo": 9
+      }
+    ],
+    "exceptionFlows": [
+      {
+        "id": "EF-1",
+        "description": "システムエラーでステータス更新に失敗",
+        "steps": [
+          {
+            "step": 1,
+            "description": "エラーメッセージを表示する"
+          },
+          {
+            "step": 2,
+            "description": "スタッフにリトライを促す"
+          },
+          {
+            "step": 3,
+            "description": "エラーが継続する場合、手動での記録を案内する"
+          }
+        ]
+      }
+    ],
+    "relatedRequirements": ["FR-006"],
+    "priority": "high",
+    "frequency": "very-high"
   }
 ]
