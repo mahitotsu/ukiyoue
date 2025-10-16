@@ -1,6 +1,6 @@
 import chalk from 'chalk';
 import { readFileSync, readdirSync, statSync } from 'fs';
-import { resolve, join } from 'path';
+import { join, resolve } from 'path';
 
 interface CheckLinksOptions {
   verbose?: boolean;

@@ -1,8 +1,8 @@
 import Ajv, { type ErrorObject } from 'ajv';
 import addFormats from 'ajv-formats';
 import chalk from 'chalk';
-import { readFileSync, existsSync, readdirSync } from 'fs';
-import { resolve, dirname, basename, join } from 'path';
+import { existsSync, readdirSync, readFileSync } from 'fs';
+import { basename, dirname, join, resolve } from 'path';
 
 interface ValidateOptions {
   schema?: string;

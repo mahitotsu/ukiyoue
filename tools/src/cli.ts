@@ -1,7 +1,7 @@
 #!/usr/bin/env bun
 import { Command } from 'commander';
-import { validate } from './commands/validate.js';
 import { checkLinks } from './commands/check-links.js';
+import { validate } from './commands/validate.js';
 
 const program = new Command();
 
