@@ -22,7 +22,7 @@
     "id": {
       "type": "string",
       "description": "Unique identifier for this document (URI format recommended)",
-      "pattern": "^[a-zA-Z0-9_\\-:/\\.]+$"
+      "pattern": "^[a-zA-Z0-9_:./-]+$"
     },
     "type": {
       "type": "string",
@@ -158,7 +158,7 @@
           "target": {
             "type": "string",
             "description": "Target document ID or URI",
-            "pattern": "^[a-zA-Z0-9_\\-:/\\.]+$"
+            "pattern": "^[a-zA-Z0-9_:./-]+$"
           },
           "description": {
             "type": "string",

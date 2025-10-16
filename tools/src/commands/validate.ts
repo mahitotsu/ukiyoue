@@ -1,0 +1,164 @@
+import Ajv, { type ErrorObject } from 'ajv';
+import addFormats from 'ajv-formats';
+import chalk from 'chalk';
+import { readFileSync, existsSync, readdirSync } from 'fs';
+import { resolve, dirname, basename, join } from 'path';
+
+interface ValidateOptions {
+  schema?: string;
+  verbose?: boolean;
+}
+
+/**
+ * Validate JSON document against JSON Schema
+ */
+export async function validate(file: string, options: ValidateOptions): Promise<void> {
+  try {
+    // Load JSON file
+    const filePath = resolve(file);
+    const json = JSON.parse(readFileSync(filePath, 'utf-8'));
+
+    console.log(chalk.blue(`Validating: ${filePath}`));
+
+    // Determine schema path
+    let schemaPath: string;
+    if (options.schema) {
+      schemaPath = resolve(options.schema);
+    } else {
+      // Auto-detect schema based on document type
+      schemaPath = await detectSchemaPath(json, filePath);
+    }
+
+    console.log(chalk.gray(`Schema: ${schemaPath}`));
+
+    // Load schema
+    const schema = JSON.parse(readFileSync(schemaPath, 'utf-8'));
+
+    // Create Ajv instance with strict mode
+    const ajv = new Ajv({
+      allErrors: true,
+      strict: true,
+      verbose: options.verbose,
+    });
+    addFormats(ajv);
+
+    // Load dependent schemas (for $ref resolution)
+    await loadDependentSchemas(ajv, schemaPath);
+
+    // If JSON is an array, validate each item
+    let isValid: boolean;
+    if (Array.isArray(json)) {
+      isValid = json.every((item) => ajv.validate(schema, item));
+    } else {
+      isValid = ajv.validate(schema, json);
+    }
+
+    if (isValid) {
+      console.log(chalk.green('✓ Validation successful'));
+      process.exit(0);
+    } else {
+      console.log(chalk.red('✗ Validation failed\n'));
+      printErrors(ajv.errors || [], options.verbose || false);
+      process.exit(1);
+    }
+  } catch (error) {
+    console.error(chalk.red('Error:'), error);
+    process.exit(1);
+  }
+}
+
+/**
+ * Auto-detect schema path based on document type
+ */
+async function detectSchemaPath(json: unknown, filePath: string): Promise<string> {
+  const projectRoot = resolve(dirname(filePath), '../..');
+  const schemasDir = resolve(projectRoot, 'schemas');
+
+  // Check if it's a typed document (check both "type" and "@type")
+  if (typeof json === 'object' && json !== null) {
+    const type = ('type' in json ? json.type : null) || ('@type' in json ? json['@type'] : null);
+
+    if (typeof type === 'string') {
+      // Map type to schema file
+      const typeSchemaMap: Record<string, string> = {
+        BusinessRequirements: 'types/business-requirements.schema.json',
+        Stakeholder: 'components/stakeholder.schema.json',
+        Requirement: 'components/requirement.schema.json',
+        UseCase: 'components/use-case.schema.json',
+      };
+
+      if (type in typeSchemaMap) {
+        return resolve(schemasDir, typeSchemaMap[type]);
+      }
+    }
+  }
+
+  // Check by filename pattern
+  const filename = basename(filePath);
+  if (filename === 'stakeholders.json') {
+    // Array of stakeholders
+    return resolve(schemasDir, 'components/stakeholder.schema.json');
+  }
+  if (filename === 'use-cases.json') {
+    return resolve(schemasDir, 'components/use-case.schema.json');
+  }
+  if (filename.includes('requirements')) {
+    return resolve(schemasDir, 'components/requirement.schema.json');
+  }
+
+  // Default to base schema
+  return resolve(schemasDir, 'document-base.schema.json');
+}
+
+/**
+ * Print validation errors in human-readable format
+ */
+function printErrors(errors: ErrorObject[], verbose: boolean): void {
+  for (const error of errors) {
+    const path = error.instancePath || '(root)';
+    const keyword = error.keyword;
+    const message = error.message || 'Unknown error';
+
+    console.log(chalk.red(`  ${path}:`));
+    console.log(chalk.gray(`    ${keyword}: ${message}`));
+
+    if (verbose && error.params) {
+      console.log(chalk.gray(`    params: ${JSON.stringify(error.params)}`));
+    }
+
+    if (error.data !== undefined && verbose) {
+      console.log(chalk.gray(`    data: ${JSON.stringify(error.data, null, 2)}`));
+    }
+
+    console.log(); // Empty line between errors
+  }
+
+  console.log(chalk.yellow(`Total errors: ${errors.length}`));
+}
+
+/**
+ * Load dependent schemas for $ref resolution
+ */
+async function loadDependentSchemas(ajv: Ajv, schemaPath: string): Promise<void> {
+  const schemasDir = resolve(dirname(schemaPath), '..');
+
+  // Load document-base.schema.json
+  const baseSchemaPath = join(schemasDir, 'document-base.schema.json');
+  if (existsSync(baseSchemaPath)) {
+    const baseSchema = JSON.parse(readFileSync(baseSchemaPath, 'utf-8'));
+    ajv.addSchema(baseSchema);
+  }
+
+  // Load all component schemas
+  const componentsDir = join(schemasDir, 'components');
+  if (existsSync(componentsDir)) {
+    const files = readdirSync(componentsDir);
+    for (const file of files) {
+      if (file.endsWith('.schema.json')) {
+        const componentPath = join(componentsDir, file);
+        const componentSchema = JSON.parse(readFileSync(componentPath, 'utf-8'));
+        ajv.addSchema(componentSchema);
+      }
+    }
+  }
+}

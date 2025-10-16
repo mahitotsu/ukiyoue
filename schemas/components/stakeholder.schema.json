@@ -9,7 +9,7 @@
     "id": {
       "type": "string",
       "description": "Unique identifier for the stakeholder",
-      "pattern": "^SH-[A-Z0-9\\-]+$"
+      "pattern": "^SH-[A-Z0-9-]+$"
     },
     "name": {
       "type": "string",
@@ -58,7 +58,7 @@
         "phone": {
           "type": "string",
           "description": "Phone number",
-          "pattern": "^\\+?[0-9\\-\\(\\)\\s]+$"
+          "pattern": "^\\+?[0-9-\\(\\)\\s]+$"
         },
         "department": {
           "type": "string",
