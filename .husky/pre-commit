@@ -1,1 +1,16 @@
+# Format staged files
 bunx lint-staged
+
+# Validate modular JSON files in examples (skip main files with $IMPORT)
+echo "🔍 Validating JSON files..."
+find examples/reservation-system -name "stakeholders.json" -o -name "use-cases.json" -o -name "functional-requirements.json" -o -name "non-functional-requirements.json" | while read -r file; do
+  cd tools && bun run src/cli.ts validate "../$file" || exit 1
+  cd ..
+done
+
+# Check cross-references (only in actual examples, not templates)
+echo "🔗 Checking cross-references..."
+cd tools && bun run src/cli.ts check-links ../examples/reservation-system/ || exit 1
+cd ..
+
+echo "✅ Pre-commit checks passed"
