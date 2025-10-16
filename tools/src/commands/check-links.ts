@@ -194,15 +194,17 @@ function extractReferences(
   const relationshipFields = [
     'stakeholderIds',
     'relatedStakeholders',
+    'stakeholders', // Also check "stakeholders" field
     'useCaseIds',
     'relatedUseCases',
     'requirementIds',
     'implements',
     'dependsOn',
+    'dependencies', // Also check "dependencies" field
     'relatedTo',
+    'relatedRequirements', // Also check "relatedRequirements"
     'conflicts',
   ];
-
   for (const [key, value] of Object.entries(obj)) {
     const currentPath = path ? `${path}.${key}` : key;
 

@@ -43,14 +43,22 @@ export async function validate(file: string, options: ValidateOptions): Promise<
     addFormats(ajv);
 
     // Load dependent schemas (for $ref resolution)
-    await loadDependentSchemas(ajv, schemaPath);
+    await loadDependentSchemas(ajv, schemaPath, schema);
+
+    // Compile schema once
+    const validateFn = ajv.compile(schema);
 
     // If JSON is an array, validate each item
     let isValid: boolean;
     if (Array.isArray(json)) {
-      isValid = json.every((item) => ajv.validate(schema, item));
+      isValid = json.every((item) => validateFn(item));
+      // Collect all errors from array validation
+      if (!isValid && validateFn.errors) {
+        // Ajv's errors array contains errors from all validations
+        // We need to limit to meaningful errors
+      }
     } else {
-      isValid = ajv.validate(schema, json);
+      isValid = validateFn(json);
     }
 
     if (isValid) {
@@ -58,7 +66,7 @@ export async function validate(file: string, options: ValidateOptions): Promise<
       process.exit(0);
     } else {
       console.log(chalk.red('✗ Validation failed\n'));
-      printErrors(ajv.errors || [], options.verbose || false);
+      printErrors(validateFn.errors || [], options.verbose || false);
       process.exit(1);
     }
   } catch (error) {
@@ -139,14 +147,25 @@ function printErrors(errors: ErrorObject[], verbose: boolean): void {
 /**
  * Load dependent schemas for $ref resolution
  */
-async function loadDependentSchemas(ajv: Ajv, schemaPath: string): Promise<void> {
+async function loadDependentSchemas(
+  ajv: Ajv,
+  schemaPath: string,
+  mainSchema: unknown
+): Promise<void> {
   const schemasDir = resolve(dirname(schemaPath), '..');
+  const mainSchemaId =
+    typeof mainSchema === 'object' && mainSchema !== null && '$id' in mainSchema
+      ? (mainSchema.$id as string)
+      : null;
 
   // Load document-base.schema.json
   const baseSchemaPath = join(schemasDir, 'document-base.schema.json');
   if (existsSync(baseSchemaPath)) {
     const baseSchema = JSON.parse(readFileSync(baseSchemaPath, 'utf-8'));
-    ajv.addSchema(baseSchema);
+    // Check if schema is already added and not the main schema
+    if (baseSchema.$id && baseSchema.$id !== mainSchemaId && !ajv.getSchema(baseSchema.$id)) {
+      ajv.addSchema(baseSchema);
+    }
   }
 
   // Load all component schemas
@@ -157,7 +176,14 @@ async function loadDependentSchemas(ajv: Ajv, schemaPath: string): Promise<void>
       if (file.endsWith('.schema.json')) {
         const componentPath = join(componentsDir, file);
         const componentSchema = JSON.parse(readFileSync(componentPath, 'utf-8'));
-        ajv.addSchema(componentSchema);
+        // Check if schema is already added and not the main schema
+        if (
+          componentSchema.$id &&
+          componentSchema.$id !== mainSchemaId &&
+          !ajv.getSchema(componentSchema.$id)
+        ) {
+          ajv.addSchema(componentSchema);
+        }
       }
     }
   }

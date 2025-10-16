@@ -789,7 +789,8 @@
       "操作完了が1秒以内であること"
     ],
     "dependencies": ["FR-003"],
-    "relatedRequirements": ["UC-008", "NFR-001"],
+    "relatedRequirements": ["NFR-001"],
+    "useCaseIds": ["UC-008"],
     "stakeholders": ["SH-STAFF", "SH-MANAGER"],
     "metrics": {
       "targetValue": "1秒以内",
