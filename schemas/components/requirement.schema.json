@@ -124,20 +124,6 @@
         "type": "string"
       },
       "uniqueItems": true
-    },
-    "estimatedEffort": {
-      "type": "object",
-      "description": "Estimated effort for implementation",
-      "properties": {
-        "value": {
-          "type": "number",
-          "minimum": 0
-        },
-        "unit": {
-          "type": "string",
-          "enum": ["hours", "days", "weeks", "story-points"]
-        }
-      }
     }
   }
 }
