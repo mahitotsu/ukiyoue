@@ -13,11 +13,7 @@
   "metadata": {
     "version": "1.0.0",
     "status": "approved",
-    "created": "2025-10-16T09:00:00+09:00",
-    "modified": "2025-10-16T15:30:00+09:00",
     "tags": ["reservation", "booking", "customer-service", "business-requirements"],
-    "language": "ja",
-    "audience": ["business-analyst", "project-manager", "developer", "stakeholder"],
     "confidentiality": "internal"
   },
   "projectOverview": {
