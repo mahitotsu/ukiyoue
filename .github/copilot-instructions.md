@@ -17,6 +17,12 @@
 - **Language**: TypeScript
 - **Key Libraries**: ajv v8+, jsonld.js v5+, commander, chalk, ora
 
+**Implemented Tools**:
+
+- `validate`: JSON Schema validation (structure verification)
+- `check-links`: Cross-reference validation (ID existence checking)
+- `consistency-check`: Content quality validation (completeness, naming conventions, metrics validity)
+
 ### 3. Critical Design Decisions (ADRs)
 
 - **ADR-001**: JSON for editing, NOT Markdown (Markdown is display-only)

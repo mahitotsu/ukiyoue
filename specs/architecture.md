@@ -323,6 +323,36 @@ graph TB
 
 ### 3. Tools Layer
 
+#### 3.0 実装状況（2025年10月現在）
+
+**実装済みツール**:
+
+| ツール              | 目的                           | 技術スタック               | 状態 |
+| ------------------- | ------------------------------ | -------------------------- | ---- |
+| `validate`          | JSON Schema検証                | ajv v8 + Draft-07          | ✅   |
+| `check-links`       | クロスリファレンス検証         | TypeScript + Bun           | ✅   |
+| `consistency-check` | コンテンツ品質検証（Phase 1）  | TypeScript + Bun           | ✅   |
+| CLI                 | コマンドラインインターフェース | Commander.js v12           | ✅   |
+| Pre-commit hook     | Git統合（品質ゲート）          | Husky v9 + lint-staged v15 | ✅   |
+
+**consistency-check機能**（Phase 1実装完了）:
+
+- ✅ 完全性チェック: UC→要件、受入基準、Critical→テストケース
+- ✅ 命名規則チェック: 用語統一性、長さ、曖昧表現
+- ✅ メトリクス妥当性チェック: 数値基準→metricsフィールド、単位一貫性
+- ✅ 未使用エンティティ検出: 使われていないアクター/ステークホルダー
+- ✅ 循環依存検出: ユースケース前提条件の循環参照
+
+**未実装・計画中**:
+
+- ⏳ Generator: Markdown自動生成
+- ⏳ Formatter: ドキュメント整形
+- ⏳ Analyzer (Phase 2): AI/NLP活用した高度な分析
+
+詳細は [`tools/README.md`](../tools/README.md) を参照。
+
+---
+
 #### 3.1 アーキテクチャパターン
 
 **採用パターン**: Plugin Architecture
