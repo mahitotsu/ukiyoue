@@ -968,5 +968,331 @@
     "relatedRequirements": ["FR-002-06"],
     "priority": "critical",
     "frequency": "very-high"
+  },
+  {
+    "id": "UC-010",
+    "title": "スタッフアカウント登録",
+    "actor": "ACT-SYSADMIN",
+    "description": "システム管理者が新規スタッフのアカウントを登録する。メールアドレス、氏名、役割、初期パスワードを設定する。",
+    "preconditions": [
+      {
+        "$REF": "UC-009",
+        "description": "システム管理者としてログインしている"
+      },
+      "登録するメールアドレスが未使用である"
+    ],
+    "postconditions": [
+      "新規スタッフアカウントが作成される",
+      "アカウントが有効状態になる",
+      "初回ログイン時のパスワード変更が必須になる"
+    ],
+    "mainFlow": [
+      {
+        "step": 1,
+        "description": "システム管理者が「アカウント管理」メニューを選択する",
+        "actor": "SysAdmin"
+      },
+      {
+        "step": 2,
+        "description": "アカウント一覧画面を表示する",
+        "actor": "System"
+      },
+      {
+        "step": 3,
+        "description": "システム管理者が「新規登録」ボタンをクリックする",
+        "actor": "SysAdmin"
+      },
+      {
+        "step": 4,
+        "description": "アカウント登録フォームを表示する",
+        "actor": "System"
+      },
+      {
+        "step": 5,
+        "description": "システム管理者がメールアドレスを入力する",
+        "actor": "SysAdmin"
+      },
+      {
+        "step": 6,
+        "description": "システム管理者が氏名を入力する",
+        "actor": "SysAdmin"
+      },
+      {
+        "step": 7,
+        "description": "システム管理者が役割（スタッフ/管理者）を選択する",
+        "actor": "SysAdmin"
+      },
+      {
+        "step": 8,
+        "description": "システム管理者が初期パスワードを入力または自動生成する",
+        "actor": "SysAdmin"
+      },
+      {
+        "step": 9,
+        "description": "入力内容を検証する（メール形式、重複チェック等）",
+        "actor": "System"
+      },
+      {
+        "step": 10,
+        "description": "システム管理者が「登録」ボタンをクリックする",
+        "actor": "SysAdmin"
+      },
+      {
+        "step": 11,
+        "description": "パスワードをハッシュ化して保存する",
+        "actor": "System"
+      },
+      {
+        "step": 12,
+        "description": "アカウントを有効状態で作成する",
+        "actor": "System"
+      },
+      {
+        "step": 13,
+        "description": "登録完了メッセージと登録内容を表示する",
+        "actor": "System"
+      },
+      {
+        "step": 14,
+        "description": "アカウント一覧に戻る",
+        "actor": "System"
+      }
+    ],
+    "alternativeFlows": [
+      {
+        "id": "AF-1",
+        "description": "メールアドレスが既に登録されている場合",
+        "branchFrom": 9,
+        "steps": [
+          {
+            "step": 1,
+            "description": "「このメールアドレスは既に登録されています」というエラーメッセージを表示する"
+          },
+          {
+            "step": 2,
+            "description": "メールアドレス欄をハイライト表示する"
+          }
+        ],
+        "returnTo": 5
+      },
+      {
+        "id": "AF-2",
+        "description": "入力内容にエラーがある場合",
+        "branchFrom": 9,
+        "steps": [
+          {
+            "step": 1,
+            "description": "エラー内容を表示する（メール形式不正、必須項目未入力等）"
+          },
+          {
+            "step": 2,
+            "description": "該当フィールドをハイライト表示する"
+          }
+        ],
+        "returnTo": 5
+      }
+    ],
+    "exceptionFlows": [
+      {
+        "id": "EF-1",
+        "description": "登録処理中にシステムエラーが発生",
+        "steps": [
+          {
+            "step": 1,
+            "description": "エラーメッセージを表示する"
+          },
+          {
+            "step": 2,
+            "description": "リトライを促す"
+          },
+          {
+            "step": 3,
+            "description": "入力内容を保持する"
+          }
+        ]
+      }
+    ],
+    "relatedRequirements": ["FR-007", "FR-007-01"],
+    "priority": "critical",
+    "frequency": "low"
+  },
+  {
+    "id": "UC-011",
+    "title": "スタッフアカウント管理",
+    "actor": "ACT-SYSADMIN",
+    "description": "システム管理者がスタッフアカウントの情報を確認・編集・無効化する。アカウントの無効化、再有効化、パスワードリセットを行う。",
+    "preconditions": [
+      {
+        "$REF": "UC-009",
+        "description": "システム管理者としてログインしている"
+      },
+      "管理対象のスタッフアカウントが存在する"
+    ],
+    "postconditions": ["アカウント情報が更新される、またはアカウント状態が変更される"],
+    "mainFlow": [
+      {
+        "step": 1,
+        "description": "システム管理者が「アカウント管理」メニューを選択する",
+        "actor": "SysAdmin"
+      },
+      {
+        "step": 2,
+        "description": "アカウント一覧を表示する",
+        "actor": "System"
+      },
+      {
+        "step": 3,
+        "description": "システム管理者が対象アカウントを選択する",
+        "actor": "SysAdmin"
+      },
+      {
+        "step": 4,
+        "description": "アカウント詳細画面を表示する",
+        "actor": "System"
+      },
+      {
+        "step": 5,
+        "description": "システム管理者が操作（編集/無効化/パスワードリセット）を選択する",
+        "actor": "SysAdmin"
+      },
+      {
+        "step": 6,
+        "description": "選択された操作に応じた画面または確認ダイアログを表示する",
+        "actor": "System"
+      },
+      {
+        "step": 7,
+        "description": "システム管理者が操作を確定する",
+        "actor": "SysAdmin"
+      },
+      {
+        "step": 8,
+        "description": "操作を実行し、アカウント情報を更新する",
+        "actor": "System"
+      },
+      {
+        "step": 9,
+        "description": "操作完了メッセージを表示する",
+        "actor": "System"
+      },
+      {
+        "step": 10,
+        "description": "アカウント一覧に戻る",
+        "actor": "System"
+      }
+    ],
+    "alternativeFlows": [
+      {
+        "id": "AF-1",
+        "description": "アカウント情報を編集する場合",
+        "branchFrom": 5,
+        "steps": [
+          {
+            "step": 1,
+            "description": "編集フォームを表示する"
+          },
+          {
+            "step": 2,
+            "description": "氏名、役割を編集する"
+          },
+          {
+            "step": 3,
+            "description": "入力内容を検証する"
+          },
+          {
+            "step": 4,
+            "description": "「保存」ボタンをクリックする"
+          }
+        ],
+        "returnTo": 8
+      },
+      {
+        "id": "AF-2",
+        "description": "アカウントを無効化する場合",
+        "branchFrom": 5,
+        "steps": [
+          {
+            "step": 1,
+            "description": "無効化確認ダイアログを表示する"
+          },
+          {
+            "step": 2,
+            "description": "無効化理由を入力する（任意）"
+          },
+          {
+            "step": 3,
+            "description": "「無効化」ボタンをクリックする"
+          },
+          {
+            "step": 4,
+            "description": "アカウントを無効状態に更新する"
+          }
+        ],
+        "returnTo": 9
+      },
+      {
+        "id": "AF-3",
+        "description": "パスワードをリセットする場合",
+        "branchFrom": 5,
+        "steps": [
+          {
+            "step": 1,
+            "description": "パスワードリセット確認ダイアログを表示する"
+          },
+          {
+            "step": 2,
+            "description": "「リセット」ボタンをクリックする"
+          },
+          {
+            "step": 3,
+            "description": "新しい一時パスワードを自動生成する"
+          },
+          {
+            "step": 4,
+            "description": "一時パスワードを表示する"
+          },
+          {
+            "step": 5,
+            "description": "次回ログイン時のパスワード変更を必須に設定する"
+          }
+        ],
+        "returnTo": 9
+      },
+      {
+        "id": "AF-4",
+        "description": "無効化されたアカウントを再有効化する場合",
+        "branchFrom": 5,
+        "steps": [
+          {
+            "step": 1,
+            "description": "再有効化確認ダイアログを表示する"
+          },
+          {
+            "step": 2,
+            "description": "「再有効化」ボタンをクリックする"
+          },
+          {
+            "step": 3,
+            "description": "アカウントを有効状態に更新する"
+          },
+          {
+            "step": 4,
+            "description": "パスワードリセットを推奨するメッセージを表示する"
+          }
+        ],
+        "returnTo": 9
+      }
+    ],
+    "exceptionFlows": [],
+    "relatedRequirements": [
+      "FR-007",
+      "FR-007-02",
+      "FR-007-03",
+      "FR-007-04",
+      "FR-007-05",
+      "FR-007-06"
+    ],
+    "priority": "high",
+    "frequency": "low"
   }
 ]

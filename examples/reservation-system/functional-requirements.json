@@ -950,5 +950,149 @@
       "value": 8,
       "unit": "hours"
     }
+  },
+  {
+    "id": "FR-007",
+    "title": "スタッフアカウント管理機能",
+    "description": "システム管理者が店舗スタッフのアカウントを作成・管理する機能。アカウントの登録、権限設定、有効化・無効化、削除を行う。",
+    "type": "functional",
+    "category": "アカウント管理",
+    "priority": "critical",
+    "status": "proposed",
+    "rationale": "スタッフがシステムにログインするには、事前にアカウントが登録されている必要がある。また、退職時のアカウント無効化などのライフサイクル管理が必要。",
+    "acceptanceCriteria": [
+      "システム管理者がスタッフアカウントを作成できること",
+      "メールアドレス、氏名、役割（スタッフ/管理者）を設定できること",
+      "初期パスワードを設定または自動生成できること",
+      "アカウントを有効化・無効化できること",
+      "アカウント一覧を確認できること",
+      "アカウント情報を編集できること"
+    ],
+    "dependencies": [],
+    "relatedRequirements": ["FR-002-06", "NFR-003"],
+    "stakeholders": ["SH-SYSADMIN", "SH-MANAGER"],
+    "implementationNotes": "初期パスワードは強制的に変更させる。メールアドレスは一意制約。削除はソフトデリート推奨。"
+  },
+  {
+    "id": "FR-007-01",
+    "title": "スタッフアカウント登録",
+    "description": "新規スタッフのアカウントを登録する。メールアドレス、氏名、役割、初期パスワードを設定する。",
+    "type": "functional",
+    "category": "アカウント管理",
+    "priority": "critical",
+    "status": "proposed",
+    "rationale": "新規スタッフがシステムを利用開始するための必須機能。",
+    "acceptanceCriteria": [
+      "メールアドレス（必須、一意）を入力できること",
+      "氏名（必須）を入力できること",
+      "役割（スタッフ/管理者）を選択できること",
+      "初期パスワードを設定または自動生成できること",
+      "登録後、アカウントが有効状態になること",
+      "メールアドレスの重複チェックが行われること"
+    ],
+    "dependencies": [],
+    "relatedRequirements": ["FR-002-06"],
+    "stakeholders": ["SH-SYSADMIN"],
+    "implementationNotes": "メールアドレス形式バリデーション必須。初期パスワードは8文字以上で、初回ログイン時に変更を強制。"
+  },
+  {
+    "id": "FR-007-02",
+    "title": "スタッフアカウント一覧表示",
+    "description": "登録されているスタッフアカウントの一覧を表示する。アカウント状態（有効/無効）、役割でフィルタリングできる。",
+    "type": "functional",
+    "category": "アカウント管理",
+    "priority": "high",
+    "status": "proposed",
+    "rationale": "システム管理者がアカウントの状態を把握するための機能。",
+    "acceptanceCriteria": [
+      "全アカウントの一覧が表示されること",
+      "メールアドレス、氏名、役割、状態が表示されること",
+      "有効/無効でフィルタリングできること",
+      "役割（スタッフ/管理者）でフィルタリングできること",
+      "アカウント名で検索できること"
+    ],
+    "dependencies": ["FR-007-01"],
+    "relatedRequirements": [],
+    "stakeholders": ["SH-SYSADMIN"],
+    "implementationNotes": "ページネーション推奨（50件/ページ程度）。"
+  },
+  {
+    "id": "FR-007-03",
+    "title": "スタッフアカウント編集",
+    "description": "既存のスタッフアカウント情報を編集する。氏名、役割を変更できる。メールアドレスは変更不可。",
+    "type": "functional",
+    "category": "アカウント管理",
+    "priority": "high",
+    "status": "proposed",
+    "rationale": "スタッフの役割変更や情報更新に対応するための機能。",
+    "acceptanceCriteria": [
+      "氏名を変更できること",
+      "役割（スタッフ/管理者）を変更できること",
+      "メールアドレスは変更できないこと（表示のみ）",
+      "変更後、即座に反映されること"
+    ],
+    "dependencies": ["FR-007-01"],
+    "relatedRequirements": [],
+    "stakeholders": ["SH-SYSADMIN"],
+    "implementationNotes": "メールアドレス変更が必要な場合は、アカウント無効化→新規登録を推奨。"
+  },
+  {
+    "id": "FR-007-04",
+    "title": "スタッフアカウント無効化",
+    "description": "スタッフの退職や休職時に、アカウントを無効化する。無効化されたアカウントはログインできなくなる。",
+    "type": "functional",
+    "category": "アカウント管理",
+    "priority": "critical",
+    "status": "proposed",
+    "rationale": "セキュリティ上、不要になったアカウントは速やかに無効化する必要がある。",
+    "acceptanceCriteria": [
+      "アカウントを無効化できること",
+      "無効化後、該当アカウントでログインできないこと",
+      "無効化されたアカウントは一覧で識別できること",
+      "無効化理由を記録できること（任意）"
+    ],
+    "dependencies": ["FR-007-01"],
+    "relatedRequirements": ["NFR-003"],
+    "stakeholders": ["SH-SYSADMIN"],
+    "implementationNotes": "ソフトデリート方式。過去のログや予約履歴は保持。"
+  },
+  {
+    "id": "FR-007-05",
+    "title": "スタッフアカウント再有効化",
+    "description": "無効化されたアカウントを再度有効化する。復職時などに使用。",
+    "type": "functional",
+    "category": "アカウント管理",
+    "priority": "medium",
+    "status": "proposed",
+    "rationale": "一時的な休職後の復帰や、誤って無効化した場合の復旧に対応。",
+    "acceptanceCriteria": [
+      "無効化されたアカウントを再有効化できること",
+      "再有効化後、ログイン可能になること",
+      "再有効化理由を記録できること（任意）"
+    ],
+    "dependencies": ["FR-007-04"],
+    "relatedRequirements": [],
+    "stakeholders": ["SH-SYSADMIN"],
+    "implementationNotes": "パスワードリセットを推奨（セキュリティのため）。"
+  },
+  {
+    "id": "FR-007-06",
+    "title": "パスワードリセット機能",
+    "description": "システム管理者がスタッフのパスワードを強制的にリセットする。スタッフがパスワードを忘れた場合やセキュリティ上の理由で使用。",
+    "type": "functional",
+    "category": "アカウント管理",
+    "priority": "high",
+    "status": "proposed",
+    "rationale": "パスワード忘れやセキュリティインシデント時の対応として必要。",
+    "acceptanceCriteria": [
+      "システム管理者がパスワードをリセットできること",
+      "新しい一時パスワードが自動生成されること",
+      "次回ログイン時にパスワード変更が強制されること",
+      "パスワードリセット操作がログに記録されること"
+    ],
+    "dependencies": ["FR-007-01"],
+    "relatedRequirements": ["NFR-003"],
+    "stakeholders": ["SH-SYSADMIN"],
+    "implementationNotes": "一時パスワードは12文字以上のランダム文字列。メール通知は任意機能。"
   }
 ]
