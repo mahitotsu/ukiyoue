@@ -56,11 +56,15 @@ bun run src/cli.ts validate my-doc.json --verbose
    - `Stakeholder` → `components/stakeholder.schema.json`
    - `Requirement` → `components/requirement.schema.json`
    - `UseCase` → `components/use-case.schema.json`
+   - `Actor` → `components/actor.schema.json`
 2. ファイル名パターンで判定
    - `stakeholders.json` → stakeholder schema
+   - `actors.json` → actor schema
    - `use-cases.json` → use-case schema
    - `*requirements*.json` → requirement schema
 3. フォールバック → `document-base.schema.json`
+
+---
 
 ### 2. Link Checking Tool (`check-links`)
 
@@ -68,9 +72,10 @@ bun run src/cli.ts validate my-doc.json --verbose
 
 **機能**:
 
-- ✅ ID参照の存在確認（SH-_, UC-_, FR-_, NFR-_）
+- ✅ ID参照の存在確認（SH-xxx, ACT-xxx, UC-xxx, FR-xxx, NFR-xxx）
 - ✅ 再帰的ディレクトリスキャン
 - ✅ 複数の関連フィールドに対応
+- ✅ $REF形式の参照検証
 - ✅ 壊れたリンクの詳細レポート
 
 **使用例**:
@@ -85,14 +90,21 @@ bun run src/cli.ts check-links ../examples/reservation-system --verbose
 
 **チェック対象フィールド**:
 
-- `stakeholders`, `stakeholderIds`, `relatedStakeholders`
-- `useCaseIds`, `relatedUseCases`
+- `stakeholders`, `stakeholderIds`, `actors`, `relatedStakeholders`
+- `actor`, `useCaseIds`, `relatedUseCases`
 - `dependencies`, `relatedRequirements`
+- `preconditions` (with $REF support)
 - `implements`, `dependsOn`, `relatedTo`, `conflicts`
 
 **出力例**:
 
 ```
+Found 6 stakeholders
+Found 4 actors
+Found 11 use cases
+Found 53 requirements
+Found 194 references
+
 ✓ All links are valid
 ```
 
@@ -105,6 +117,82 @@ bun run src/cli.ts check-links ../examples/reservation-system --verbose
   stakeholderIds[0]: stakeholder "SH-INVALID" not found
   requirementIds[1]: requirement "FR-999" not found
 ```
+
+---
+
+### 3. Consistency Checking Tool (`consistency-check`) 🆕
+
+ドキュメント内容の整合性と完全性を検証
+
+**機能**:
+
+- ✅ **完全性チェック**:
+  - ユースケースにrelatedRequirementsがあるか
+  - 要件にacceptanceCriteriaがあるか（info）
+  - Critical要件にtestCasesがあるか（warning）
+- ✅ **命名規則チェック**:
+  - 用語の統一性（「予約登録」vs「予約作成」など）
+  - タイトル・説明の長さ（短すぎる場合warning）
+  - 曖昧な表現の検出（「なるべく」「適切に」など）
+- ✅ **メトリクス妥当性チェック**:
+  - 数値基準がある要件にmetricsフィールドがあるか
+  - 単位の一貫性（秒 vs ミリ秒）
+  - 見積工数と受入基準数の妥当性
+  - 優先度とメトリクスの厳しさの整合性
+- ✅ **未使用エンティティ検出**:
+  - アクターが使われていない
+  - ステークホルダーにアクターがない（info）
+- ✅ **循環依存検出**:
+  - ユースケースの前提条件の循環参照
+
+**使用例**:
+
+```bash
+# ディレクトリ内の整合性チェック
+bun run src/cli.ts consistency-check ../examples/reservation-system
+
+# 詳細出力（情報レベルのメッセージも表示）
+bun run src/cli.ts consistency-check ../examples/reservation-system --verbose
+```
+
+**出力例**:
+
+```
+Checking consistency in: /path/to/project
+
+Found 6 stakeholders
+Found 4 actors
+Found 11 use cases
+Found 53 requirements
+
+⚠ Found 19 warnings
+
+Completeness
+  ⚠ Critical requirement "FR-001-01" has no test cases (file.json)
+  ⚠ Critical requirement "FR-007" has no test cases (file.json)
+
+Naming Convention
+  ⚠ Requirement "NFR-002" has a very short title (3 chars) (file.json)
+  ⚠ Requirement "NFR-005" has vague term "適切に" in acceptance criteria (file.json)
+
+Metrics Validity
+  ⚠ Requirement "FR-001-06" has numeric criteria but no metrics field (file.json)
+
+ℹ Found 2 informational items
+
+Stakeholder Without Actor Role
+  ℹ Stakeholder "SH-DEVELOPER" has no actor roles (does not directly interact with the system) (file.json)
+
+These are warnings only. Commit is allowed.
+```
+
+**Issue Levels**:
+
+- `error`: コミット阻止（exit code 1）
+- `warning`: 警告表示、コミット許可（exit code 0）
+- `info`: 情報表示、`--verbose`で表示
+
+---
 
 ## 🚀 セットアップ
 
