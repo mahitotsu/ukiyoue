@@ -13,4 +13,9 @@ echo "🔗 Checking cross-references..."
 cd tools && bun run src/cli.ts check-links ../examples/reservation-system/ || exit 1
 cd ..
 
+# Check content consistency and completeness
+echo "📋 Checking content consistency..."
+cd tools && bun run src/cli.ts consistency-check ../examples/reservation-system/ || exit 1
+cd ..
+
 echo "✅ Pre-commit checks passed"
