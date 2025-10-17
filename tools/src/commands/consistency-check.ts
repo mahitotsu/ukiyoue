@@ -39,10 +39,22 @@ interface RequirementInfo {
   file: string;
   priority?: string;
   relatedUseCases: string[]; // UCs that reference this requirement
+  acceptanceCriteria?: string[];
+  metrics?: {
+    targetValue?: string;
+    unit?: string;
+  };
+  testCases?: string[];
+  estimatedEffort?: {
+    value?: number;
+    unit?: string;
+  };
+  title?: string;
+  description?: string;
 }
 
 interface Issue {
-  level: 'warning' | 'info';
+  level: 'warning' | 'info' | 'error';
   category: string;
   message: string;
   location?: string;
@@ -72,18 +84,30 @@ export async function consistencyCheck(
     // Run checks
     const issues: Issue[] = [];
 
+    // Existing checks
     checkUnusedStakeholders(index, issues);
     checkUseCaseRequirementCoverage(index, issues);
     checkRequirementUseCaseCoverage(index, issues);
     checkCircularDependencies(index, issues);
+
+    // New content checks
+    checkCompleteness(index, issues);
+    checkNamingConventions(index, issues);
+    checkMetricsValidity(index, issues);
 
     // Report results
     if (issues.length === 0) {
       console.log(chalk.green('✓ No consistency issues found'));
       process.exit(0);
     } else {
+      const errors = issues.filter((i) => i.level === 'error');
       const warnings = issues.filter((i) => i.level === 'warning');
       const infos = issues.filter((i) => i.level === 'info');
+
+      if (errors.length > 0) {
+        console.log(chalk.red(`✗ Found ${errors.length} errors\n`));
+        printIssues(errors);
+      }
 
       if (warnings.length > 0) {
         console.log(chalk.yellow(`⚠ Found ${warnings.length} warnings\n`));
@@ -97,8 +121,13 @@ export async function consistencyCheck(
         }
       }
 
-      console.log(chalk.gray('\nThese are warnings only. Commit is allowed.'));
-      process.exit(0); // Exit with 0 to allow commit
+      if (errors.length > 0) {
+        console.log(chalk.red('\nErrors found. Please fix before committing.'));
+        process.exit(1);
+      } else {
+        console.log(chalk.gray('\nThese are warnings only. Commit is allowed.'));
+        process.exit(0); // Exit with 0 to allow commit
+      }
     }
   } catch (error) {
     console.error(chalk.red('Error:'), error);
@@ -168,6 +197,12 @@ async function buildIndex(dirPath: string): Promise<DocumentIndex> {
             file,
             priority: item.priority,
             relatedUseCases: [],
+            acceptanceCriteria: item.acceptanceCriteria,
+            metrics: item.metrics,
+            testCases: item.testCases,
+            estimatedEffort: item.estimatedEffort,
+            title: item.title,
+            description: item.description,
           });
         }
       }
@@ -361,6 +396,230 @@ function hasCircularDependency(
 }
 
 /**
+ * Check completeness of documents
+ */
+function checkCompleteness(index: DocumentIndex, issues: Issue[]): void {
+  // Check if all actors have at least one use case (already done by checkUnusedStakeholders)
+  // But we can add more checks here
+
+  // Check if all use cases have relatedRequirements
+  for (const [ucId, uc] of index.useCases) {
+    if (!uc.relatedRequirements || uc.relatedRequirements.length === 0) {
+      issues.push({
+        level: 'warning',
+        category: 'Completeness',
+        message: `Use case "${ucId}" has no related requirements`,
+        location: uc.file,
+      });
+    }
+  }
+
+  // Check if all stakeholders have actors or are documented as non-system users
+  for (const [, sh] of index.stakeholders) {
+    if (!sh.actors || sh.actors.length === 0) {
+      // This is already handled by checkUnusedStakeholders as info
+      // Skip here to avoid duplication
+    }
+  }
+
+  // Check if requirements have acceptance criteria
+  for (const [reqId, req] of index.requirements) {
+    if (!req.acceptanceCriteria || req.acceptanceCriteria.length === 0) {
+      issues.push({
+        level: 'info',
+        category: 'Completeness',
+        message: `Requirement "${reqId}" has no acceptance criteria`,
+        location: req.file,
+      });
+    }
+  }
+
+  // Check if critical requirements have test cases
+  for (const [reqId, req] of index.requirements) {
+    if (req.priority === 'critical') {
+      if (!req.testCases || req.testCases.length === 0) {
+        issues.push({
+          level: 'warning',
+          category: 'Completeness',
+          message: `Critical requirement "${reqId}" has no test cases`,
+          location: req.file,
+        });
+      }
+    }
+  }
+}
+
+/**
+ * Check naming conventions and terminology consistency
+ */
+function checkNamingConventions(index: DocumentIndex, issues: Issue[]): void {
+  // Check for common terminology variations
+  for (const [reqId, req] of index.requirements) {
+    if (!req.title || !req.description) continue;
+
+    const text = (req.title + ' ' + req.description).toLowerCase();
+
+    // Check for common variations
+    const variations = [
+      { canonical: '予約登録', variants: ['予約作成', '新規予約', '予約追加'] },
+      { canonical: '予約変更', variants: ['予約更新', '予約修正', '予約編集'] },
+      { canonical: '予約キャンセル', variants: ['予約削除', '予約取消'] },
+    ];
+
+    for (const { canonical, variants } of variations) {
+      for (const variant of variants) {
+        if (text.includes(variant.toLowerCase())) {
+          issues.push({
+            level: 'info',
+            category: 'Naming Convention',
+            message: `Requirement "${reqId}" uses "${variant}" instead of preferred term "${canonical}"`,
+            location: req.file,
+          });
+        }
+      }
+    }
+  }
+
+  // Check for very short titles or descriptions
+  for (const [reqId, req] of index.requirements) {
+    if (req.title && req.title.length < 5) {
+      issues.push({
+        level: 'warning',
+        category: 'Naming Convention',
+        message: `Requirement "${reqId}" has a very short title (${req.title.length} chars)`,
+        location: req.file,
+      });
+    }
+
+    if (req.description && req.description.length < 20) {
+      issues.push({
+        level: 'warning',
+        category: 'Naming Convention',
+        message: `Requirement "${reqId}" has a very short description (${req.description.length} chars)`,
+        location: req.file,
+      });
+    }
+  }
+
+  // Check for vague terms in acceptance criteria
+  const vagueTerms = ['なるべく', 'できるだけ', '適切に', '必要に応じて', 'ほぼ', 'おおよそ'];
+  for (const [reqId, req] of index.requirements) {
+    if (!req.acceptanceCriteria) continue;
+
+    for (const criterion of req.acceptanceCriteria) {
+      for (const term of vagueTerms) {
+        if (criterion.includes(term)) {
+          issues.push({
+            level: 'warning',
+            category: 'Naming Convention',
+            message: `Requirement "${reqId}" has vague term "${term}" in acceptance criteria`,
+            location: req.file,
+          });
+        }
+      }
+    }
+  }
+}
+
+/**
+ * Check metrics validity and consistency
+ */
+function checkMetricsValidity(index: DocumentIndex, issues: Issue[]): void {
+  // Check if acceptance criteria with numbers have corresponding metrics
+  for (const [reqId, req] of index.requirements) {
+    if (!req.acceptanceCriteria) continue;
+
+    const hasNumericCriteria = req.acceptanceCriteria.some((c) => /\d+/.test(c));
+
+    if (hasNumericCriteria) {
+      if (!req.metrics || !req.metrics.targetValue) {
+        issues.push({
+          level: 'warning',
+          category: 'Metrics Validity',
+          message: `Requirement "${reqId}" has numeric criteria but no metrics field`,
+          location: req.file,
+        });
+      }
+    }
+  }
+
+  // Check for inconsistent units
+  for (const [reqId, req] of index.requirements) {
+    if (!req.metrics || !req.acceptanceCriteria) continue;
+
+    const criteriaText = req.acceptanceCriteria.join(' ');
+    const metricsUnit = req.metrics.unit || '';
+
+    // Check if units match
+    if (metricsUnit === '秒' && criteriaText.includes('ミリ秒')) {
+      issues.push({
+        level: 'warning',
+        category: 'Metrics Validity',
+        message: `Requirement "${reqId}" has unit mismatch (metrics: 秒, criteria: ミリ秒)`,
+        location: req.file,
+      });
+    }
+
+    if (
+      metricsUnit === 'ミリ秒' &&
+      criteriaText.includes('秒') &&
+      !criteriaText.includes('ミリ秒')
+    ) {
+      issues.push({
+        level: 'warning',
+        category: 'Metrics Validity',
+        message: `Requirement "${reqId}" has unit mismatch (metrics: ミリ秒, criteria: 秒)`,
+        location: req.file,
+      });
+    }
+  }
+
+  // Check for unrealistic effort estimates
+  for (const [reqId, req] of index.requirements) {
+    if (!req.estimatedEffort) continue;
+
+    const effort = req.estimatedEffort.value;
+    const criteriaCount = req.acceptanceCriteria?.length || 0;
+
+    if (effort && effort > 40 && criteriaCount < 3) {
+      issues.push({
+        level: 'info',
+        category: 'Metrics Validity',
+        message: `Requirement "${reqId}" has high effort (${effort}h) but few acceptance criteria (${criteriaCount})`,
+        location: req.file,
+      });
+    }
+
+    if (effort && effort > 0 && effort < 1) {
+      issues.push({
+        level: 'info',
+        category: 'Metrics Validity',
+        message: `Requirement "${reqId}" has very low effort estimate (${effort}h)`,
+        location: req.file,
+      });
+    }
+  }
+
+  // Check priority vs metrics consistency
+  for (const [reqId, req] of index.requirements) {
+    if (!req.priority || !req.metrics || !req.metrics.targetValue) continue;
+
+    const targetValue = req.metrics.targetValue.toLowerCase();
+    const hasStrictTarget =
+      /[0-9]+\s*(秒|ms|ミリ秒)以内/.test(targetValue) || /[0-9]+%以上/.test(targetValue);
+
+    if (req.priority === 'low' && hasStrictTarget) {
+      issues.push({
+        level: 'info',
+        category: 'Metrics Validity',
+        message: `Requirement "${reqId}" has low priority but strict performance target`,
+        location: req.file,
+      });
+    }
+  }
+}
+
+/**
  * Get all JSON files recursively
  */
 function getAllJsonFiles(dirPath: string): string[] {
@@ -396,7 +655,7 @@ function printIssues(issues: Issue[]): void {
   for (const [category, list] of byCategory) {
     console.log(chalk.bold(category));
     for (const issue of list) {
-      const levelIcon = issue.level === 'warning' ? '⚠' : 'ℹ';
+      const levelIcon = issue.level === 'error' ? '✗' : issue.level === 'warning' ? '⚠' : 'ℹ';
       console.log(
         `  ${levelIcon} ${issue.message}${issue.location ? chalk.gray(` (${issue.location})`) : ''}`
       );
