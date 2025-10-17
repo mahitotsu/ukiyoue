@@ -120,9 +120,11 @@ Found 194 references
 
 ---
 
-### 3. Consistency Checking Tool (`consistency-check`) 🆕
+## 3. Consistency Checking Tool (`consistency-check`) 🆕
 
-ドキュメント内容の整合性と完全性を検証
+Phase 1 implementation providing automated content quality validation beyond structural JSON Schema validation.
+
+**Pre-commit Integration**: This tool is automatically run as part of the pre-commit hook to ensure content quality before each commit.
 
 **機能**:
 
