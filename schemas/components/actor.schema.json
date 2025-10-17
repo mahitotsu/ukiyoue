@@ -25,36 +25,9 @@
     },
     "description": {
       "type": "string",
-      "description": "Detailed description of the actor's role and responsibilities",
+      "description": "Detailed description of the actor's role, goals, and responsibilities",
       "minLength": 1,
       "maxLength": 2000
-    },
-    "goals": {
-      "type": "array",
-      "description": "Goals the actor wants to achieve using the system",
-      "items": {
-        "type": "string",
-        "minLength": 1,
-        "maxLength": 500
-      }
-    },
-    "responsibilities": {
-      "type": "array",
-      "description": "Actor's responsibilities when using the system",
-      "items": {
-        "type": "string",
-        "minLength": 1,
-        "maxLength": 500
-      }
-    },
-    "relatedStakeholders": {
-      "type": "array",
-      "description": "Stakeholders who may play this actor role",
-      "items": {
-        "type": "string",
-        "pattern": "^SH-[A-Z0-9-]+$"
-      },
-      "uniqueItems": true
     }
   }
 }
