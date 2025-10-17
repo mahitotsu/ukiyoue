@@ -8,27 +8,19 @@
 
 ## 📁 構成
 
-```
+```text
 examples/
 ├── README.md                    # このファイル
-├── sample-project/              # サンプルプロジェクト
-│   ├── documents/               # プロジェクトドキュメント
-│   │   ├── architecture.json
-│   │   ├── api-spec.json
-│   │   └── design.json
-│   ├── .ukiyoue/                # 設定ファイル
-│   │   └── config.json
-│   └── README.md
-├── templates/                   # ドキュメントテンプレート
-│   ├── technical-spec.json
-│   ├── design-doc.json
-│   ├── api-doc.json
-│   └── README.md
-└── case-studies/                # ケーススタディ
-    ├── web-api-project/
-    ├── microservices-project/
-    └── README.md
+└── reservation-system/          # 予約システムの実例
+    ├── business-requirements.json
+    ├── functional-requirements.json
+    ├── non-functional-requirements.json
+    ├── stakeholders.json
+    └── use-cases.json
 ```
+
+**注**: スキーマ定義（`schemas/`）とセマンティックコンテキスト（`semantics/`）があるため、
+テンプレートファイルは不要です。JSON Schemaから構造を、JSON-LDから意味を理解できます。
 
 ## 🎯 実証実験の目的
 
@@ -96,52 +88,27 @@ best_practices:
 - ✅ JSON Schema によるバリデーション
 - ✅ JSON-LD による関係性の定義
 - ✅ ツールによる品質評価
-- ✅ Markdown への変換
+- ✅ 相互参照の検証（リンクチェック）
 
-## 📋 テンプレート集
+## � 予約システムの例（reservation-system/）
 
-よく使われるドキュメントタイプのテンプレートを提供します。
+実在の来店予約システムを題材に、要件定義ドキュメントをフレームワークで表現した例です。
 
-### technical-spec.json
+**含まれるドキュメント**:
 
-```json
-{
-  "$schema": "../schemas/types/technical-spec.schema.json",
-  "@context": "../semantics/context.jsonld",
-  "metadata": {
-    "type": "technical-specification",
-    "title": "",
-    "version": "1.0.0",
-    "created": "",
-    "updated": "",
-    "authors": [],
-    "tags": []
-  },
-  "content": {
-    "overview": "",
-    "requirements": [],
-    "architecture": {},
-    "implementation": {}
-  }
-}
-```
+- `business-requirements.json`: 業務要件（目的、スコープ、制約、リスク）
+- `stakeholders.json`: ステークホルダー定義（顧客、店舗スタッフ、管理者等）
+- `use-cases.json`: ユースケース定義（予約登録、変更、スタッフログイン等）
+- `functional-requirements.json`: 機能要件（45件の詳細要件）
+- `non-functional-requirements.json`: 非機能要件（性能、セキュリティ等）
 
-### api-doc.json
+**実証する機能**:
 
-```json
-{
-  "$schema": "../schemas/types/api-doc.schema.json",
-  "@context": "../semantics/context.jsonld",
-  "metadata": {
-    "type": "api-documentation",
-    "title": "",
-    "version": "1.0.0",
-    "baseUrl": "",
-    "authentication": ""
-  },
-  "endpoints": []
-}
-```
+- ✅ スキーマによる構造検証（JSON Schema Draft-07）
+- ✅ セマンティックな関係性（JSON-LD 1.1）
+- ✅ 相互参照の自動検証（151個のリンク）
+- ✅ `$REF`構文による依存関係の表現
+- ✅ Pre-commitフックによる品質保証
 
 ## 📊 ケーススタディ
 
@@ -223,51 +190,53 @@ tracking:
 
 ## 🚀 使い方
 
-### 1. サンプルプロジェクトを試す
+### 1. 予約システムの例を参照する
 
 ```bash
-cd examples/sample-project
+cd examples/reservation-system
 
 # ドキュメントのバリデーション
-ukiyoue validate --all
+bun run validate /home/akring/ukiyoue/examples/reservation-system/use-cases.json
 
-# 品質分析
-ukiyoue analyze quality documents/architecture.json
-
-# Markdownへ変換
-ukiyoue convert documents/architecture.json \
-        --output docs/architecture.md
+# 相互参照の検証
+bun run check-links /home/akring/ukiyoue/examples/reservation-system
 ```
 
-### 2. テンプレートから新規作成
+### 2. 新しいドキュメントを作成する
+
+スキーマ定義を参照して、新しいJSONドキュメントを作成します：
 
 ```bash
-# テンプレートをコピー
-cp examples/templates/technical-spec.json my-spec.json
+# スキーマ定義を確認
+cat schemas/components/use-case.schema.json
 
-# 内容を編集
-vim my-spec.json
+# 新しいドキュメントを作成（エディタで編集）
+vim my-use-cases.json
+
+# スキーマに従った構造でJSONを記述
+# 例: {"id": "UC-001", "title": "...", "actor": "SH-...", ...}
 
 # バリデーション
-ukiyoue validate my-spec.json
+bun run validate my-use-cases.json
 ```
 
-### 3. 自分のプロジェクトに適用
+### 3. 継続的品質保証
+
+Git pre-commitフックで自動検証：
 
 ```bash
-# プロジェクトディレクトリで初期化
-ukiyoue init
+# コミット時に自動で実行される
+git commit -m "docs: add new use case"
 
-# ドキュメント生成
-ukiyoue generate --template technical-spec
-
-# 継続的に検証
-ukiyoue watch
+# 実行内容:
+# - Prettier フォーマット
+# - JSON Schema バリデーション
+# - 相互参照チェック（リンクチェック）
 ```
 
 ## 📈 今後の拡張
 
+- [ ] Markdown生成機能の実装
 - [ ] より多様なプロジェクトタイプの例
 - [ ] 実際の OSS プロジェクトへの適用
 - [ ] 詳細な評価レポート
-- [ ] チュートリアル動画
