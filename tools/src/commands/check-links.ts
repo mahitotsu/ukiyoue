@@ -190,6 +190,17 @@ function extractReferences(
     return;
   }
 
+  // Check for $REF field (use case precondition references)
+  if ('$REF' in obj && typeof obj.$REF === 'string') {
+    const refId = obj.$REF;
+    references.push({
+      file,
+      path: `${path}.$REF`,
+      targetId: refId,
+      targetType: getIdType(refId),
+    });
+  }
+
   // Check for relationship fields
   const relationshipFields = [
     'stakeholderIds',

@@ -335,7 +335,12 @@
     "title": "予約一覧確認",
     "actor": "SH-STAFF",
     "description": "店舗スタッフが当日または特定期間の予約一覧を確認する。",
-    "preconditions": ["UC-009（スタッフログイン）が完了している"],
+    "preconditions": [
+      {
+        "$REF": "UC-009",
+        "description": "スタッフログインが完了している"
+      }
+    ],
     "postconditions": ["予約一覧が表示される", "予約詳細を確認できる"],
     "mainFlow": [
       {
@@ -413,7 +418,13 @@
     "title": "予約ステータス更新",
     "actor": "SH-STAFF",
     "description": "店舗スタッフが予約のステータス（確定/完了/ノーショー）を更新する。",
-    "preconditions": ["UC-009（スタッフログイン）が完了している", "更新対象の予約が存在する"],
+    "preconditions": [
+      {
+        "$REF": "UC-009",
+        "description": "スタッフログインが完了している"
+      },
+      "更新対象の予約が存在する"
+    ],
     "postconditions": ["予約ステータスが更新される"],
     "mainFlow": [
       {
@@ -463,7 +474,13 @@
     "title": "予約枠設定",
     "actor": "SH-MANAGER",
     "description": "店舗管理者が営業日、営業時間、予約枠の時間間隔を設定する。",
-    "preconditions": ["UC-009（スタッフログイン）が完了している", "管理者権限を持っている"],
+    "preconditions": [
+      {
+        "$REF": "UC-009",
+        "description": "スタッフログインが完了している"
+      },
+      "管理者権限を持っている"
+    ],
     "postconditions": ["予約枠設定が保存される", "設定が予約サイトに即座に反映される"],
     "mainFlow": [
       {
@@ -550,7 +567,13 @@
     "title": "予約レポート確認",
     "actor": "SH-MANAGER",
     "description": "店舗管理者が予約実績の統計情報やレポートを確認する。",
-    "preconditions": ["UC-009（スタッフログイン）が完了している", "予約データが存在する"],
+    "preconditions": [
+      {
+        "$REF": "UC-009",
+        "description": "スタッフログインが完了している"
+      },
+      "予約データが存在する"
+    ],
     "postconditions": ["レポートが表示される", "必要に応じてCSV出力される"],
     "mainFlow": [
       {
@@ -625,7 +648,10 @@
     "actor": "SH-STAFF",
     "description": "顧客が実際に店舗に来店した際に、店舗スタッフが予約情報を来店済みステータスに更新する受付処理を行う。",
     "preconditions": [
-      "UC-009（スタッフログイン）が完了している",
+      {
+        "$REF": "UC-009",
+        "description": "スタッフログインが完了している"
+      },
       "顧客の予約が確定状態である",
       "予約日時が当日である"
     ],

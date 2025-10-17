@@ -30,11 +30,34 @@
     },
     "preconditions": {
       "type": "array",
-      "description": "Conditions that must be true before execution",
+      "description": "Conditions that must be true before execution. Can be textual descriptions or references to prerequisite use cases using $REF syntax.",
       "items": {
-        "type": "string",
-        "minLength": 1,
-        "maxLength": 500
+        "oneOf": [
+          {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500,
+            "description": "Textual description of a precondition"
+          },
+          {
+            "type": "object",
+            "required": ["$REF"],
+            "properties": {
+              "$REF": {
+                "type": "string",
+                "pattern": "^UC-[A-Z0-9-]+$",
+                "description": "Reference to a prerequisite use case ID"
+              },
+              "description": {
+                "type": "string",
+                "maxLength": 200,
+                "description": "Optional description of how this prerequisite relates"
+              }
+            },
+            "additionalProperties": false,
+            "description": "Reference to a prerequisite use case"
+          }
+        ]
       }
     },
     "postconditions": {
