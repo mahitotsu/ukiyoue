@@ -573,12 +573,12 @@ cat docs/auth-api.md
 
 # User Authentication API
 
-**Version**: 1.0.0  
-**Type**: Technical Specification  
+**Version**: 1.0.0
+**Type**: Technical Specification
 **Status**: Active
 
-**Authors**: Alice (alice@example.com)  
-**Tags**: `authentication` `api` `security`  
+**Authors**: Alice (alice@example.com)
+**Tags**: `authentication` `api` `security`
 **Audience**: Developer, AI Agent
 
 **Last Updated**: 2025-10-15T10:00:00Z
@@ -680,7 +680,7 @@ User login endpoint
 
 ---
 
-_This document was automatically generated from structured JSON data.  
+_This document was automatically generated from structured JSON data.
 To update, edit `data/authentication-api.json` and regenerate._
 
 ````
@@ -991,8 +991,8 @@ None (This is a foundational decision)
 
 ---
 
-**Date**: 2025-10-15  
-**Status**: Accepted  
+**Date**: 2025-10-15
+**Status**: Accepted
 **Deciders**: Framework Development Team
 
 ---

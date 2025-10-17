@@ -10,7 +10,7 @@
     "status": "proposed",
     "rationale": "快適なユーザー体験を提供するため、応答時間とスループットの最適化が必須。",
     "acceptanceCriteria": [
-      "ページ読み込み時間が2秒以内（PC、スマートフォンともに）",
+      "ページ読み込み時間が2秒以内（PC Webブラウザ）",
       "予約処理時間が1秒以内",
       "同時アクセス100ユーザーまで対応",
       "データベース応答時間が100ms以内",
@@ -102,19 +102,19 @@
   {
     "id": "NFR-004",
     "title": "ユーザビリティ",
-    "description": "レスポンシブデザイン、アクセシビリティ、多言語対応、ブラウザ対応に関する要件。ユーザー体験の質を決定する要件。",
+    "description": "PC Webアプリケーションのユーザビリティに関する要件。アクセシビリティ、ブラウザ対応、画面サイズ対応を含む。ユーザー体験の質を決定する要件。",
     "type": "non-functional",
     "category": "ユーザビリティ",
     "subcategory": "usability",
     "priority": "high",
     "status": "proposed",
-    "rationale": "多様なユーザーが快適に利用できることが、顧客満足度向上に不可欠。",
+    "rationale": "PC環境の多様なユーザーが快適に利用できることが、顧客満足度向上に不可欠。",
     "acceptanceCriteria": [
-      "レスポンシブデザインでPC、タブレット、スマートフォンに対応している",
+      "レスポンシブデザインで各種PC画面サイズに対応している（1024px以上のディスプレイ）",
       "WCAG 2.1 Level AA準拠のアクセシビリティが実装されている",
       "日本語と英語に対応している",
       "Chrome、Firefox、Safari、Edge（最新版および1つ前のバージョン）で動作する",
-      "タッチ操作に最適化されている（ボタンサイズ44x44px以上）",
+      "マウス操作とキーボード操作の両方に対応している",
       "フォントサイズが調整可能である",
       "色覚異常者にも配慮した色使いである"
     ],
@@ -129,7 +129,7 @@
     "implementationNotes": "フレームワーク: Reactでレスポンシブ対応。CSSフレームワーク: Tailwind CSS、Material-UI等。アクセシビリティ: WAI-ARIA属性、セマンティックHTML、キーボードナビゲーション。多言語: i18n（react-i18next）。ブラウザテスト: BrowserStack、Sauce Labs。デザインシステム: コンポーネントライブラリ構築。",
     "testCases": ["TC-NFR-004-01", "TC-NFR-004-02", "TC-NFR-004-03"],
     "estimatedEffort": {
-      "value": 60,
+      "value": 45,
       "unit": "hours"
     }
   },
@@ -170,7 +170,7 @@
   {
     "id": "NFR-006",
     "title": "拡張性",
-    "description": "マイクロサービスアーキテクチャ、API設計、データベース設計、外部連携に関する要件。将来の機能拡張に備えた要件。",
+    "description": "モジュラー設計、API設計、データベース設計に関する要件。将来の機能拡張に備えた要件。",
     "type": "non-functional",
     "category": "拡張性",
     "subcategory": "scalability",
@@ -178,13 +178,12 @@
     "status": "proposed",
     "rationale": "将来の機能追加（決済、通知、会員管理等）や規模拡大に対応できる設計が必要。",
     "acceptanceCriteria": [
-      "マイクロサービスアーキテクチャが採用されている",
+      "モジュラーな設計が採用されている（機能ごとにモジュール分離）",
       "RESTful APIが設計されている",
       "APIバージョニングが実装されている（/api/v1/...）",
       "データベースが正規化されている",
-      "水平スケーリングが可能である",
-      "Webhook対応が実装されている",
-      "外部システム連携用のAPIが提供されている"
+      "水平スケーリングが可能である（ロードバランサー、複数インスタンス対応）",
+      "外部システム連携用のAPIエンドポイントが設計されている"
     ],
     "dependencies": [],
     "relatedRequirements": [],
@@ -194,10 +193,10 @@
       "currentValue": "未測定",
       "unit": "ユーザー"
     },
-    "implementationNotes": "アーキテクチャ: マイクロサービス（予約サービス、ユーザーサービス、レポートサービス等）。API: RESTful、GraphQL検討。データベース: 読み書き分離（Read Replica）、シャーディング検討。キャッシュ: Redis、Memcached。メッセージキュー: RabbitMQ、AWS SQS。",
+    "implementationNotes": "アーキテクチャ: モノリシックだが機能ごとにモジュール分離（予約モジュール、ユーザーモジュール、レポートモジュール等）。API: RESTful設計。データベース: インデックス最適化、必要に応じて読み書き分離（Read Replica）を検討。キャッシュ: Redis。",
     "testCases": ["TC-NFR-006-01", "TC-NFR-006-02"],
     "estimatedEffort": {
-      "value": 50,
+      "value": 40,
       "unit": "hours"
     }
   },
@@ -237,32 +236,31 @@
   {
     "id": "NFR-008",
     "title": "互換性",
-    "description": "既存システム連携、データ移行、APIバージョン管理に関する要件。",
+    "description": "APIバージョン管理、データエクスポートに関する要件。将来的な拡張性を考慮。",
     "type": "non-functional",
     "category": "互換性",
     "subcategory": "compatibility",
     "priority": "medium",
     "status": "proposed",
-    "rationale": "既存の顧客管理システムとの連携が必要。将来的なシステム更新時に後方互換性を保つ必要がある。",
+    "rationale": "新規システムとして構築するが、将来的なシステム更新時に後方互換性を保つ必要がある。データポータビリティも重要。",
     "acceptanceCriteria": [
-      "既存顧客管理システムとAPI連携が可能である",
-      "データ移行ツールが提供される",
       "APIの後方互換性が1年間保たれる",
       "非推奨APIには適切な警告が表示される",
-      "データエクスポート機能が提供される（CSV、JSON）"
+      "データエクスポート機能が提供される（CSV、JSON）",
+      "標準的なデータフォーマットでエクスポート可能である"
     ],
     "dependencies": [],
     "relatedRequirements": ["NFR-006"],
     "stakeholders": ["SH-DEVELOPER", "SH-MANAGER"],
     "metrics": {
-      "targetValue": "データ移行成功率100%",
+      "targetValue": "APIバージョン移行成功率100%",
       "currentValue": "未測定",
       "unit": "%"
     },
-    "implementationNotes": "API連携: REST API、認証（OAuth 2.0、API Key）。データ移行: ETLツール、バッチ処理。バージョン管理: セマンティックバージョニング、非推奨フラグ。",
+    "implementationNotes": "バージョン管理: セマンティックバージョニング、非推奨フラグ。データエクスポート: CSV、JSON形式でのエクスポート機能。APIドキュメント: OpenAPI/Swaggerで明示的にバージョン情報を記載。",
     "testCases": ["TC-NFR-008-01"],
     "estimatedEffort": {
-      "value": 25,
+      "value": 15,
       "unit": "hours"
     }
   }
