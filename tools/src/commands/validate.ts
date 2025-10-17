@@ -146,6 +146,10 @@ async function detectSchemaPath(json: unknown, filePath: string): Promise<string
     // Array of stakeholders
     return resolve(schemasDir, 'components/stakeholder.schema.json');
   }
+  if (filename === 'actors.json') {
+    // Array of actors
+    return resolve(schemasDir, 'components/actor.schema.json');
+  }
   if (filename === 'use-cases.json') {
     return resolve(schemasDir, 'components/use-case.schema.json');
   }

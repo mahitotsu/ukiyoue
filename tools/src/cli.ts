@@ -1,6 +1,7 @@
 #!/usr/bin/env bun
 import { Command } from 'commander';
 import { checkLinks } from './commands/check-links.js';
+import { consistencyCheck } from './commands/consistency-check.js';
 import { validate } from './commands/validate.js';
 
 const program = new Command();
@@ -21,5 +22,12 @@ program
   .argument('<directory>', 'Directory containing JSON files')
   .option('-v, --verbose', 'Verbose output')
   .action(checkLinks);
+
+program
+  .command('consistency-check')
+  .description('Check consistency and completeness of documents')
+  .argument('<directory>', 'Directory containing JSON files')
+  .option('-v, --verbose', 'Verbose output including informational items')
+  .action(consistencyCheck);
 
 program.parse();

@@ -8,6 +8,7 @@ interface CheckLinksOptions {
 
 interface DocumentIndex {
   stakeholders: Set<string>;
+  actors: Set<string>;
   useCases: Set<string>;
   requirements: Set<string>;
   files: Map<string, string>; // ID -> file path
@@ -17,7 +18,7 @@ interface Reference {
   file: string;
   path: string;
   targetId: string;
-  targetType: 'stakeholder' | 'useCase' | 'requirement';
+  targetType: 'stakeholder' | 'actor' | 'useCase' | 'requirement';
 }
 
 /**
@@ -33,6 +34,7 @@ export async function checkLinks(directory: string, options: CheckLinksOptions):
 
     if (options.verbose) {
       console.log(chalk.gray(`Found ${index.stakeholders.size} stakeholders`));
+      console.log(chalk.gray(`Found ${index.actors.size} actors`));
       console.log(chalk.gray(`Found ${index.useCases.size} use cases`));
       console.log(chalk.gray(`Found ${index.requirements.size} requirements\n`));
     }
@@ -51,6 +53,9 @@ export async function checkLinks(directory: string, options: CheckLinksOptions):
       switch (ref.targetType) {
         case 'stakeholder':
           exists = index.stakeholders.has(ref.targetId);
+          break;
+        case 'actor':
+          exists = index.actors.has(ref.targetId);
           break;
         case 'useCase':
           exists = index.useCases.has(ref.targetId);
@@ -86,6 +91,7 @@ export async function checkLinks(directory: string, options: CheckLinksOptions):
 async function buildIndex(dirPath: string): Promise<DocumentIndex> {
   const index: DocumentIndex = {
     stakeholders: new Set(),
+    actors: new Set(),
     useCases: new Set(),
     requirements: new Set(),
     files: new Map(),
@@ -102,6 +108,16 @@ async function buildIndex(dirPath: string): Promise<DocumentIndex> {
         for (const item of content) {
           if (item.id) {
             index.stakeholders.add(item.id);
+            index.files.set(item.id, file);
+          }
+        }
+      }
+
+      // Index actors
+      if (Array.isArray(content) && content[0]?.id?.startsWith('ACT-')) {
+        for (const item of content) {
+          if (item.id) {
+            index.actors.add(item.id);
             index.files.set(item.id, file);
           }
         }
@@ -132,6 +148,9 @@ async function buildIndex(dirPath: string): Promise<DocumentIndex> {
         const id = content.id as string;
         if (id.startsWith('SH-')) {
           index.stakeholders.add(id);
+          index.files.set(id, file);
+        } else if (id.startsWith('ACT-')) {
+          index.actors.add(id);
           index.files.set(id, file);
         } else if (id.startsWith('UC-')) {
           index.useCases.add(id);
@@ -201,11 +220,25 @@ function extractReferences(
     });
   }
 
+  // Check for actor field in use cases
+  if ('actor' in obj && typeof obj.actor === 'string') {
+    const actorId = obj.actor;
+    if (actorId.startsWith('ACT-')) {
+      references.push({
+        file,
+        path: `${path}.actor`,
+        targetId: actorId,
+        targetType: 'actor',
+      });
+    }
+  }
+
   // Check for relationship fields
   const relationshipFields = [
     'stakeholderIds',
     'relatedStakeholders',
     'stakeholders', // Also check "stakeholders" field
+    'actors', // Actor references in stakeholders
     'useCaseIds',
     'relatedUseCases',
     'requirementIds',
@@ -239,8 +272,9 @@ function extractReferences(
 /**
  * Determine ID type from ID string
  */
-function getIdType(id: string): 'stakeholder' | 'useCase' | 'requirement' {
+function getIdType(id: string): 'stakeholder' | 'actor' | 'useCase' | 'requirement' {
   if (id.startsWith('SH-')) return 'stakeholder';
+  if (id.startsWith('ACT-')) return 'actor';
   if (id.startsWith('UC-')) return 'useCase';
   return 'requirement'; // FR-, NFR-
 }

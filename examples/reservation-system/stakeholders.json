@@ -17,7 +17,8 @@
     ],
     "priority": "critical",
     "influence": "high",
-    "interest": "high"
+    "interest": "high",
+    "actors": ["ACT-CUSTOMER"]
   },
   {
     "id": "SH-STAFF",
@@ -41,7 +42,8 @@
     },
     "priority": "high",
     "influence": "high",
-    "interest": "high"
+    "interest": "high",
+    "actors": ["ACT-STAFF"]
   },
   {
     "id": "SH-MANAGER",
@@ -64,7 +66,8 @@
     },
     "priority": "high",
     "influence": "high",
-    "interest": "medium"
+    "interest": "medium",
+    "actors": ["ACT-MANAGER"]
   },
   {
     "id": "SH-SYSADMIN",
@@ -87,7 +90,8 @@
     },
     "priority": "high",
     "influence": "medium",
-    "interest": "medium"
+    "interest": "medium",
+    "actors": ["ACT-SYSADMIN"]
   },
   {
     "id": "SH-DEVELOPER",
@@ -110,7 +114,8 @@
     },
     "priority": "medium",
     "influence": "medium",
-    "interest": "high"
+    "interest": "high",
+    "actors": []
   },
   {
     "id": "SH-EXECUTIVE",
@@ -133,6 +138,7 @@
     },
     "priority": "critical",
     "influence": "high",
-    "interest": "low"
+    "interest": "low",
+    "actors": []
   }
 ]

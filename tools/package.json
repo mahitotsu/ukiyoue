@@ -10,7 +10,8 @@
     "build": "bun build src/cli.ts --outdir dist --target bun",
     "dev": "bun run src/cli.ts",
     "validate": "bun run src/commands/validate.ts",
-    "check-links": "bun run src/commands/check-links.ts"
+    "check-links": "bun run src/commands/check-links.ts",
+    "consistency-check": "bun run src/commands/consistency-check.ts"
   },
   "keywords": [
     "ukiyoue",

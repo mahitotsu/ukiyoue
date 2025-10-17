@@ -81,6 +81,15 @@
       "type": "string",
       "description": "Level of interest in the project",
       "enum": ["high", "medium", "low"]
+    },
+    "actors": {
+      "type": "array",
+      "description": "Actor roles this stakeholder may play when interacting with the system",
+      "items": {
+        "type": "string",
+        "pattern": "^ACT-[A-Z0-9-]+$"
+      },
+      "uniqueItems": true
     }
   }
 }

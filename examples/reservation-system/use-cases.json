@@ -2,7 +2,7 @@
   {
     "id": "UC-001",
     "title": "予約登録",
-    "actor": "SH-CUSTOMER",
+    "actor": "ACT-CUSTOMER",
     "description": "顧客が予約サイトにアクセスし、希望の日時とサービスを選択して予約を登録する。",
     "preconditions": ["顧客は予約サイトにアクセス可能である", "予約可能な日時と枠が存在する"],
     "postconditions": [
@@ -133,7 +133,7 @@
   {
     "id": "UC-002",
     "title": "予約変更",
-    "actor": "SH-CUSTOMER",
+    "actor": "ACT-CUSTOMER",
     "description": "顧客が既存の予約内容（日時やサービス）を変更する。",
     "preconditions": [
       "顧客が予約番号を保持している",
@@ -244,7 +244,7 @@
   {
     "id": "UC-003",
     "title": "予約キャンセル",
-    "actor": "SH-CUSTOMER",
+    "actor": "ACT-CUSTOMER",
     "description": "顧客が既存の予約をキャンセルする。",
     "preconditions": [
       "顧客が予約番号を保持している",
@@ -333,7 +333,7 @@
   {
     "id": "UC-004",
     "title": "予約一覧確認",
-    "actor": "SH-STAFF",
+    "actor": "ACT-STAFF",
     "description": "店舗スタッフが当日または特定期間の予約一覧を確認する。",
     "preconditions": [
       {
@@ -416,7 +416,7 @@
   {
     "id": "UC-005",
     "title": "予約ステータス更新",
-    "actor": "SH-STAFF",
+    "actor": "ACT-STAFF",
     "description": "店舗スタッフが予約のステータス（確定/完了/ノーショー）を更新する。",
     "preconditions": [
       {
@@ -472,7 +472,7 @@
   {
     "id": "UC-006",
     "title": "予約枠設定",
-    "actor": "SH-MANAGER",
+    "actor": "ACT-MANAGER",
     "description": "店舗管理者が営業日、営業時間、予約枠の時間間隔を設定する。",
     "preconditions": [
       {
@@ -565,7 +565,7 @@
   {
     "id": "UC-007",
     "title": "予約レポート確認",
-    "actor": "SH-MANAGER",
+    "actor": "ACT-MANAGER",
     "description": "店舗管理者が予約実績の統計情報やレポートを確認する。",
     "preconditions": [
       {
@@ -645,7 +645,7 @@
   {
     "id": "UC-008",
     "title": "来店確認（受付処理）",
-    "actor": "SH-STAFF",
+    "actor": "ACT-STAFF",
     "description": "顧客が実際に店舗に来店した際に、店舗スタッフが予約情報を来店済みステータスに更新する受付処理を行う。",
     "preconditions": [
       {
@@ -809,7 +809,7 @@
   {
     "id": "UC-009",
     "title": "スタッフログイン",
-    "actor": "SH-STAFF",
+    "actor": "ACT-STAFF",
     "description": "店舗スタッフまたは管理者が管理画面にアクセスするため、メールアドレスとパスワードで認証を行う。",
     "preconditions": [
       "スタッフアカウントが事前に登録されている",

@@ -19,8 +19,8 @@
     },
     "actor": {
       "type": "string",
-      "description": "Primary actor (stakeholder ID)",
-      "pattern": "^SH-[A-Z0-9-]+$"
+      "description": "Primary actor (actor ID)",
+      "pattern": "^ACT-[A-Z0-9-]+$"
     },
     "description": {
       "type": "string",

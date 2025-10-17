@@ -1,0 +1,60 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://ukiyoue.dev/schemas/components/actor.schema.json",
+  "title": "Actor Schema",
+  "description": "Reusable schema component for actor definitions. Actors are roles that interact with the system to achieve goals.",
+  "type": "object",
+  "required": ["id", "name", "role", "description"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique actor identifier",
+      "pattern": "^ACT-[A-Z0-9-]+$"
+    },
+    "name": {
+      "type": "string",
+      "description": "Actor name",
+      "minLength": 1,
+      "maxLength": 200
+    },
+    "role": {
+      "type": "string",
+      "description": "Actor's role in the system",
+      "minLength": 1,
+      "maxLength": 200
+    },
+    "description": {
+      "type": "string",
+      "description": "Detailed description of the actor's role and responsibilities",
+      "minLength": 1,
+      "maxLength": 2000
+    },
+    "goals": {
+      "type": "array",
+      "description": "Goals the actor wants to achieve using the system",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 500
+      }
+    },
+    "responsibilities": {
+      "type": "array",
+      "description": "Actor's responsibilities when using the system",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 500
+      }
+    },
+    "relatedStakeholders": {
+      "type": "array",
+      "description": "Stakeholders who may play this actor role",
+      "items": {
+        "type": "string",
+        "pattern": "^SH-[A-Z0-9-]+$"
+      },
+      "uniqueItems": true
+    }
+  }
+}
