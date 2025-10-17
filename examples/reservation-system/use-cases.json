@@ -335,46 +335,36 @@
     "title": "予約一覧確認",
     "actor": "SH-STAFF",
     "description": "店舗スタッフが当日または特定期間の予約一覧を確認する。",
-    "preconditions": ["店舗スタッフが管理画面にログインしている"],
+    "preconditions": ["UC-009（スタッフログイン）が完了している"],
     "postconditions": ["予約一覧が表示される", "予約詳細を確認できる"],
     "mainFlow": [
       {
         "step": 1,
-        "description": "店舗スタッフが管理画面にログインする",
-        "actor": "Staff"
-      },
-      {
-        "step": 2,
-        "description": "ダッシュボードを表示する",
-        "actor": "System"
-      },
-      {
-        "step": 3,
         "description": "スタッフが「予約一覧」メニューを選択する",
         "actor": "Staff"
       },
       {
-        "step": 4,
+        "step": 2,
         "description": "デフォルトで当日の予約一覧を表示する",
         "actor": "System"
       },
       {
-        "step": 5,
+        "step": 3,
         "description": "スタッフが日付や表示形式（日別/週別）を変更する",
         "actor": "Staff"
       },
       {
-        "step": 6,
+        "step": 4,
         "description": "指定された条件で予約一覧を再表示する",
         "actor": "System"
       },
       {
-        "step": 7,
+        "step": 5,
         "description": "スタッフが予約をクリックして詳細を確認する",
         "actor": "Staff"
       },
       {
-        "step": 8,
+        "step": 6,
         "description": "予約詳細情報を表示する",
         "actor": "System"
       }
@@ -410,7 +400,7 @@
             "description": "該当する予約を検索して表示する"
           }
         ],
-        "returnTo": 6
+        "returnTo": 4
       }
     ],
     "exceptionFlows": [],
@@ -423,7 +413,7 @@
     "title": "予約ステータス更新",
     "actor": "SH-STAFF",
     "description": "店舗スタッフが予約のステータス（確定/完了/ノーショー）を更新する。",
-    "preconditions": ["店舗スタッフが管理画面にログインしている", "更新対象の予約が存在する"],
+    "preconditions": ["UC-009（スタッフログイン）が完了している", "更新対象の予約が存在する"],
     "postconditions": ["予約ステータスが更新される"],
     "mainFlow": [
       {
@@ -473,66 +463,61 @@
     "title": "予約枠設定",
     "actor": "SH-MANAGER",
     "description": "店舗管理者が営業日、営業時間、予約枠の時間間隔を設定する。",
-    "preconditions": ["店舗管理者が管理画面にログインしている", "管理者権限を持っている"],
+    "preconditions": ["UC-009（スタッフログイン）が完了している", "管理者権限を持っている"],
     "postconditions": ["予約枠設定が保存される", "設定が予約サイトに即座に反映される"],
     "mainFlow": [
       {
         "step": 1,
-        "description": "管理者が管理画面にログインする",
-        "actor": "Manager"
-      },
-      {
-        "step": 2,
         "description": "管理者が「予約枠設定」メニューを選択する",
         "actor": "Manager"
       },
       {
-        "step": 3,
+        "step": 2,
         "description": "現在の設定を表示する",
         "actor": "System"
       },
       {
-        "step": 4,
+        "step": 3,
         "description": "管理者が営業日・休業日を設定する",
         "actor": "Manager"
       },
       {
-        "step": 5,
+        "step": 4,
         "description": "管理者が営業時間を設定する",
         "actor": "Manager"
       },
       {
-        "step": 6,
+        "step": 5,
         "description": "管理者が予約枠の時間間隔を設定する",
         "actor": "Manager"
       },
       {
-        "step": 7,
+        "step": 6,
         "description": "管理者がサービスごとの所要時間を設定する",
         "actor": "Manager"
       },
       {
-        "step": 8,
+        "step": 7,
         "description": "管理者が同時受付可能数を設定する",
         "actor": "Manager"
       },
       {
-        "step": 9,
+        "step": 8,
         "description": "入力内容を検証する",
         "actor": "System"
       },
       {
-        "step": 10,
+        "step": 9,
         "description": "管理者が「保存」ボタンをクリックする",
         "actor": "Manager"
       },
       {
-        "step": 11,
+        "step": 10,
         "description": "設定を保存し、予約枠を再生成する",
         "actor": "System"
       },
       {
-        "step": 12,
+        "step": 11,
         "description": "保存完了メッセージを表示する",
         "actor": "System"
       }
@@ -541,7 +526,7 @@
       {
         "id": "AF-1",
         "description": "入力内容にエラーがある場合",
-        "branchFrom": 9,
+        "branchFrom": 8,
         "steps": [
           {
             "step": 1,
@@ -552,7 +537,7 @@
             "description": "該当フィールドをハイライト表示する"
           }
         ],
-        "returnTo": 4
+        "returnTo": 3
       }
     ],
     "exceptionFlows": [],
@@ -565,51 +550,46 @@
     "title": "予約レポート確認",
     "actor": "SH-MANAGER",
     "description": "店舗管理者が予約実績の統計情報やレポートを確認する。",
-    "preconditions": ["店舗管理者が管理画面にログインしている", "予約データが存在する"],
+    "preconditions": ["UC-009（スタッフログイン）が完了している", "予約データが存在する"],
     "postconditions": ["レポートが表示される", "必要に応じてCSV出力される"],
     "mainFlow": [
       {
         "step": 1,
-        "description": "管理者が管理画面にログインする",
-        "actor": "Manager"
-      },
-      {
-        "step": 2,
         "description": "管理者が「レポート」メニューを選択する",
         "actor": "Manager"
       },
       {
-        "step": 3,
+        "step": 2,
         "description": "レポート種類一覧を表示する",
         "actor": "System"
       },
       {
-        "step": 4,
+        "step": 3,
         "description": "管理者がレポート種類を選択する（期間別/サービス別/時間帯別など）",
         "actor": "Manager"
       },
       {
-        "step": 5,
+        "step": 4,
         "description": "管理者が期間を指定する",
         "actor": "Manager"
       },
       {
-        "step": 6,
+        "step": 5,
         "description": "レポートを生成して表示する",
         "actor": "System"
       },
       {
-        "step": 7,
+        "step": 6,
         "description": "管理者がレポートを確認する",
         "actor": "Manager"
       },
       {
-        "step": 8,
+        "step": 7,
         "description": "管理者が必要に応じて「CSV出力」ボタンをクリックする",
         "actor": "Manager"
       },
       {
-        "step": 9,
+        "step": 8,
         "description": "CSVファイルをダウンロード可能にする",
         "actor": "System"
       }
@@ -645,7 +625,7 @@
     "actor": "SH-STAFF",
     "description": "顧客が実際に店舗に来店した際に、店舗スタッフが予約情報を来店済みステータスに更新する受付処理を行う。",
     "preconditions": [
-      "店舗スタッフが管理画面にログインしている",
+      "UC-009（スタッフログイン）が完了している",
       "顧客の予約が確定状態である",
       "予約日時が当日である"
     ],
@@ -798,6 +778,169 @@
     ],
     "relatedRequirements": ["FR-006"],
     "priority": "high",
+    "frequency": "very-high"
+  },
+  {
+    "id": "UC-009",
+    "title": "スタッフログイン",
+    "actor": "SH-STAFF",
+    "description": "店舗スタッフまたは管理者が管理画面にアクセスするため、メールアドレスとパスワードで認証を行う。",
+    "preconditions": [
+      "スタッフアカウントが事前に登録されている",
+      "スタッフがログイン認証情報（メールアドレス、パスワード）を保持している"
+    ],
+    "postconditions": [
+      "認証に成功し、セッションが確立される",
+      "管理画面のダッシュボードが表示される",
+      "セッションタイムアウトが30分に設定される"
+    ],
+    "mainFlow": [
+      {
+        "step": 1,
+        "description": "スタッフが管理画面のログインページにアクセスする",
+        "actor": "Staff"
+      },
+      {
+        "step": 2,
+        "description": "ログインフォーム（メールアドレス、パスワード入力欄）を表示する",
+        "actor": "System"
+      },
+      {
+        "step": 3,
+        "description": "スタッフがメールアドレスを入力する",
+        "actor": "Staff"
+      },
+      {
+        "step": 4,
+        "description": "スタッフがパスワードを入力する",
+        "actor": "Staff"
+      },
+      {
+        "step": 5,
+        "description": "スタッフが「ログイン」ボタンをクリックする",
+        "actor": "Staff"
+      },
+      {
+        "step": 6,
+        "description": "入力されたメールアドレスでスタッフアカウントを検索する",
+        "actor": "System"
+      },
+      {
+        "step": 7,
+        "description": "保存されたパスワードハッシュ（bcrypt）と入力パスワードを照合する",
+        "actor": "System"
+      },
+      {
+        "step": 8,
+        "description": "認証に成功した場合、セッションを作成する（30分タイムアウト）",
+        "actor": "System"
+      },
+      {
+        "step": 9,
+        "description": "CSRFトークンを発行する",
+        "actor": "System"
+      },
+      {
+        "step": 10,
+        "description": "管理画面のダッシュボードにリダイレクトする",
+        "actor": "System"
+      },
+      {
+        "step": 11,
+        "description": "ダッシュボードを表示する",
+        "actor": "System"
+      }
+    ],
+    "alternativeFlows": [
+      {
+        "id": "AF-1",
+        "description": "メールアドレスが存在しない場合",
+        "branchFrom": 6,
+        "steps": [
+          {
+            "step": 1,
+            "description": "「メールアドレスまたはパスワードが正しくありません」というエラーメッセージを表示する"
+          },
+          {
+            "step": 2,
+            "description": "ログインフォームを再表示する"
+          }
+        ],
+        "returnTo": 3
+      },
+      {
+        "id": "AF-2",
+        "description": "パスワードが一致しない場合",
+        "branchFrom": 7,
+        "steps": [
+          {
+            "step": 1,
+            "description": "「メールアドレスまたはパスワードが正しくありません」というエラーメッセージを表示する"
+          },
+          {
+            "step": 2,
+            "description": "ログイン失敗回数をカウントする"
+          },
+          {
+            "step": 3,
+            "description": "ログインフォームを再表示する"
+          }
+        ],
+        "returnTo": 3
+      },
+      {
+        "id": "AF-3",
+        "description": "入力内容が未入力またはフォーマット不正の場合",
+        "branchFrom": 5,
+        "steps": [
+          {
+            "step": 1,
+            "description": "入力エラーをフィールド単位で表示する"
+          },
+          {
+            "step": 2,
+            "description": "該当フィールドをハイライト表示する"
+          }
+        ],
+        "returnTo": 3
+      }
+    ],
+    "exceptionFlows": [
+      {
+        "id": "EF-1",
+        "description": "短時間に複数回ログイン失敗した場合",
+        "steps": [
+          {
+            "step": 1,
+            "description": "アカウントを一時的にロックする（例：5回失敗で15分間ロック）"
+          },
+          {
+            "step": 2,
+            "description": "「アカウントが一時的にロックされました」というメッセージを表示する"
+          },
+          {
+            "step": 3,
+            "description": "管理者に通知する"
+          }
+        ]
+      },
+      {
+        "id": "EF-2",
+        "description": "セッション作成中にシステムエラーが発生",
+        "steps": [
+          {
+            "step": 1,
+            "description": "エラーメッセージを表示する"
+          },
+          {
+            "step": 2,
+            "description": "スタッフにリトライを促す"
+          }
+        ]
+      }
+    ],
+    "relatedRequirements": ["FR-002-06"],
+    "priority": "critical",
     "frequency": "very-high"
   }
 ]
