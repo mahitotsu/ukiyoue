@@ -15,15 +15,6 @@
       "@context": {
         "title": "schema:name",
         "description": "schema:description",
-        "authors": {
-          "@id": "schema:author",
-          "@container": "@set",
-          "@context": {
-            "name": "schema:name",
-            "email": "schema:email",
-            "role": "schema:roleName"
-          }
-        },
         "created": {
           "@id": "schema:dateCreated",
           "@type": "xsd:dateTime"
@@ -203,10 +194,6 @@
         "modified": {
           "@id": "dc:modified",
           "@type": "xsd:dateTime"
-        },
-        "authors": {
-          "@id": "dc:creator",
-          "@container": "@set"
         },
         "tags": {
           "@id": "dc:subject",

@@ -15,18 +15,6 @@
     "status": "approved",
     "created": "2025-10-16T09:00:00+09:00",
     "modified": "2025-10-16T15:30:00+09:00",
-    "authors": [
-      {
-        "name": "山田太郎",
-        "email": "yamada@example.com",
-        "role": "author"
-      },
-      {
-        "name": "佐藤花子",
-        "email": "sato@example.com",
-        "role": "reviewer"
-      }
-    ],
     "tags": ["reservation", "booking", "customer-service", "business-requirements"],
     "language": "ja",
     "audience": ["business-analyst", "project-manager", "developer", "stakeholder"],
