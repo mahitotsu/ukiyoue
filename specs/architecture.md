@@ -31,34 +31,34 @@ Ukiyoue フレームワークの全体アーキテクチャと、各コンポー
 
 ### 4 層アーキテクチャ
 
-```
-┌─────────────────────────────────────────────────────┐
-│                   Tools Layer                        │
-│  ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌────────┐ │
-│  │Validator │ │Generator │ │Analyzer  │ │  CLI   │ │
-│  └──────────┘ └──────────┘ └──────────┘ └────────┘ │
-└─────────────────────────────────────────────────────┘
-                         ↕
-┌─────────────────────────────────────────────────────┐
-│               Semantics Layer                        │
-│  ┌──────────────┐ ┌──────────────┐ ┌─────────────┐ │
-│  │  JSON-LD     │ │ Vocabularies │ │ Ontologies  │ │
-│  │  Context     │ │              │ │             │ │
-│  └──────────────┘ └──────────────┘ └─────────────┘ │
-└─────────────────────────────────────────────────────┘
-                         ↕
-┌─────────────────────────────────────────────────────┐
-│                 Schema Layer                         │
-│  ┌──────────────┐ ┌──────────────┐ ┌─────────────┐ │
-│  │ JSON Schema  │ │ Document     │ │ Component   │ │
-│  │ Base         │ │ Types        │ │ Schemas     │ │
-│  └──────────────┘ └──────────────┘ └─────────────┘ │
-└─────────────────────────────────────────────────────┘
-                         ↕
-┌─────────────────────────────────────────────────────┐
-│                   Data Layer                         │
-│          JSON Documents (User Content)               │
-└─────────────────────────────────────────────────────┘
+```mermaid
+graph TB
+    subgraph Tools["Tools Layer"]
+        Validator[Validator]
+        Generator[Generator]
+        Analyzer[Analyzer]
+        CLI[CLI]
+    end
+
+    subgraph Semantics["Semantics Layer"]
+        JSONLD[JSON-LD Context]
+        Vocabularies[Vocabularies]
+        Ontologies[Ontologies]
+    end
+
+    subgraph Schema["Schema Layer"]
+        JSONSchemaBase[JSON Schema Base]
+        DocumentTypes[Document Types]
+        ComponentSchemas[Component Schemas]
+    end
+
+    subgraph Data["Data Layer"]
+        JSONDocs[JSON Documents<br/>User Content]
+    end
+
+    Tools <--> Semantics
+    Semantics <--> Schema
+    Schema <--> Data
 ```
 
 ### 各層の責務
@@ -327,24 +327,26 @@ Ukiyoue フレームワークの全体アーキテクチャと、各コンポー
 
 **採用パターン**: Plugin Architecture
 
-```
-┌─────────────────────────────────────┐
-│          Core Framework             │
-│  ┌───────────────────────────────┐  │
-│  │    Configuration Manager      │  │
-│  ├───────────────────────────────┤  │
-│  │      Schema Loader            │  │
-│  ├───────────────────────────────┤  │
-│  │   JSON-LD Processor           │  │
-│  ├───────────────────────────────┤  │
-│  │      Plugin Manager           │  │
-│  └───────────────────────────────┘  │
-└─────────────────────────────────────┘
-           ↕          ↕          ↕
-    ┌──────────┐ ┌──────────┐ ┌──────────┐
-    │Validator │ │Generator │ │Analyzer  │
-    │ Plugin   │ │  Plugin  │ │  Plugin  │
-    └──────────┘ └──────────┘ └──────────┘
+```mermaid
+graph TB
+    subgraph CoreFramework["Core Framework"]
+        ConfigManager[Configuration Manager]
+        SchemaLoader[Schema Loader]
+        JSONLDProcessor[JSON-LD Processor]
+        PluginManager[Plugin Manager]
+
+        ConfigManager --- SchemaLoader
+        SchemaLoader --- JSONLDProcessor
+        JSONLDProcessor --- PluginManager
+    end
+
+    ValidatorPlugin[Validator Plugin]
+    GeneratorPlugin[Generator Plugin]
+    AnalyzerPlugin[Analyzer Plugin]
+
+    PluginManager <--> ValidatorPlugin
+    PluginManager <--> GeneratorPlugin
+    PluginManager <--> AnalyzerPlugin
 ```
 
 #### 3.2 コアモジュール
@@ -615,46 +617,33 @@ ukiyoue/
 
 ### Validation Flow
 
-```
-Input Document (JSON)
-    ↓
-SchemaLoader
-    ↓ (load schema)
-SchemaValidator
-    ↓ (validate structure)
-LinkChecker
-    ↓ (check links)
-ConsistencyChecker
-    ↓ (check consistency)
-Validation Result
+```mermaid
+flowchart TD
+    Input[Input Document JSON] --> SchemaLoader
+    SchemaLoader -->|load schema| SchemaValidator
+    SchemaValidator -->|validate structure| LinkChecker
+    LinkChecker -->|check links| ConsistencyChecker
+    ConsistencyChecker -->|check consistency| Result[Validation Result]
 ```
 
 ### Generation Flow
 
-```
-Template + Data
-    ↓
-TemplateGenerator
-    ↓ (expand template)
-Generated Document
-    ↓ (auto-validate)
-SchemaValidator
-    ↓
-Final Document
+```mermaid
+flowchart TD
+    Input[Template + Data] --> TemplateGenerator
+    TemplateGenerator -->|expand template| Generated[Generated Document]
+    Generated -->|auto-validate| SchemaValidator
+    SchemaValidator --> Final[Final Document]
 ```
 
 ### Analysis Flow
 
-```
-Input Document
-    ↓
-JSONLDProcessor
-    ↓ (expand to RDF)
-SemanticAnalyzer
-    ↓ (analyze relationships)
-QualityAnalyzer
-    ↓ (calculate metrics)
-Analysis Result
+```mermaid
+flowchart TD
+    Input[Input Document] --> JSONLDProcessor
+    JSONLDProcessor -->|expand to RDF| SemanticAnalyzer
+    SemanticAnalyzer -->|analyze relationships| QualityAnalyzer
+    QualityAnalyzer -->|calculate metrics| Result[Analysis Result]
 ```
 
 ---
