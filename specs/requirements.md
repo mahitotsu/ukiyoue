@@ -1,6 +1,6 @@
-# Ukiyoue Framework - Requirements Specification
+# Ukiyoue Framework - Requirements
 
-**フレームワークの要件定義**
+## フレームワークの要件定義
 
 ---
 
@@ -8,7 +8,7 @@
 
 このドキュメントは、Ukiyoue フレームワークが満たすべき要件を定義します。
 
-**対象読者**: フレームワーク開発者、貢献者  
+**対象読者**: フレームワーク開発者、貢献者
 **使用場面**: 設計判断時、実装時、レビュー時
 
 ---

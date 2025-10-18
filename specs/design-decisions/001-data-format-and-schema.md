@@ -135,7 +135,9 @@ Ukiyoue フレームワークが目指す「AI 時代の新しいドキュメン
 
 ## Decision
 
-**Option 1 (JSON + JSON Schema + JSON-LD) を採用する**
+### 選定結果
+
+Option 1 (JSON + JSON Schema + JSON-LD) を採用する
 
 ### Rationale
 

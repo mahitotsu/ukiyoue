@@ -15,7 +15,7 @@
 
 ## Decision Flow
 
-```
+```text
 ADR-001: Data Format
   ├─ JSON (編集・保存)
   ├─ JSON Schema (構造定義)
@@ -23,15 +23,13 @@ ADR-001: Data Format
   └─ Markdown (表示のみ)
        ↓
 ADR-002: JSON Schema Draft Version
-  └─ Draft-07 (安定性・ツールサポート)
+  └─ Draft-07
        ↓
 ADR-003: JSON-LD Version
-  └─ JSON-LD 1.1 (最新W3C勧告)
+  └─ 1.1
        ↓
-ADR-004: Tool Implementation
-  ├─ TypeScript + Bun
-  ├─ ajv (JSON Schema Draft-07対応)
-  └─ jsonld.js (JSON-LD 1.1対応)
+ADR-004: Tool Implementation Language
+  └─ TypeScript + Bun
 ```
 
 ## ADR Template

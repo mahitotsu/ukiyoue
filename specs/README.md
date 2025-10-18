@@ -8,14 +8,14 @@
 
 ## 📁 構成
 
-```
+```text
 specs/
 ├── README.md                    # このファイル
 ├── concept.md                   # コンセプトと背景
 ├── requirements.md              # 要件定義
 ├── architecture.md              # アーキテクチャ設計
-└── design-decisions/            # 設計判断の記録(ADR)
-    ├── README.md                # ADRインデックス
+└── design-decisions/            # 設計判断記録（ADR）
+    ├── README.md
     ├── 001-data-format-and-schema.md
     ├── 002-json-schema-draft-version.md
     ├── 003-json-ld-version.md

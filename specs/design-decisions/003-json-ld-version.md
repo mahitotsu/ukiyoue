@@ -81,7 +81,9 @@ ADR-001 で JSON-LD をセマンティック定義に使用することが決定
 
 ## Decision
 
-**Option 2 (JSON-LD 1.1) を採用する**
+### 選定結果
+
+Option 2 (JSON-LD 1.1) を採用する
 
 ### Rationale
 

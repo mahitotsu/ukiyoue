@@ -99,7 +99,9 @@ ADR-001〜003 で、データフォーマット（JSON + JSON Schema + JSON-LD�
 
 ## Decision
 
-**Option 1 (TypeScript + Bun) を採用する**
+### 選定結果
+
+Option 1 (TypeScript + Bun) を採用する
 
 ### Rationale
 
