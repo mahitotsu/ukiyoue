@@ -12,6 +12,16 @@
 
 **対象読者**: フレームワーク開発者、スキーマ設計者
 
+## 📈 全体サマリー
+
+- **ドキュメント総数**: 25種類
+- **レイヤー数**: 5層（プロジェクト管理 → 要件定義 → 設計 → 実装・テスト → 運用）
+- **主要な特徴**:
+  - ✅ プロジェクトライフサイクル全体をカバー
+  - ✅ アプリケーションとインフラストラクチャの両方を含む
+  - ✅ トップダウンフロー + フィードバックループ（Test Results → Roadmap/Business Req）
+  - ✅ 複数入力を持つ統合ポイント（Source Code が最多：5つの設計情報を統合）
+
 ---
 
 ## 📊 ドキュメント分類の全体像
@@ -21,30 +31,40 @@
 Ukiyoue フレームワークでは、ドキュメントを以下の5つのレイヤーに分類します：
 
 ```text
-┌─────────────────────────────────────────────────────┐
-│ Layer 1: プロジェクト管理                            │
-│ - プロジェクト全体の方向性と計画                     │
-└─────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────┐
+│ Layer 1: プロジェクト管理（2種類）                          │
+│ - プロジェクト全体の方向性と計画                             │
+│ - Charter, Roadmap                                          │
+└─────────────────────────────────────────────────────────────┘
                       ↓ 基盤
-┌─────────────────────────────────────────────────────┐
-│ Layer 2: 要件定義                                   │
-│ - ビジネス要件、機能要件、非機能要件                 │
-└─────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────┐
+│ Layer 2: 要件定義（3種類）                                  │
+│ - ビジネス要件、機能要件、非機能要件                         │
+│ - Business Req, Functional Req, Non-Functional Req          │
+└─────────────────────────────────────────────────────────────┘
                       ↓ 詳細化
-┌─────────────────────────────────────────────────────┐
-│ Layer 3: 設計                                       │
-│ - アーキテクチャ、UI/UX、データ、API                 │
-└─────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────┐
+│ Layer 3: 設計（8種類）                                      │
+│ - アーキテクチャ、データ、UI/UX、API、インフラ、セキュリティ │
+│ - ADR, System Arch, Data Model, UI/UX, API, DB Schema,     │
+│   Security Design, Infrastructure Design                    │
+└─────────────────────────────────────────────────────────────┘
                       ↓ 実装
-┌─────────────────────────────────────────────────────┐
-│ Layer 4: 実装・テスト                                │
-│ - コード、テスト仕様、テスト結果                     │
-└─────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────┐
+│ Layer 4: 実装・テスト（8種類）                              │
+│ - アプリケーションコード、インフラコード、テスト             │
+│ - Impl Guide, IaC, Test Plan/Spec, Source Code, Test Code, │
+│   Test Results, Source Code Doc                             │
+└─────────────────────────────────────────────────────────────┘
                       ↓ 運用
-┌─────────────────────────────────────────────────────┐
-│ Layer 5: 運用                                       │
-│ - デプロイ、運用手順、トラブルシューティング         │
-└─────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────┐
+│ Layer 5: 運用（4種類）                                      │
+│ - デプロイ、運用手順、トラブルシューティング                 │
+│ - Deployment Guide, Ops Manual, Incident Response,         │
+│   Troubleshooting Guide                                     │
+└─────────────────────────────────────────────────────────────┘
+
+合計: 25種類のドキュメントタイプ
 ```
 
 ---
@@ -372,29 +392,30 @@ graph TB
 
 #### 1. トップダウンフロー（計画→実装）
 
-- **Project Charter** がすべての起点
-- 要件定義（Layer 2）で **Business Requirements** が分解される
-- 設計（Layer 3）で技術的な詳細化
-- 実装・テスト（Layer 4）で具現化
+プロジェクトの情報は上位レイヤーから下位レイヤーへ流れます：
 
-#### 2. 複数の入力を持つドキュメント
+```text
+Project Charter（起点）
+  → Business Requirements（ビジネス価値）
+    → Functional Requirements & Non-Functional Requirements（具体的要件）
+      → 設計（Layer 3: 8種類）
+        → 実装（Layer 4: 8種類）
+          → 運用（Layer 5: 4種類）
+```
 
-- **Data Model**: Functional Requirements + System Architecture から派生
-- **API Specification**: System Architecture + Data Model から派生
-- **UI/UX Specification**: Functional Requirements + Data Model から派生
-- **Infrastructure Design**: System Architecture + Security Design から派生
-  - ネットワークセキュリティ（ファイアウォール、セキュリティグループ）
-  - 暗号化設定（TLS/SSL、ディスク暗号化）
-  - VPN、IAM、アクセス制御
-  - セキュリティ要件を統合したインフラ設計
-- **Implementation Guide**: System Architecture + Security Design から派生
-- **Source Code**: 最も多くの入力を持つ
-  - Functional Requirements（何を実装するか）
-  - Implementation Guide（どう実装するか）
-  - UI/UX Specification（画面ロジック）
-  - API Specification（インターフェース）
-  - Database Schema（データアクセス）
-- **Test Code**: Test Specification + Source Code から派生
+#### 2. 複数の入力を持つドキュメント（統合ポイント）
+
+以下のドキュメントは複数の情報源を統合します：
+
+| ドキュメント              | 入力元                                                | 統合の目的                                           |
+| ------------------------- | ----------------------------------------------------- | ---------------------------------------------------- |
+| **Data Model**            | Functional Req + System Architecture                  | 機能要件とシステム構造からデータ設計                 |
+| **API Specification**     | System Architecture + Data Model                      | システム構成とデータ構造から API 設計                |
+| **UI/UX Specification**   | Functional Req + Data Model                           | 機能要件とデータ構造から UI 設計                     |
+| **Infrastructure Design** | System Architecture + Security Design                 | システム構成とセキュリティ要件を統合したインフラ設計 |
+| **Implementation Guide**  | System Architecture + Security Design                 | システム構成とセキュリティ方針から実装方針           |
+| **Source Code**           | Functional Req + Impl Guide + UI/UX + API + DB Schema | **最多入力**: 全設計情報を統合実装                   |
+| **Test Code**             | Test Specification + Source Code                      | テスト仕様とテスト対象コード                         |
 
 #### 3. 横断的な依存関係（フィードバックループ）
 
@@ -408,20 +429,47 @@ graph TB
 - **Troubleshooting Guide** ← Source Code Documentation + Incident Response（運用知見の蓄積）
   - 実装の詳細と障害対応の経験を統合
 
-#### 4. レイヤー内の依存関係
+#### 4. レイヤー内の依存関係（詳細化チェーン）
 
-- **Data Model** → **Database Schema**（論理設計→物理設計）
-- **Infrastructure Design** → **Infrastructure as Code** → **Deployment Guide**（インフラ設計→コード化→デプロイ）
-- **設計ドキュメント群** → **Source Code**（要件・設計を統合実装）
-  - Functional Requirements → Source Code（機能要件の実現）
-  - UI/UX Specification → Source Code（画面ロジック）
-  - API Specification → Source Code（APIエンドポイント実装）
-  - Database Schema → Source Code（データアクセス層）
-  - Implementation Guide → Source Code（実装方針）
-- **Source Code** → **Source Code Documentation**（コードからドキュメント生成）
-- **Test Plan** → **Test Specification** → **Test Code**（計画→仕様→実装）
-- **Source Code** + **Test Specification** → **Test Code**（テスト対象とテスト仕様）
-- **Operations Manual** → **Incident Response Guide** / **Troubleshooting Guide**（運用知見の派生）
+同一レイヤー内または隣接レイヤー間で詳細化が進む主要なチェーン：
+
+##### データ設計チェーン
+
+```text
+Data Model（論理） → Database Schema（物理）
+```
+
+##### インフラチェーン
+
+```text
+Infrastructure Design（設計） → Infrastructure as Code（実装） → Deployment Guide（手順）
+```
+
+##### アプリケーション実装チェーン
+
+```text
+複数の設計 → Source Code → Source Code Documentation
+  ├─ Functional Requirements（機能）
+  ├─ Implementation Guide（方針）
+  ├─ UI/UX Specification（画面）
+  ├─ API Specification（API）
+  └─ Database Schema（データアクセス）
+```
+
+##### テストチェーン
+
+```text
+Functional Requirements → Test Plan → Test Specification → Test Code
+                                                              ↑
+                                                         Source Code（テスト対象）
+```
+
+##### 運用知見チェーン
+
+```text
+Operations Manual → Incident Response Guide
+                 └→ Troubleshooting Guide ← Source Code Documentation（実装詳細）
+```
 
 ---
 
