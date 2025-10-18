@@ -372,8 +372,15 @@ graph TB
 
 #### 3. 横断的な依存関係（フィードバックループ）
 
-- **Test Results** → Project Management（品質評価）
-- **Troubleshooting Guide** ← Source Code Documentation + Incident Response（知見蓄積）
+- **Test Results** → **Roadmap**（品質状況に応じたマイルストーン・スケジュール調整）
+  - テスト合格率が低い → リリース延期
+  - 重大な不具合発見 → 修正フェーズをロードマップに追加
+  - カバレッジ不足 → テスト強化期間を設定
+- **Test Results** → **Business Requirements**（品質評価による要件の再検討）
+  - 実装困難な要件の発見 → 要件の見直し
+  - パフォーマンス問題 → 非機能要件の調整
+- **Troubleshooting Guide** ← Source Code Documentation + Incident Response（運用知見の蓄積）
+  - 実装の詳細と障害対応の経験を統合
 
 #### 4. レイヤー内の依存関係
 
