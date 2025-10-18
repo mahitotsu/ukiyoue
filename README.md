@@ -31,37 +31,20 @@ AI 活用時代のプロジェクトドキュメントに必要な**フレーム
 
 ```
 ukiyoue/
-├── specs/                # フレームワーク自体の仕様書
-│   ├── README.md         # 仕様書の概要
-│   ├── concept.md        # コンセプトと背景
-│   ├── requirements.md   # 要件定義
-│   ├── architecture.md   # アーキテクチャ設計
-│   └── design-decisions/ # 設計判断の記録(ADR)
-│       ├── 001-data-format-and-schema.md
-│       ├── 002-json-schema-draft-version.md
-│       ├── 003-json-ld-version.md
-│       └── 004-tool-implementation-language.md
-│
-├── schemas/              # JSON Schemaによる構造定義（未実装）
-├── semantics/            # JSON-LDによるセマンティック定義（未実装）
-├── tools/                # ツール群（未実装）
-├── examples/             # 実証実験とサンプル（未実装）
-│
+├── specs/                # フレームワーク仕様書（詳細は specs/README.md）
+├── schemas/              # JSON Schema定義（未実装）
+├── semantics/            # JSON-LD定義（未実装）
+├── tools/                # CLIツール群（未実装）
+├── examples/             # サンプルと実証実験（未実装）
 └── README.md             # このファイル
 ```
 
-### 現在の状態（Phase 0）
+### 現在の状態（Phase 0: 仕様設計）
 
-**実装済み**:
+- ✅ コンセプト、要件定義、技術選定（ADR）完了
+- 📋 次: ドキュメント一覧と入出力関係の定義
 
-- ✅ `specs/` - フレームワークの仕様書とADR
-- ✅ コンセプト定義、要件定義、技術選定
-
-**次のステップ**:
-
-- 📋 ドキュメント一覧と入出力関係の定義
-- 📋 スキーマ設計の詳細化
-- 📋 実装開始（Phase 1以降）
+詳細は [`specs/README.md`](specs/README.md) を参照してください。
 
 ---
 
@@ -105,57 +88,51 @@ AI によって編集可能。形式的にも内容的にも妥当性が検証�
 
 ### コア技術
 
-```yaml
-data_format: JSON
-  理由:
-    - 人間とAIの両方が扱いやすい
-    - 広くサポートされている
-    - 既存ツールが豊富
+---
 
-structure_definition: JSON Schema
-  理由:
-    - 構造の形式的定義が可能
-    - 自動バリデーションが容易
-    - エディタサポート（補完・検証）
-    - 標準化されている（IETF標準）
+## 🛠️ 技術スタック
 
-semantic_definition: JSON-LD
-  理由:
-    - 意味・関係性を表現可能
-    - セマンティック検索が可能
-    - W3C標準
-    - 既存JSONとの互換性
+- **データフォーマット**: JSON
+- **構造定義**: JSON Schema Draft-07
+- **意味定義**: JSON-LD 1.1
+- **実装言語**: TypeScript + Bun
+
+技術選定の詳細は [`specs/design-decisions/`](specs/design-decisions/) のADRを参照してください。
+
+---
+
+## 📚 ドキュメント
+
+- **仕様書**: [`specs/`](specs/) - フレームワークの設計思想、要件、アーキテクチャ
+- **使い方**: 未実装（Phase 1以降で整備予定）
+- **開発ガイド**: 未実装（Phase 1以降で整備予定）
+
+---
+
+## 🚀 はじめ方
+
+### 仕様を読む
+
+```bash
+git clone https://github.com/mahitotsu/ukiyoue.git
+cd ukiyoue/specs
 ```
 
-### 実装技術（予定）
+1. [`concept.md`](specs/concept.md) - なぜこのフレームワークが必要か
+2. [`requirements.md`](specs/requirements.md) - 何を実現するのか
+3. [`architecture.md`](specs/architecture.md) - どう実現するのか
+4. [`design-decisions/`](specs/design-decisions/) - 技術選定の背景
 
-```yaml
-runtime: Node.js
-language: JavaScript/TypeScript
+### 実装に参加する
 
-key_libraries:
-  validation:
-    - ajv: JSON Schema validation
-    - ajv-formats: 追加のフォーマット検証
+Phase 0（仕様設計）を完了し、Phase 1（実装）の準備中です。
+コントリビューション方法は今後整備します。
 
-  semantic:
-    - jsonld: JSON-LD processing
-    - n3: RDF/Turtle processing
+---
 
-  cli:
-    - commander: CLI framework
-    - inquirer: インタラクティブプロンプト
-    - chalk: ターミナル装飾
-    - ora: ローディング表示
+## 📈 開発ロードマップ
 
-  analysis:
-    - natural: 自然言語処理
-    - sentiment: 感情分析
-
-  generation:
-    - handlebars: テンプレートエンジン
-    - marked: Markdown処理
-```
+````
 
 ### 技術選定の分析
 
@@ -207,11 +184,11 @@ npm install -g ukiyoue
 git clone https://github.com/mahitotsu/ukiyoue.git
 cd ukiyoue
 npm install
-```
+````
 
 ### 基本的な使い方（予定）
 
-```bash
+````bash
 # 新しいプロジェクトでukiyoueを初期化
 ukiyoue init my-project
 
@@ -220,50 +197,6 @@ ukiyoue validate docs/
 
 # ドキュメントの生成
 ukiyoue generate --template=api-spec --output=docs/api.md
-
-# ドキュメントの評価
-ukiyoue evaluate docs/ --report=quality-report.json
-```
-
----
-
-## 📈 開発ロードマップ
-
-### Phase 0: 基盤設計・要件定義（現在）
-
-- [x] プロジェクトコンセプトの定義
-- [x] 3 つの要件の明確化（FR-CONV/AUTO/REUSE）
-- [x] 技術選定とADR作成
-  - [ADR-001](specs/design-decisions/001-data-format-and-schema.md): データフォーマット選定
-  - [ADR-002](specs/design-decisions/002-json-schema-draft-version.md): JSON Schema Draft-07
-  - [ADR-003](specs/design-decisions/003-json-ld-version.md): JSON-LD 1.1
-  - [ADR-004](specs/design-decisions/004-tool-implementation-language.md): TypeScript + Bun
-- [ ] **ドキュメント一覧と入出力関係の定義**（次のステップ）
-- [ ] スキーマ設計の詳細化
-
-### Phase 1: スキーマ実装
-
-- [ ] ドキュメント構造スキーマ
-- [ ] メタデータスキーマ
-- [ ] 検証ルール定義
-
-### Phase 2: ツール開発
-
-- [ ] バリデーターの実装
-- [ ] ジェネレーターの実装
-- [ ] CLI の実装
-
-### Phase 3: 実証実験
-
-- [ ] サンプルプロジェクトでの検証
-- [ ] 評価ツールの開発
-- [ ] ケーススタディの作成
-
-### Phase 4: 公開
-
-- [ ] ドキュメント整備
-- [ ] テストカバレッジ向上
-- [ ] パッケージ公開（npm）
 
 ---
 
@@ -282,7 +215,7 @@ cd ukiyoue
 
 # 依存関係のインストール
 bun install
-```
+````
 
 ### コードフォーマット
 
