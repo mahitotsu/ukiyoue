@@ -84,12 +84,6 @@ AI によって編集可能。形式的にも内容的にも妥当性が検証�
 
 ---
 
-## � 技術スタック
-
-### コア技術
-
----
-
 ## 🛠️ 技術スタック
 
 - **データフォーマット**: JSON
@@ -97,15 +91,19 @@ AI によって編集可能。形式的にも内容的にも妥当性が検証�
 - **意味定義**: JSON-LD 1.1
 - **実装言語**: TypeScript + Bun
 
-技術選定の詳細は [`specs/design-decisions/`](specs/design-decisions/) のADRを参照してください。
+技術選定の詳細は [`specs/design-decisions/`](specs/design-decisions/) の ADR を参照してください。
 
 ---
 
 ## 📚 ドキュメント
 
 - **仕様書**: [`specs/`](specs/) - フレームワークの設計思想、要件、アーキテクチャ
-- **使い方**: 未実装（Phase 1以降で整備予定）
-- **開発ガイド**: 未実装（Phase 1以降で整備予定）
+  - [`concept.md`](specs/concept.md) - なぜこのフレームワークが必要か
+  - [`requirements.md`](specs/requirements.md) - 何を実現するのか
+  - [`architecture.md`](specs/architecture.md) - どう実現するのか
+  - [`design-decisions/`](specs/design-decisions/) - 技術選定の背景（ADR）
+- **使い方**: 未実装（Phase 1 以降で整備予定）
+- **開発ガイド**: 未実装（Phase 1 以降で整備予定）
 
 ---
 
@@ -118,10 +116,12 @@ git clone https://github.com/mahitotsu/ukiyoue.git
 cd ukiyoue/specs
 ```
 
-1. [`concept.md`](specs/concept.md) - なぜこのフレームワークが必要か
-2. [`requirements.md`](specs/requirements.md) - 何を実現するのか
-3. [`architecture.md`](specs/architecture.md) - どう実現するのか
-4. [`design-decisions/`](specs/design-decisions/) - 技術選定の背景
+推奨読み順：
+
+1. [`concept.md`](specs/concept.md) - フレームワークの理念とビジョン
+2. [`requirements.md`](specs/requirements.md) - 具体的な要件
+3. [`architecture.md`](specs/architecture.md) - 技術選定とアーキテクチャ
+4. [`design-decisions/`](specs/design-decisions/) - 個別の技術決定の根拠
 
 ### 実装に参加する
 
@@ -132,71 +132,20 @@ Phase 0（仕様設計）を完了し、Phase 1（実装）の準備中です。
 
 ## 📈 開発ロードマップ
 
-````
+### Phase 0: 仕様設計（✅ 完了）
 
-### 技術選定の分析
+- ✅ コンセプト定義
+- ✅ 要件定義
+- ✅ 技術選定（ADR）
+- ✅ アーキテクチャ設計
 
-詳細な技術選定の是非・優位性・他の選択肢の分析は以下を参照：
+### Phase 1: 実装準備（📋 次）
 
-- [`specs/design-decisions/001-json-as-base-format.md`](specs/design-decisions/001-json-as-base-format.md)
-- [`specs/design-decisions/002-json-schema-for-structure.md`](specs/design-decisions/002-json-schema-for-structure.md)
-- [`specs/design-decisions/003-json-ld-for-semantics.md`](specs/design-decisions/003-json-ld-for-semantics.md)
+- ドキュメント一覧と入出力関係の定義
+- スキーマ設計
+- ツール実装開始
 
----
-
-## �📚 ドキュメント構成
-
-### フレームワーク仕様書
-
-| ドキュメント                                                                 | 目的                       | 対象   |
-| ---------------------------------------------------------------------------- | -------------------------- | ------ |
-| [`docs/specification/overview.md`](docs/specification/overview.md)           | フレームワーク全体像       | 全員   |
-| [`docs/specification/requirements.md`](docs/specification/requirements.md)   | 要件定義（3 つの柱の詳細） | 開発者 |
-| [`docs/specification/architecture.md`](docs/specification/architecture.md)   | アーキテクチャ設計         | 開発者 |
-| [`docs/specification/schema-design.md`](docs/specification/schema-design.md) | スキーマ設計方針           | 開発者 |
-
-### 使い方ガイド
-
-| ドキュメント                                                               | 目的             | 対象     |
-| -------------------------------------------------------------------------- | ---------------- | -------- |
-| [`docs/user-guide/getting-started.md`](docs/user-guide/getting-started.md) | クイックスタート | ユーザー |
-| [`docs/user-guide/schema-usage.md`](docs/user-guide/schema-usage.md)       | スキーマの使い方 | ユーザー |
-| [`docs/user-guide/tools-usage.md`](docs/user-guide/tools-usage.md)         | ツールの使い方   | ユーザー |
-
-### 開発者向け
-
-| ドキュメント                                                                   | 目的             | 対象   |
-| ------------------------------------------------------------------------------ | ---------------- | ------ |
-| [`docs/development/contributing.md`](docs/development/contributing.md)         | 貢献ガイド       | 開発者 |
-| [`docs/development/tool-development.md`](docs/development/tool-development.md) | ツール開発ガイド | 開発者 |
-
----
-
-## � クイックスタート
-
-### インストール（予定）
-
-```bash
-# npm経由でインストール
-npm install -g ukiyoue
-
-# または、直接クローン
-git clone https://github.com/mahitotsu/ukiyoue.git
-cd ukiyoue
-npm install
-````
-
-### 基本的な使い方（予定）
-
-````bash
-# 新しいプロジェクトでukiyoueを初期化
-ukiyoue init my-project
-
-# ドキュメントの妥当性検証
-ukiyoue validate docs/
-
-# ドキュメントの生成
-ukiyoue generate --template=api-spec --output=docs/api.md
+詳細は [`specs/README.md`](specs/README.md) を参照してください。
 
 ---
 
@@ -215,7 +164,7 @@ cd ukiyoue
 
 # 依存関係のインストール
 bun install
-````
+```
 
 ### コードフォーマット
 
@@ -223,7 +172,7 @@ bun install
 
 #### 自動フォーマット（推奨）
 
-**Git commit時に自動実行**されます：
+**Git commit 時に自動実行**されます：
 
 ```bash
 git add .
@@ -276,13 +225,13 @@ bun run format:docs
 1. コードフォーマット: `bun run format` を実行してください
 2. フォーマットチェック: `bun run format:check` が通ることを確認してください
 
-詳細は [`docs/development/contributing.md`](docs/development/contributing.md) を参照してください。
+詳細は今後整備予定のコントリビューションガイドを参照してください。
 
 ---
 
 ## 📄 ライセンス
 
-MIT License (予定)
+MIT License（予定）
 
 ---
 
