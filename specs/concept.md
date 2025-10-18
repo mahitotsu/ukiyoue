@@ -236,27 +236,7 @@ Ukiyoue は、以下の要求を満たす技術スタックで実現します：
 
 ### 採用技術
 
-これらの要求を満たすため、以下の技術スタックを採用しています：
-
-- **データ形式**: 構造化された編集・保存形式
-- **スキーマ定義**: 構造と制約の形式的定義
-- **セマンティック定義**: 意味・関係性の形式的定義
-- **表示形式**: 人間が読みやすい形式（自動生成）
-- **実装言語**: 高速で型安全な開発環境
-
-**技術選定の詳細**:
-
-各技術の選定根拠と代替案の検討は、以下の設計判断記録（ADR）に記録されています：
-
-- [ADR-001: データフォーマット・スキーマ定義・セマンティック定義の選定](design-decisions/001-data-format-and-schema.md)
-  - JSON + JSON Schema + JSON-LD を採用
-  - Markdown は表示専用
-- [ADR-002: JSON Schema Draft 版の選定](design-decisions/002-json-schema-draft-version.md)
-  - Draft-07 を採用（ツールサポート、安定性）
-- [ADR-003: JSON-LD バージョンの選定](design-decisions/003-json-ld-version.md)
-  - JSON-LD 1.1 を採用（W3C 最新勧告）
-- [ADR-004: ツール実装言語とランタイムの選定](design-decisions/004-tool-implementation-language.md)
-  - TypeScript + Bun を採用（高速実行、型安全性）
+これらの要求を満たす技術スタックの選定と、その根拠については [`architecture.md`](architecture.md) を参照してください。
 
 ### 3 つの柱による課題解決
 
@@ -265,8 +245,6 @@ Ukiyoue は、以下の要求を満たす技術スタックで実現します：
 1. **対話可能（Conversational）**: AI エージェントとの対話、動的な情報再構成
 2. **自動生成可能（Auto-generatable）**: 構造化された形式、自動バリデーション
 3. **再利用可能（Reusable）**: コンポーネント化、セマンティック検索
-
-詳細なアーキテクチャ設計は [`architecture.md`](architecture.md) を参照してください。
 
 ---
 
