@@ -6,456 +6,143 @@
 
 ## Context
 
-JSON Schema には複数の Draft（仕様バージョン）が存在する：
+### Background
 
-- **Draft-07** (2018 年) - 広く採用されている
-- **Draft 2019-09** (2019 年) - モジュール化、新機能追加
-- **Draft 2020-12** (2020 年) - 最新安定版
+ADR-001 で JSON Schema をスキーマ定義に使用することが決定した。しかし、JSON Schema には複数の Draft（仕様バージョン）が存在し、どの版を採用するかを決定する必要がある。
 
-**前提**: ADR-001 で、JSON Schema をスキーマ定義に使用することが決定している。
+### Requirements
 
-どの Draft 版を採用するかは、ツールサポート、機能性、将来性に影響する。
+この決定は、specs/requirements.md より以下のフレームワーク要件に直接影響する：
 
-### 満たすべき要件（specs/requirements.md より）
+| 要件 ID         | 要件名                 | 関連性                               |
+| --------------- | ---------------------- | ------------------------------------ |
+| **FR-AUTO-001** | 構造化された形式の定義 | 🔴 Critical - スキーマの表現力に影響 |
+| **FR-AUTO-002** | 自動バリデーション     | 🔴 Critical - バリデータの性能・精度 |
+| **FR-CONV-002** | 動的な情報再構成       | 🟡 High - スキーマベースの変換・生成 |
 
-この決定は、以下のフレームワーク要件に直接影響する：
+### Decision Criteria
 
-| 要件 ID         | 要件名                 | 関連性                                 |
-| --------------- | ---------------------- | -------------------------------------- |
-| **FR-AUTO-001** | 構造化された形式の定義 | 🔴 Critical - スキーマ機能の充実度     |
-| **FR-AUTO-002** | 自動バリデーション     | 🔴 Critical - バリデータの性能・信頼性 |
-| **FR-CONV-002** | 動的な情報再構成       | 🟡 High - スキーマの柔軟性             |
+| 基準               | 説明                                   | 重要度      |
+| ------------------ | -------------------------------------- | ----------- |
+| **ツールサポート** | バリデータ、エディタ、コード生成の充実 | �� Critical |
+| **安定性**         | 仕様の成熟度、後方互換性               | 🔴 Critical |
+| **機能性**         | 必要な機能が揃っているか               | 🟡 High     |
+| **情報量**         | ドキュメント、事例、Q&A の豊富さ       | 🟡 High     |
+| **将来性**         | 長期サポートの見込み                   | 🟢 Medium   |
 
-Draft 版の選択は、バリデーション性能、エディタ支援、エコシステムの豊富さに直結する。
+## Options
 
-## Decision Drivers
+### Option 1: Draft-07
 
-### 1. Draft-07 (2018)
+#### Description
 
-**特徴**:
+- **リリース**: 2018年
+- **仕様**: IETF Internet-Draft (draft-handrews-json-schema-01)
+- **状態**: 広く普及、事実上の標準
 
-```json
-{
-  "$schema": "http://json-schema.org/draft-07/schema#",
-  "type": "object",
-  "properties": {
-    "name": { "type": "string" },
-    "age": { "type": "integer", "minimum": 0 }
-  },
-  "required": ["name"]
-}
-```
+#### Pros
 
-**評価**:
-| 項目 | スコア | 説明 |
-|------|--------|------|
-| ツールサポート | ⭐⭐⭐⭐⭐ | 最も広くサポートされている |
-| 機能性 | ⭐⭐⭐⭐ | 基本的な機能は充実 |
-| 成熟度 | ⭐⭐⭐⭐⭐ | 非常に安定 |
-| 将来性 | ⭐⭐⭐ | 古いバージョン |
+- ✅ **最大のツールサポート**: ajv, VSCode, JetBrains など主要ツールが完全対応
+- ✅ **圧倒的な情報量**: Stack Overflow、ブログ、書籍が豊富
+- ✅ **高い安定性**: 6年以上の実績、大規模プロジェクトで実証済み
+- ✅ **パフォーマンス**: ajv の最適化が進んでおり、バリデーション速度が速い
+- ✅ **エディタ支援**: VSCode の JSON Schema サポートは Draft-07 が最も安定
 
-**サポート状況**:
+#### Cons
 
-- ✅ ajv (JavaScript): 完全サポート
-- ✅ jsonschema (Python): 完全サポート
-- ✅ VSCode: 完全サポート
-- ✅ エコシステム: 最も豊富
+- ❌ **古い仕様**: 2018年リリースで、新機能がない
+- ❌ **一部機能不足**: `unevaluatedProperties`, `dependentSchemas` などが未サポート
+- ❌ **モジュール化なし**: スキーマの再利用性が 2019-09 より劣る
 
-**長所**:
+### Option 2: Draft 2019-09
 
-- 最も広く採用されている
-- ツール・ライブラリのサポートが最も充実
-- 情報・ドキュメントが豊富
-- 安定性が高い
+#### Description
 
-**短所**:
+- **リリース**: 2019年
+- **仕様**: IETF Internet-Draft (draft-handrews-json-schema-02)
+- **状態**: Draft-07 の後継、モジュール化
 
-- 古い仕様（2018 年）
-- 新機能がない
-- モジュール化されていない
+#### Pros
 
----
+- ✅ **モジュール化**: 仕様が Core, Validation, Hyper-Schema に分離
+- ✅ **新機能**: `unevaluatedProperties`, `dependentSchemas`, `$recursiveRef`
+- ✅ **スキーマ再利用**: `$defs` による定義の整理が改善
+- ✅ **部分的ツール対応**: ajv 8+ でサポート
 
-### 2. Draft 2019-09
+#### Cons
 
-**特徴**:
+- ❌ **ツールサポート不完全**: VSCode, JetBrains の対応が限定的
+- ❌ **情報量不足**: ドキュメント、事例が Draft-07 より少ない
+- ❌ **パフォーマンス**: ajv での最適化が Draft-07 ほど進んでいない
+- ❌ **移行コスト**: Draft-07 からの移行に調整が必要
 
-```json
-{
-  "$schema": "https://json-schema.org/draft/2019-09/schema",
-  "$id": "https://example.com/schemas/person.schema.json",
-  "$defs": {
-    "address": {
-      "type": "object",
-      "properties": {
-        "street": { "type": "string" },
-        "city": { "type": "string" }
-      }
-    }
-  },
-  "type": "object",
-  "properties": {
-    "name": { "type": "string" },
-    "address": { "$ref": "#/$defs/address" }
-  }
-}
-```
+### Option 3: Draft 2020-12
 
-**主な変更点**:
+#### Description
 
-- `definitions` → `$defs`に変更（より明確）
-- `$recursiveRef` / `$recursiveAnchor` 追加
-- `unevaluatedProperties` / `unevaluatedItems` 追加
-- メタスキーマのモジュール化
+- **リリース**: 2020年
+- **仕様**: IETF Internet-Draft (draft-bhutton-json-schema-01)
+- **状態**: 最新安定版
 
-**評価**:
-| 項目 | スコア | 説明 |
-|------|--------|------|
-| ツールサポート | ⭐⭐⭐⭐ | 主要ツールはサポート |
-| 機能性 | ⭐⭐⭐⭐⭐ | 新機能が充実 |
-| 成熟度 | ⭐⭐⭐⭐ | 安定している |
-| 将来性 | ⭐⭐⭐⭐ | 比較的新しい |
+#### Pros
 
-**サポート状況**:
+- ✅ **最新仕様**: 2020年の最新機能を含む
+- ✅ **機能改善**: `prefixItems`, `$dynamicRef` などの新機能
+- ✅ **仕様の洗練**: 2019-09 の問題点を修正
+- ✅ **将来性**: 今後の標準となる可能性
 
-- ✅ ajv: 完全サポート（v8+）
-- ✅ jsonschema (Python): サポート
-- ✅ VSCode: サポート
-- ⚠️ 一部古いツールは未対応
+#### Cons
 
-**長所**:
-
-- `unevaluatedProperties`で厳密な検証
-- `$defs`で命名が明確
-- モジュール化された構造
-
-**短所**:
-
-- Draft-07 より採用率が低い
-- 一部ツールが未対応
-- 移行期の仕様
-
----
-
-### 3. Draft 2020-12 (最新)
-
-**特徴**:
-
-```json
-{
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://example.com/schemas/person.schema.json",
-  "$defs": {
-    "positiveInteger": {
-      "type": "integer",
-      "minimum": 1
-    }
-  },
-  "type": "object",
-  "properties": {
-    "age": { "$ref": "#/$defs/positiveInteger" },
-    "score": {
-      "type": "integer",
-      "minimum": 0,
-      "maximum": 100
-    }
-  },
-  "prefixItems": [{ "type": "string" }, { "type": "number" }]
-}
-```
-
-**主な変更点**:
-
-- `$recursiveRef` → `$dynamicRef` / `$dynamicAnchor`に変更
-- `items` / `additionalItems` → `prefixItems` / `items`に分離
-- `$vocabulary`でカスタム語彙定義
-- アノテーション収集の明確化
-
-**評価**:
-| 項目 | スコア | 説明 |
-|------|--------|------|
-| ツールサポート | ⭐⭐⭐ | 対応中、まだ限定的 |
-| 機能性 | ⭐⭐⭐⭐⭐ | 最も高機能 |
-| 成熟度 | ⭐⭐⭐ | 比較的新しい |
-| 将来性 | ⭐⭐⭐⭐⭐ | 最新標準 |
-
-**サポート状況**:
-
-- ✅ ajv: サポート（v8.12+）
-- ⚠️ jsonschema (Python): 部分的サポート
-- ✅ VSCode: 部分的サポート
-- ⚠️ 多くのツールが対応中
-
-**長所**:
-
-- 最新の機能
-- より明確な仕様
-- 将来性が高い
-
-**短所**:
-
-- ツールサポートがまだ限定的
-- 情報・ドキュメントが少ない
-- 移行コストが高い
-
----
-
-## 比較マトリクス
-
-| 項目               | Draft-07   | 2019-09    | 2020-12    |
-| ------------------ | ---------- | ---------- | ---------- |
-| **ツールサポート** | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐   | ⭐⭐⭐     |
-| **機能性**         | ⭐⭐⭐⭐   | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ |
-| **成熟度**         | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐   | ⭐⭐⭐     |
-| **将来性**         | ⭐⭐⭐     | ⭐⭐⭐⭐   | ⭐⭐⭐⭐⭐ |
-| **学習コスト**     | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐   | ⭐⭐⭐     |
-| **情報量**         | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐   | ⭐⭐⭐     |
-| **VSCode 統合**    | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐   | ⭐⭐⭐⭐   |
-| **ajv サポート**   | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ |
-| **Total**          | **38/40**  | **36/40**  | **33/40**  |
-
----
+- ❌ **ツールサポート最小**: ajv は部分対応のみ、他ツールは非対応が多い
+- ❌ **情報量最小**: ドキュメント、事例がほとんどない
+- ❌ **不安定性**: 実装経験が少なく、エッジケースが未検証
+- ❌ **エディタ非対応**: VSCode などのスキーマ検証が機能しない場合がある
 
 ## Decision
 
-### ✅ 採用: **Draft-07 (with 2019-09 features)**
+**Option 1 (Draft-07) を採用する**
 
-**戦略**: Draft-07 を基本とし、必要に応じて 2019-09 の機能を使用
+### Rationale
 
-```json
-{
-  "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://ukiyoue.dev/schemas/document-base.schema.json",
-  "title": "Document Base Schema",
-  "type": "object",
-  "definitions": {
-    "metadata": {
-      "type": "object",
-      "required": ["type", "title", "version"],
-      "properties": {
-        "type": { "type": "string" },
-        "title": { "type": "string" },
-        "version": { "type": "string" }
-      }
-    }
-  },
-  "required": ["$schema", "metadata", "content"],
-  "properties": {
-    "$schema": { "type": "string", "format": "uri" },
-    "metadata": { "$ref": "#/definitions/metadata" },
-    "content": { "type": "object" }
-  }
-}
-```
+Decision Criteria の Critical 項目（ツールサポート、安定性）を最も満たすのは Draft-07：
 
-### 理由
+1. **ツールサポート** (Critical): ajv, VSCode, JetBrains など主要ツールが完全対応
+2. **安定性** (Critical): 6年以上の実績、大規模プロジェクトで実証済み
 
-1. **最大のツールサポート**
-   - ajv: 完全サポート、最高性能
-   - VSCode: 完全サポート、自動補完・検証
-   - jsonschema (Python): 完全サポート
-   - すべての主要ツールが対応
+Draft 2019-09 と 2020-12 は新機能があるが、ツールサポートと情報量の不足により、実用上のリスクが高い。
 
-2. **安定性と実績**
-   - 2018 年から使用されている
-   - 大規模プロジェクトでの実績多数
-   - バグが少なく安定
+また、Draft-07 で不足する機能（`unevaluatedProperties` など）は、スキーマ設計の工夫で回避可能。Ukiyoue フレームワークの現在の要件（FR-AUTO-001, FR-AUTO-002, FR-CONV-002）は Draft-07 の機能で十分満たせる。
 
-3. **豊富な情報・ドキュメント**
-   - チュートリアル、サンプルが豊富
-   - Stack Overflow 等の情報多数
-   - 学習コストが低い
-
-4. **段階的移行パス**
-   - 将来的に 2019-09 や 2020-12 への移行可能
-   - ajv は複数バージョン対応
-   - 後方互換性を保ちながら新機能追加可能
-
-5. **必要十分な機能**
-   - Ukiyoue の要件（構造定義、検証）を満たす
-   - `$ref`による再利用
-   - `pattern`、`enum`、`format`等の制約
-   - 複雑なスキーマにも対応
-
-### 2019-09/2020-12 の機能が必要になった場合
-
-ajv は複数 Draft 対応のため、必要に応じて併用可能：
-
-```javascript
-import Ajv from "ajv";
-import Ajv2019 from "ajv/dist/2019";
-import Ajv2020 from "ajv/dist/2020";
-
-// Draft-07（デフォルト）
-const ajv07 = new Ajv();
-
-// Draft 2019-09（必要な場合）
-const ajv2019 = new Ajv2019();
-
-// Draft 2020-12（必要な場合）
-const ajv2020 = new Ajv2020();
-```
-
----
+将来的に Draft 2019-09/2020-12 の機能が必要になった場合、JSON Schema は基本的に後方互換性があるため、段階的な移行が可能。
 
 ## Consequences
 
 ### Positive
 
-- ✅ 最高のツールサポート
-- ✅ VSCode の完全な自動補完・検証
-- ✅ ajv の最高性能
-- ✅ 安定性が高い
-- ✅ 情報・ドキュメントが豊富
-- ✅ 学習コストが低い
-- ✅ 既存エコシステムとの互換性
+- ✅ **即座の生産性**: 豊富な情報源により、学習・トラブルシュート時間を短縮
+- ✅ **エディタ支援**: VSCode でのスキーマ補完、検証が完全に機能
+- ✅ **バリデーション性能**: ajv の Draft-07 実装は最も最適化されており高速
+- ✅ **安定性**: 実績のある仕様により、予期しない問題を回避
+- ✅ **採用事例豊富**: 既存プロジェクトのスキーマを参考にできる
 
 ### Negative
 
-- ⚠️ 2019-09/2020-12 の新機能は使えない
-- ⚠️ 将来的に移行が必要になる可能性
+- ❌ **新機能なし**: `unevaluatedProperties`, `dependentSchemas` などが使えない
+- ❌ **モジュール化弱い**: スキーマの再利用性が 2019-09 より劣る
+- ❌ **将来的な移行**: いずれ新 Draft への移行が必要になる可能性
+
+### Risks
+
+- ⚠️ **Draft-07 のサポート終了**: 将来的に IETF が Draft-07 を非推奨にする可能性
+- ⚠️ **エコシステムの移行**: ツールが新 Draft に移行し、Draft-07 サポートが低下する可能性
 
 ### Mitigation
 
-- **新機能が必要な場合**:
-  - ajv は複数 Draft 対応なので併用可能
-  - スキーマごとに Draft 版を選択可能
-- **将来の移行**:
-  - Draft-07 → 2019-09 は比較的容易
-  - `definitions` → `$defs`の置換が主な変更
-  - 段階的移行が可能
-
----
-
-## Implementation Notes
-
-### スキーマファイルの基本構造
-
-```json
-{
-  "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://ukiyoue.dev/schemas/[schema-name].schema.json",
-  "title": "Schema Title",
-  "description": "Schema description",
-  "type": "object",
-  "definitions": {
-    "reusableType": {
-      "type": "object",
-      "properties": {
-        "field": { "type": "string" }
-      }
-    }
-  },
-  "required": ["field1", "field2"],
-  "properties": {
-    "field1": { "type": "string" },
-    "field2": { "$ref": "#/definitions/reusableType" }
-  }
-}
-```
-
-### VSCode 設定
-
-`.vscode/settings.json`:
-
-```json
-{
-  "json.schemas": [
-    {
-      "fileMatch": ["schemas/*.schema.json"],
-      "url": "http://json-schema.org/draft-07/schema#"
-    }
-  ]
-}
-```
-
-### ajv 使用例
-
-```typescript
-import Ajv from "ajv";
-import addFormats from "ajv-formats";
-
-const ajv = new Ajv({
-  allErrors: true, // すべてのエラーを収集
-  verbose: true, // 詳細なエラーメッセージ
-  strict: true, // 厳密モード
-  validateFormats: true, // format検証を有効化
-});
-
-addFormats(ajv); // email, uri, date-time等のformat追加
-
-const schema = {
-  $schema: "http://json-schema.org/draft-07/schema#",
-  type: "object",
-  required: ["email"],
-  properties: {
-    email: {
-      type: "string",
-      format: "email",
-    },
-  },
-};
-
-const validate = ajv.compile(schema);
-const valid = validate({ email: "test@example.com" });
-
-if (!valid) {
-  console.error(validate.errors);
-}
-```
-
----
-
-## Requirements Traceability
-
-この決定が満たすフレームワーク要件：
-
-### FR-AUTO-001: 構造化された形式の定義 ✅
-
-**実現方法**:
-
-- Draft-07 の充実した型システム（string, number, object, array, enum 等）
-- `properties`, `required`, `additionalProperties` による厳密な構造定義
-- `$ref` によるスキーマの再利用・モジュール化
-
-**効果**:
-
-- 必要十分な表現力で全ドキュメント構造を定義可能
-- スキーマの階層化・再利用により保守性向上
-
----
-
-### FR-AUTO-002: 自動バリデーション ✅
-
-**実現方法**:
-
-- ajv v8+ による最速・最高精度のバリデーション
-- `pattern`, `minLength`, `format` による細かい制約
-- `allErrors` オプションで全エラーを一度に検出
-
-**効果**:
-
-- リアルタイムバリデーション（VSCode 統合）
-- CI/CD での自動検証
-- エラー検出率 100%、False positive < 5%
-
----
-
-### FR-CONV-002: 動的な情報再構成 ✅
-
-**実現方法**:
-
-- Draft-07 の条件付きスキーマ（`if-then-else`, `oneOf`, `anyOf`）
-- メタデータフィールド（`audience`, `level`）のスキーマ定義
-- 柔軟な構造で多様なビュー生成をサポート
-
-**効果**:
-
-- 視点別・粒度別のビュー生成に必要な構造を表現可能
-- スキーマレベルで動的再構成の仕様を保証
-
----
+- 💡 **段階的移行**: 将来的に Draft 2019-09/2020-12 への移行パスを確保
+- 💡 **機能の工夫**: Draft-07 の範囲内で最大限の表現力を追求
+- 💡 **ハイブリッド戦略**: 基本は Draft-07、必要に応じて新 Draft の機能を部分的に使用
+- 💡 **監視**: ツールエコシステムの動向を監視し、適切なタイミングで移行判断
 
 ## Prerequisites
 
-- **ADR-001: データフォーマット選定** - JSON Schema 採用を前提とする
+- ADR-001: データフォーマット・スキーマ定義・セマンティック定義の選定

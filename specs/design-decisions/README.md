@@ -47,29 +47,75 @@ ADR-004: Tool Implementation
 
 ## Context
 
+### Background
+
 [背景・問題の説明]
+
+### Requirements
+
+[この決定で満たすべき要件]
+
+### Decision Criteria
+
+[選択の評価基準]
+
+## Options
+
+### Option 1: [Name]
+
+#### Description
+
+[概要]
+
+#### Pros
+
+- [利点1]
+- [利点2]
+
+#### Cons
+
+- [欠点1]
+- [欠点2]
+
+### Option 2: [Name]
+
+#### Description
+
+[概要]
+
+#### Pros
+
+- [利点1]
+
+#### Cons
+
+- [欠点1]
 
 ## Decision
 
-[決定内容]
+[選択した Option と選択理由を簡潔に記載。Context の Decision Criteria と Options の分析を参照する形で]
 
 ## Consequences
 
 ### Positive
 
-[利点]
+- [正の影響1]
+- [正の影響2]
 
 ### Negative
 
-[欠点]
+- [負の影響1]
+- [負の影響2]
+
+### Risks
+
+- [リスク1]
+- [リスク2]
 
 ### Mitigation
 
-[欠点への対策]
-
-## Alternatives Considered
-
-[検討した代替案]
+- [リスク軽減策1]
+- [リスク軽減策2]
 
 ## Prerequisites
 
