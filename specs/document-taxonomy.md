@@ -309,6 +309,10 @@ graph TB
     SysArch --> ImplGuide
     SecDesign --> ImplGuide
     ImplGuide --> SrcCode
+    FuncReq --> SrcCode
+    UIUX --> SrcCode
+    API --> SrcCode
+    DBSchema --> SrcCode
     SrcCode --> SrcDoc
 
     %% Test Flow
@@ -358,6 +362,12 @@ graph TB
 - **API Specification**: System Architecture + Data Model から派生
 - **UI/UX Specification**: Functional Requirements + Data Model から派生
 - **Implementation Guide**: System Architecture + Security Design から派生
+- **Source Code**: 最も多くの入力を持つ
+  - Functional Requirements（何を実装するか）
+  - Implementation Guide（どう実装するか）
+  - UI/UX Specification（画面ロジック）
+  - API Specification（インターフェース）
+  - Database Schema（データアクセス）
 - **Test Code**: Test Specification + Source Code から派生
 
 #### 3. 横断的な依存関係（フィードバックループ）
@@ -368,7 +378,13 @@ graph TB
 #### 4. レイヤー内の依存関係
 
 - **Data Model** → **Database Schema**（論理設計→物理設計）
-- **Implementation Guide** → **Source Code** → **Source Code Documentation**（実装方針→コード→ドキュメント）
+- **設計ドキュメント群** → **Source Code**（要件・設計を統合実装）
+  - Functional Requirements → Source Code（機能要件の実現）
+  - UI/UX Specification → Source Code（画面ロジック）
+  - API Specification → Source Code（APIエンドポイント実装）
+  - Database Schema → Source Code（データアクセス層）
+  - Implementation Guide → Source Code（実装方針）
+- **Source Code** → **Source Code Documentation**（コードからドキュメント生成）
 - **Test Plan** → **Test Specification** → **Test Code**（計画→仕様→実装）
 - **Source Code** + **Test Specification** → **Test Code**（テスト対象とテスト仕様）
 - **Operations Manual** → **Incident Response Guide** / **Troubleshooting Guide**（運用知見の派生）
