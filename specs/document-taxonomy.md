@@ -232,88 +232,133 @@ Ukiyoue フレームワークでは、ドキュメントを以下の5つのレ�
 
 ## 🔄 ドキュメント間の依存関係
 
-### 基本的な情報の流れ
+### 全体の依存関係グラフ
 
-```text
-Project Charter
-  ├─→ Roadmap
-  └─→ Business Requirements（ユーザーストーリー含む）
-        ├─→ Functional Requirements（ユースケース記述含む）
-        │     ├─→ UI/UX Specification
-        │     └─→ Test Specification
-        └─→ Non-Functional Requirements
-              └─→ Architecture Decision Record
-                    ├─→ System Architecture
-                    │     ├─→ Data Model → Database Schema
-                    │     ├─→ API Specification
-                    │     └─→ Security Design
-                    ├─→ Test Plan → Test Specification → Test Code
-                    ├─→ Implementation Guide → Source Code Documentation
-                    └─→ Deployment Guide
-                          └─→ Operations Manual
-                                ├─→ Incident Response Guide
-                                └─→ Troubleshooting Guide
+```mermaid
+graph TB
+    %% Layer 1: Project Management
+    Charter[Project Charter]
+    Roadmap[Roadmap]
+
+    %% Layer 2: Requirements
+    BizReq[Business Requirements]
+    FuncReq[Functional Requirements]
+    NonFuncReq[Non-Functional Requirements]
+
+    %% Layer 3: Design
+    ADR[Architecture Decision Record]
+    SysArch[System Architecture]
+    DataModel[Data Model]
+    UIUX[UI/UX Specification]
+    API[API Specification]
+    DBSchema[Database Schema]
+    SecDesign[Security Design]
+
+    %% Layer 4: Implementation & Test
+    ImplGuide[Implementation Guide]
+    TestPlan[Test Plan]
+    TestSpec[Test Specification]
+    TestCode[Test Code]
+    TestResults[Test Results]
+    SrcDoc[Source Code Documentation]
+
+    %% Layer 5: Operations
+    DeployGuide[Deployment Guide]
+    OpsManual[Operations Manual]
+    IncidentGuide[Incident Response Guide]
+    TroubleshootGuide[Troubleshooting Guide]
+
+    %% Project Management Flow
+    Charter --> Roadmap
+    Charter --> BizReq
+
+    %% Requirements Decomposition
+    BizReq --> FuncReq
+    BizReq --> NonFuncReq
+
+    %% Functional Requirements to Design
+    FuncReq --> UIUX
+    FuncReq --> TestSpec
+    FuncReq --> DataModel
+
+    %% Non-Functional Requirements to Architecture
+    NonFuncReq --> ADR
+    ADR --> SysArch
+    ADR --> SecDesign
+
+    %% Architecture to Detailed Design
+    SysArch --> DataModel
+    SysArch --> API
+    SysArch --> SecDesign
+    SysArch --> DeployGuide
+
+    %% Data Design Flow
+    DataModel --> DBSchema
+    DataModel --> API
+    DataModel --> UIUX
+
+    %% Design to Implementation
+    SysArch --> ImplGuide
+    SecDesign --> ImplGuide
+    ImplGuide --> SrcDoc
+
+    %% Test Flow
+    FuncReq --> TestPlan
+    TestPlan --> TestSpec
+    TestSpec --> TestCode
+    TestCode --> TestResults
+
+    %% Deployment & Operations
+    DeployGuide --> OpsManual
+    OpsManual --> IncidentGuide
+    OpsManual --> TroubleshootGuide
+
+    %% Cross-cutting Dependencies (dotted lines)
+    TestResults -.-> Roadmap
+    TestResults -.-> BizReq
+    SrcDoc -.-> TroubleshootGuide
+    IncidentGuide -.-> TroubleshootGuide
+
+    %% Styling
+    classDef layer1 fill:#e1f5ff,stroke:#01579b,stroke-width:2px
+    classDef layer2 fill:#fff9c4,stroke:#f57f17,stroke-width:2px
+    classDef layer3 fill:#f3e5f5,stroke:#4a148c,stroke-width:2px
+    classDef layer4 fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px
+    classDef layer5 fill:#ffe0b2,stroke:#e65100,stroke-width:2px
+
+    class Charter,Roadmap layer1
+    class BizReq,FuncReq,NonFuncReq layer2
+    class ADR,SysArch,DataModel,UIUX,API,DBSchema,SecDesign layer3
+    class ImplGuide,TestPlan,TestSpec,TestCode,TestResults,SrcDoc layer4
+    class DeployGuide,OpsManual,IncidentGuide,TroubleshootGuide layer5
 ```
 
-### 主要な依存関係のパターン
+### 依存関係の特徴
 
-#### パターン1: 要件の分解（トップダウン）
+#### 1. トップダウンフロー（計画→実装）
 
-```text
-Business Requirements（ビジネス目標、ユーザーストーリー）
-  ├─→ Functional Requirements（機能要件、ユースケース記述含む）
-  └─→ Non-Functional Requirements（品質要求）
-```
+- **Project Charter** がすべての起点
+- 要件定義（Layer 2）で **Business Requirements** が分解される
+- 設計（Layer 3）で技術的な詳細化
+- 実装・テスト（Layer 4）で具現化
 
-**抽象度**: Business Requirements（WHY/WHO） > Functional Requirements（WHAT/HOW）
+#### 2. 複数の入力を持つドキュメント
 
-#### パターン2: 要件から設計へ
+- **Data Model**: Functional Requirements + System Architecture から派生
+- **API Specification**: System Architecture + Data Model から派生
+- **UI/UX Specification**: Functional Requirements + Data Model から派生
+- **Implementation Guide**: System Architecture + Security Design から派生
 
-```text
-Functional Requirements（ユースケース記述含む）
-  ├─→ UI/UX Specification（UIとして具体化）
-  └─→ Test Specification（検証方法）
+#### 3. 横断的な依存関係（フィードバックループ）
 
-Non-Functional Requirements
-  └─→ ADR（技術選定の根拠）
-        └─→ System Architecture（システム構造）
-```
+- **Test Results** → Project Management（品質評価）
+- **Troubleshooting Guide** ← Source Code Documentation + Incident Response（知見蓄積）
 
-#### パターン3: 設計から実装へ
+#### 4. レイヤー内の依存関係
 
-```text
-System Architecture
-  ├─→ Data Model → Database Schema（データ設計）
-  ├─→ API Specification（インターフェース設計）
-  └─→ Security Design（セキュリティ設計）
-        └─→ Implementation Guide（実装方針）
-              └─→ Source Code Documentation（コード）
-```
-
-#### パターン4: テストの連鎖
-
-```text
-Functional Requirements → Test Plan → Test Specification
-                                      ├─→ Test Code（自動化）
-                                      └─→ Test Results（結果）
-```
-
-#### パターン5: 運用への展開
-
-```text
-System Architecture → Deployment Guide → Operations Manual
-                                       ├─→ Incident Response Guide
-                                       └─→ Troubleshooting Guide
-```
-
-### 横断的な依存関係
-
-以下のドキュメントは複数のドキュメントから参照されます：
-
-- **ADR**: 技術選定の根拠として多くの設計ドキュメントから参照
-- **Data Model**: API、UI、テストなど多くの実装ドキュメントから参照
-- **Test Results**: 品質評価のためプロジェクト管理層から参照
-- **Troubleshooting Guide**: 開発・運用の両方から更新・参照
+- **Data Model** → **Database Schema**（論理設計→物理設計）
+- **Test Plan** → **Test Specification** → **Test Code**（計画→仕様→実装）
+- **Operations Manual** → **Incident Response Guide** / **Troubleshooting Guide**（運用知見の派生）
 
 ---
 
