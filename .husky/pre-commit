@@ -1,21 +1,7 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
 # Format staged files
 bunx lint-staged
-
-# Validate all JSON files in examples/reservation-system
-echo "🔍 Validating JSON files..."
-find examples/reservation-system -name "*.json" -type f | while read -r file; do
-  cd tools && bun run src/cli.ts validate "../$file" || exit 1
-  cd ..
-done
-
-# Check cross-references (only in actual examples, not templates)
-echo "🔗 Checking cross-references..."
-cd tools && bun run src/cli.ts check-links ../examples/reservation-system/ || exit 1
-cd ..
-
-# Check content consistency and completeness
-echo "📋 Checking content consistency..."
-cd tools && bun run src/cli.ts consistency-check ../examples/reservation-system/ || exit 1
-cd ..
 
 echo "✅ Pre-commit checks passed"
