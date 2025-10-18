@@ -17,11 +17,10 @@
 - **Language**: TypeScript
 - **Key Libraries**: ajv v8+, jsonld.js v5+, commander, chalk, ora
 
-**Implemented Tools**:
+**Current Status**: Phase 0 (Specification & Design)
 
-- `validate`: JSON Schema validation (structure verification)
-- `check-links`: Cross-reference validation (ID existence checking)
-- `consistency-check`: Content quality validation (completeness, naming conventions, metrics validity)
+- Implemented: Concept, requirements, ADRs (001-004)
+- Next: Document taxonomy and I/O relationships design
 
 ### 3. Critical Design Decisions (ADRs)
 
@@ -39,11 +38,16 @@
 
 ### 5. Workspace Structure
 
-Multi-root workspace with 3 projects:
+Current state (Phase 0):
 
-- **🎨 Ukiyoue Framework** (Root): specs/, schemas/, semantics/
-- **🔧 Tools** (CLI & Validator): TypeScript+Bun implementation
-- **📘 Examples** & Templates: Sample documents
+- **🎨 Ukiyoue Framework** (Root): specs/ (specification documents and ADRs)
+- **📁 Empty directories**: schemas/, semantics/, tools/, examples/ (to be implemented)
+
+Next steps:
+
+- Define document taxonomy and I/O relationships
+- Design detailed schema structure
+- Begin Phase 1 implementation
 
 ### 6. Code Quality Standards
 
@@ -145,13 +149,14 @@ await jsonld.expand(doc);
 - Use Draft-07 JSON Schema with ajv
 - Use JSON-LD 1.1 with jsonld.js
 
-### 📘 Examples Project Exception
+### 📘 Future Implementation (examples/)
 
-- In `examples/` directory, **this is where the new framework approach is demonstrated**
-- Edit JSON source files → Validate with schemas → Generate Markdown for display
-- Example Markdown files are auto-generated outputs (read-only demonstration)
-- This project showcases how users should use the Ukiyoue framework (per ADR-001)
-- Templates in `examples/templates/` provide starting points for framework users
+When implementing the `examples/` directory:
+
+- **Demonstrate the framework approach**: Edit JSON source files → Validate with schemas → Generate Markdown for display
+- Example Markdown files should be auto-generated outputs (read-only demonstration)
+- Showcase how users should use the Ukiyoue framework (per ADR-001)
+- Provide templates in `examples/templates/` as starting points for framework users
 
 ## Reasoning Chain
 
