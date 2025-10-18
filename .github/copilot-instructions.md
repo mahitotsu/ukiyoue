@@ -116,20 +116,20 @@ Next steps:
 
 Use JSON Schema Draft-07 with the following required fields:
 
-- \$schema: <http://json-schema.org/draft-07/schema#>
-- \$id: <https://ukiyoue.dev/schemas/[name>]
-- title: Descriptive name
-- type: object (typically)
-- required: Array of required properties
-- properties: Object defining each property
+- \$schema field: Draft-07 spec URL
+- \$id field: Schema identifier URL
+- title field: Descriptive name
+- type field: Usually "object"
+- required field: Array of required property names
+- properties field: Property definitions
 
 ### When Creating JSON-LD Files
 
 Use JSON-LD 1.1 with the following context structure:
 
-- @context.@version: 1.1
-- @context.@vocab: <https://ukiyoue.dev/vocab#>
-- @context.@protected: true
+- @context.@version field: Set to 1.1
+- @context.@vocab field: Vocabulary base URL
+- @context.@protected field: Set to true
 - Use nested context and @import for complex definitions
 
 ### When Implementing Tools (TypeScript + Bun)
