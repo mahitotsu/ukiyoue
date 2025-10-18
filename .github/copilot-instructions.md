@@ -17,10 +17,12 @@
 - **Language**: TypeScript
 - **Key Libraries**: ajv v8+, jsonld.js v5+, commander, chalk, ora
 
-**Current Status**: Phase 0 (Specification & Design)
+**Current Status**: Phase 0 (Specification & Design) - ✅ Complete
 
-- Implemented: Concept, requirements, ADRs (001-004)
-- Next: Document taxonomy and I/O relationships design
+- ✅ Implemented: Concept, requirements, architecture, ADRs (001-004)
+- ✅ Tooling: Prettier, markdownlint-cli2, lint-staged, Husky
+- ✅ Documentation: Clear hierarchy (concept → architecture → ADRs)
+- 📋 Next: Document taxonomy and I/O relationships design (Phase 1)
 
 ### 3. Critical Design Decisions (ADRs)
 
@@ -33,8 +35,9 @@
 
 - **No Manual Metadata**: Remove YAML headers, version footers, "Last updated" dates
 - **Use Git**: Rely on `git log`, `git blame`, `git tag` for all metadata
-- **Clear Hierarchy**: concept.md (WHY/WHAT) → architecture.md (HOW) → ADRs (WHY this tech)
+- **Clear Hierarchy**: concept.md (WHY/WHAT) → architecture.md (HOW/技術選定) → ADRs (WHY this tech)
 - **No Redundancy**: Keep concepts in one place, reference from others
+- **Document Delegation**: concept.md → architecture.md → ADRs (technology-neutral → technical decisions → rationale)
 
 **README Hierarchy & Role Separation**:
 
@@ -78,12 +81,13 @@ Next steps:
 - **JSON Schema**: Draft-07 syntax, use `$ref` for reusability
 - **JSON-LD**: Version 1.1 features (nested context, @protected, @import)
 - **Validation**: ajv with `allErrors: true, strict: true`
+- **Markdown**: Use markdownlint-cli2 for linting, automatic fixes via lint-staged
 
 ### 7. Requirements Traceability
 
 - Always link decisions to requirements (FR-CONV-xxx, FR-AUTO-xxx, FR-REUSE-xxx)
 - Document which requirements are satisfied and how
-- Include expected effects with metrics
+- NO quantitative metrics without evidence (removed unsubstantiated numbers)
 
 ### 8. File Operations
 
@@ -160,6 +164,8 @@ await jsonld.expand(doc);
 - Assume file contents without reading them first
 - Use JSON Schema 2019-09 or 2020-12 (use Draft-07 per ADR-002)
 - Use JSON-LD 1.0 (use 1.1 per ADR-003)
+- Disable markdownlint rules without fixing the actual Markdown issues
+- Add quantitative metrics without evidence or measurement
 
 ### ✅ DO (Framework Development)
 
@@ -167,14 +173,16 @@ await jsonld.expand(doc);
 - For framework code (tools/): Use TypeScript with strict types
 - Use Bun for all JavaScript/TypeScript execution
 - Rely on Git for all metadata (dates, versions, authors)
-- Keep concept.md lightweight (WHY/WHAT only)
-- Keep architecture.md detailed (HOW with ADR links)
+- Keep concept.md technology-neutral (WHY/WHAT only, delegate to architecture.md)
+- Keep architecture.md focused on current decisions (HOW, with ADR links)
 - Keep root README.md brief and link to detailed docs
 - Keep subdirectory READMEs focused on their directory navigation only
 - Use strict TypeScript types everywhere
 - Read context before making edits
 - Use Draft-07 JSON Schema with ajv
 - Use JSON-LD 1.1 with jsonld.js
+- Fix Markdown issues properly (headings, code block languages, bullet lists)
+- Run `bun run lint:md` to check Markdown before committing
 
 ### 📘 Future Implementation (examples/)
 
