@@ -2,58 +2,60 @@
 
 **フレームワークのアーキテクチャ設計**
 
----
-
 ## 🎯 このドキュメントの目的
 
-Ukiyoue フレームワークの全体アーキテクチャと、各コンポーネントの設計を定義します。
+Ukiyoue フレームワークの全体アーキテクチャと技術選定の概要を示します。
 
 **対象読者**: フレームワーク開発者、貢献者
 **使用場面**: 実装開始前、設計レビュー時、新規コンポーネント追加時
 
-**技術基盤**:
+**注**: 詳細な技術選定の根拠は各 ADR（Architecture Decision Record）を参照してください。
 
-- データフォーマット: JSON + JSON Schema Draft-07 + JSON-LD 1.1（[ADR-001](design-decisions/001-data-format-and-schema.md)）
-- 実装言語: TypeScript + Bun（[ADR-004](design-decisions/004-tool-implementation-language.md)）
+## 📋 技術選定の概要
 
----
+Ukiyoue フレームワークの技術基盤は、以下の ADR で決定されています：
+
+| 決定事項                      | 選定結果                     | ADR                                                             |
+| ----------------------------- | ---------------------------- | --------------------------------------------------------------- |
+| **データフォーマット**        | JSON + JSON Schema + JSON-LD | [ADR-001](design-decisions/001-data-format-and-schema.md)       |
+| **JSON Schema バージョン**    | Draft-07                     | [ADR-002](design-decisions/002-json-schema-draft-version.md)    |
+| **JSON-LD バージョン**        | 1.1                          | [ADR-003](design-decisions/003-json-ld-version.md)              |
+| **ツール実装言語/ランタイム** | TypeScript + Bun             | [ADR-004](design-decisions/004-tool-implementation-language.md) |
+
+### 選定理由の要約
+
+- **JSON + JSON Schema + JSON-LD**: 厳密な構造化、完全な検証可能性、AI/LLM 最適化、セマンティック対応
+- **Draft-07**: 最大のツールサポート（ajv, VSCode）、6年以上の実績、圧倒的な情報量
+- **JSON-LD 1.1**: W3C 最新勧告、Nested context/`@protected`/`@import` による強力な意味定義
+- **TypeScript + Bun**: 最高の JSON エコシステム（ajv, jsonld.js）、Node.js の 3〜4 倍の実行速度
+
+詳細は各 ADR を参照してください。
 
 ## 🏗️ 全体アーキテクチャ
 
-### 技術選定の根拠
-
-各層の技術選定の詳細な根拠は、以下の設計判断記録（ADR）を参照してください：
-
-- [ADR-001: データフォーマット・スキーマ定義・セマンティック定義の選定](design-decisions/001-data-format-and-schema.md) - JSON + JSON Schema + JSON-LD 採用
-- [ADR-002: JSON Schema Draft 版の選定](design-decisions/002-json-schema-draft-version.md) - Draft-07 採用の根拠
-- [ADR-003: JSON-LD バージョンの選定](design-decisions/003-json-ld-version.md) - JSON-LD 1.1 採用の根拠
-- [ADR-004: ツール実装言語とランタイムの選定](design-decisions/004-tool-implementation-language.md) - TypeScript + Bun 採用の根拠
-
-### 4 層アーキテクチャ
+### 4 層構成
 
 ```mermaid
 graph TB
-    subgraph Tools["Tools Layer"]
+    subgraph Tools["Tools Layer<br/>(TypeScript + Bun)"]
         Validator[Validator]
-        Generator[Generator]
+        Generator[Markdown Generator]
         Analyzer[Analyzer]
         CLI[CLI]
     end
 
-    subgraph Semantics["Semantics Layer"]
-        JSONLD[JSON-LD Context]
+    subgraph Semantics["Semantics Layer<br/>(JSON-LD 1.1)"]
+        Context[JSON-LD Context]
         Vocabularies[Vocabularies]
-        Ontologies[Ontologies]
     end
 
-    subgraph Schema["Schema Layer"]
-        JSONSchemaBase[JSON Schema Base]
-        DocumentTypes[Document Types]
-        ComponentSchemas[Component Schemas]
+    subgraph Schema["Schema Layer<br/>(JSON Schema Draft-07)"]
+        BaseSchema[Base Schema]
+        TypeSchemas[Document Type Schemas]
     end
 
-    subgraph Data["Data Layer"]
-        JSONDocs[JSON Documents<br/>User Content]
+    subgraph Data["Data Layer<br/>(JSON)"]
+        Documents[JSON Documents]
     end
 
     Tools <--> Semantics
@@ -63,706 +65,167 @@ graph TB
 
 ### 各層の責務
 
-| 層                  | 責務                           | 技術                 | 選定根拠         |
-| ------------------- | ------------------------------ | -------------------- | ---------------- |
-| **Data Layer**      | ドキュメントの実際の内容を保持 | JSON                 | ADR-001          |
-| **Schema Layer**    | 構造の形式的定義と検証ルール   | JSON Schema Draft-07 | ADR-001, ADR-002 |
-| **Semantics Layer** | 意味・関係性の定義             | JSON-LD 1.1          | ADR-001, ADR-003 |
-| **Tools Layer**     | 自動化ツールの提供             | TypeScript + Bun     | ADR-004          |
+| 層                  | 責務                         | 技術                 | 決定根拠         | 実装状態  |
+| ------------------- | ---------------------------- | -------------------- | ---------------- | --------- |
+| **Tools Layer**     | バリデーション、生成、分析   | TypeScript + Bun     | ADR-004          | 🟡 一部   |
+| **Semantics Layer** | 意味・関係性の定義           | JSON-LD 1.1          | ADR-001, ADR-003 | ⏳ 未実装 |
+| **Schema Layer**    | 構造の形式的定義と検証ルール | JSON Schema Draft-07 | ADR-001, ADR-002 | ⏳ 未実装 |
+| **Data Layer**      | ドキュメントの実際の内容     | JSON                 | ADR-001          | ⏳ 未実装 |
 
-**技術選定の詳細**:
+## 📦 現在の実装状態（Phase 0）
 
-- **JSON Schema Draft-07**: 最大のツールサポート、安定性、ajv 完全対応（[ADR-002](design-decisions/002-json-schema-draft-version.md)）
-- **JSON-LD 1.1**: W3C 最新勧告、nested context/`@protected`等の新機能（[ADR-003](design-decisions/003-json-ld-version.md)）
-- **TypeScript + Bun**: 最速起動（~20ms）、ajv/jsonld.js 最適サポート（[ADR-004](design-decisions/004-tool-implementation-language.md)）
+### 実装済み
 
----
+| コンポーネント   | 説明                             | 技術スタック     | 状態 |
+| ---------------- | -------------------------------- | ---------------- | ---- |
+| 仕様策定         | concept, requirements, ADRs      | Markdown         | ✅   |
+| プロジェクト構成 | ワークスペース、package.json     | Bun              | ✅   |
+| 開発環境         | Husky, lint-staged, markdownlint | TypeScript + Bun | ✅   |
 
-## 📦 コンポーネント構成
+### 未実装（計画中）
 
-### 1. Schema Layer
+| レイヤー            | コンポーネント            | 優先度   | 予定フェーズ |
+| ------------------- | ------------------------- | -------- | ------------ |
+| **Schema Layer**    | document-base.schema.json | Critical | Phase 1      |
+|                     | Document Type Schemas     | Critical | Phase 1      |
+| **Semantics Layer** | context.jsonld            | High     | Phase 1      |
+|                     | Vocabularies              | High     | Phase 2      |
+| **Tools Layer**     | Schema Validator          | Critical | Phase 1      |
+|                     | Markdown Generator        | Critical | Phase 1      |
+|                     | Link Checker              | High     | Phase 1      |
+|                     | Quality Analyzer          | Medium   | Phase 2      |
+| **Data Layer**      | Example Documents         | High     | Phase 1      |
+|                     | Templates                 | Medium   | Phase 1      |
 
-#### 1.1 document-base.schema.json
+## 🔄 想定されるワークフロー
 
-**役割**: 全ドキュメント共通の基底スキーマ
-
-**構造**:
-
-```json
-{
-  "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://ukiyoue.dev/schemas/document-base.schema.json",
-  "title": "Document Base Schema",
-  "type": "object",
-  "required": ["$schema", "@context", "metadata", "content"],
-  "properties": {
-    "$schema": {
-      "type": "string",
-      "description": "JSON Schema reference"
-    },
-    "@context": {
-      "type": "string",
-      "description": "JSON-LD context reference"
-    },
-    "metadata": {
-      "$ref": "#/definitions/metadata"
-    },
-    "content": {
-      "type": "object",
-      "description": "Document content"
-    }
-  },
-  "definitions": {
-    "metadata": {
-      "type": "object",
-      "required": ["type", "title", "version", "created", "updated"],
-      "properties": {
-        "type": { "type": "string" },
-        "title": { "type": "string" },
-        "version": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$" },
-        "created": { "type": "string", "format": "date-time" },
-        "updated": { "type": "string", "format": "date-time" },
-        "authors": {
-          "type": "array",
-          "items": { "$ref": "#/definitions/author" }
-        },
-        "tags": {
-          "type": "array",
-          "items": { "type": "string" }
-        },
-        "audience": {
-          "type": "array",
-          "items": {
-            "enum": ["developer", "pm", "stakeholder", "ai-agent"]
-          }
-        }
-      }
-    },
-    "author": {
-      "type": "object",
-      "required": ["name"],
-      "properties": {
-        "name": { "type": "string" },
-        "email": { "type": "string", "format": "email" },
-        "url": { "type": "string", "format": "uri" }
-      }
-    }
-  }
-}
-```
-
-#### 1.2 types/\*.schema.json
-
-**役割**: ドキュメントタイプ別の特化スキーマ
-
-**例: technical-spec.schema.json**:
-
-```json
-{
-  "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://ukiyoue.dev/schemas/types/technical-spec.schema.json",
-  "title": "Technical Specification Schema",
-  "allOf": [{ "$ref": "../document-base.schema.json" }],
-  "properties": {
-    "metadata": {
-      "properties": {
-        "type": { "const": "technical-specification" }
-      }
-    },
-    "content": {
-      "type": "object",
-      "required": ["overview", "requirements", "design"],
-      "properties": {
-        "overview": { "type": "string" },
-        "requirements": {
-          "type": "array",
-          "items": { "$ref": "#/definitions/requirement" }
-        },
-        "design": {
-          "type": "object",
-          "properties": {
-            "architecture": { "type": "string" },
-            "components": { "type": "array" },
-            "dataModel": { "type": "object" }
-          }
-        },
-        "implementation": {
-          "type": "object",
-          "properties": {
-            "approach": { "type": "string" },
-            "technologies": { "type": "array" },
-            "considerations": { "type": "string" }
-          }
-        }
-      }
-    }
-  },
-  "definitions": {
-    "requirement": {
-      "type": "object",
-      "required": ["id", "description"],
-      "properties": {
-        "id": { "type": "string" },
-        "description": { "type": "string" },
-        "priority": {
-          "enum": ["critical", "high", "medium", "low"]
-        },
-        "status": {
-          "enum": ["draft", "approved", "implemented", "deprecated"]
-        }
-      }
-    }
-  }
-}
-```
-
----
-
-### 2. Semantics Layer
-
-#### 2.1 context.jsonld
-
-**役割**: 基本的な JSON-LD コンテキストの定義
-
-**構造**:
-
-```json
-{
-  "@context": {
-    "@version": 1.1,
-    "@vocab": "http://schema.org/",
-    "ukiyoue": "https://ukiyoue.dev/vocab#",
-
-    "Document": "ukiyoue:Document",
-    "Component": "ukiyoue:Component",
-
-    "dependsOn": {
-      "@id": "ukiyoue:dependsOn",
-      "@type": "@id",
-      "@container": "@set"
-    },
-    "relatedTo": {
-      "@id": "ukiyoue:relatedTo",
-      "@type": "@id",
-      "@container": "@set"
-    },
-    "implements": {
-      "@id": "ukiyoue:implements",
-      "@type": "@id"
-    },
-    "supersedes": {
-      "@id": "ukiyoue:supersedes",
-      "@type": "@id"
-    },
-
-    "author": {
-      "@id": "http://schema.org/author",
-      "@type": "@id"
-    },
-    "created": {
-      "@id": "http://schema.org/dateCreated",
-      "@type": "http://www.w3.org/2001/XMLSchema#dateTime"
-    },
-    "updated": {
-      "@id": "http://schema.org/dateModified",
-      "@type": "http://www.w3.org/2001/XMLSchema#dateTime"
-    },
-
-    "tags": {
-      "@id": "http://schema.org/keywords",
-      "@container": "@set"
-    },
-    "audience": {
-      "@id": "http://schema.org/audience",
-      "@container": "@set"
-    }
-  }
-}
-```
-
-#### 2.2 vocabularies/document.jsonld
-
-**役割**: ドキュメント関連の語彙定義
-
-```json
-{
-  "@context": "https://ukiyoue.dev/context.jsonld",
-  "@graph": [
-    {
-      "@id": "ukiyoue:Document",
-      "@type": "rdfs:Class",
-      "rdfs:label": "Document",
-      "rdfs:comment": "Base class for all documentation"
-    },
-    {
-      "@id": "ukiyoue:TechnicalSpecification",
-      "@type": "rdfs:Class",
-      "rdfs:subClassOf": "ukiyoue:Document",
-      "rdfs:label": "Technical Specification",
-      "rdfs:comment": "A technical specification document"
-    },
-    {
-      "@id": "ukiyoue:APIDocumentation",
-      "@type": "rdfs:Class",
-      "rdfs:subClassOf": "ukiyoue:Document",
-      "rdfs:label": "API Documentation"
-    },
-    {
-      "@id": "ukiyoue:dependsOn",
-      "@type": "rdf:Property",
-      "rdfs:label": "depends on",
-      "rdfs:comment": "Indicates a dependency relationship",
-      "rdfs:domain": "ukiyoue:Document",
-      "rdfs:range": "ukiyoue:Document"
-    }
-  ]
-}
-```
-
----
-
-### 3. Tools Layer
-
-#### 3.0 実装状況（2025年10月現在）
-
-**実装済みツール**:
-
-| ツール              | 目的                           | 技術スタック               | 状態 |
-| ------------------- | ------------------------------ | -------------------------- | ---- |
-| `validate`          | JSON Schema検証                | ajv v8 + Draft-07          | ✅   |
-| `check-links`       | クロスリファレンス検証         | TypeScript + Bun           | ✅   |
-| `consistency-check` | コンテンツ品質検証（Phase 1）  | TypeScript + Bun           | ✅   |
-| CLI                 | コマンドラインインターフェース | Commander.js v12           | ✅   |
-| Pre-commit hook     | Git統合（品質ゲート）          | Husky v9 + lint-staged v15 | ✅   |
-
-**consistency-check機能**（Phase 1実装完了）:
-
-- ✅ 完全性チェック: UC→要件、受入基準、Critical→テストケース
-- ✅ 命名規則チェック: 用語統一性、長さ、曖昧表現
-- ✅ メトリクス妥当性チェック: 数値基準→metricsフィールド、単位一貫性
-- ✅ 未使用エンティティ検出: 使われていないアクター/ステークホルダー
-- ✅ 循環依存検出: ユースケース前提条件の循環参照
-
-**未実装・計画中**:
-
-- ⏳ Generator: Markdown自動生成
-- ⏳ Formatter: ドキュメント整形
-- ⏳ Analyzer (Phase 2): AI/NLP活用した高度な分析
-
-詳細は [`tools/README.md`](../tools/README.md) を参照。
-
----
-
-#### 3.1 アーキテクチャパターン
-
-**採用パターン**: Plugin Architecture
+### ドキュメント作成フロー（実装後）
 
 ```mermaid
-graph TB
-    subgraph CoreFramework["Core Framework"]
-        ConfigManager[Configuration Manager]
-        SchemaLoader[Schema Loader]
-        JSONLDProcessor[JSON-LD Processor]
-        PluginManager[Plugin Manager]
-
-        ConfigManager --- SchemaLoader
-        SchemaLoader --- JSONLDProcessor
-        JSONLDProcessor --- PluginManager
-    end
-
-    ValidatorPlugin[Validator Plugin]
-    GeneratorPlugin[Generator Plugin]
-    AnalyzerPlugin[Analyzer Plugin]
-
-    PluginManager <--> ValidatorPlugin
-    PluginManager <--> GeneratorPlugin
-    PluginManager <--> AnalyzerPlugin
+flowchart LR
+    A[JSON Document<br/>作成/編集] --> B[Schema Validation<br/>ajv + Draft-07]
+    B --> C{Valid?}
+    C -->|Yes| D[Markdown Generation<br/>自動生成]
+    C -->|No| A
+    D --> E[Human-Readable<br/>Markdown]
 ```
 
-#### 3.2 コアモジュール
+### バリデーションフロー（実装後）
 
-##### ConfigurationManager
-
-```typescript
-class ConfigurationManager {
-  private config: UkiyoueConfig;
-
-  constructor(configPath?: string) {
-    this.config = this.loadConfig(configPath);
-  }
-
-  get schemaPath(): string {
-    return this.config.schemas.basePath;
-  }
-
-  get semanticsPath(): string {
-    return this.config.semantics.contextPath;
-  }
-
-  // ... other getters
-}
+```mermaid
+flowchart TD
+    Input[JSON Document] --> SchemaCheck[Schema Validation<br/>Draft-07]
+    SchemaCheck --> LinkCheck[Link Validation]
+    LinkCheck --> SemanticCheck[Semantic Validation<br/>JSON-LD 1.1]
+    SemanticCheck --> Result{All Pass?}
+    Result -->|Yes| Success[✅ Valid]
+    Result -->|No| Failure[❌ Errors]
 ```
 
-##### SchemaLoader
-
-```typescript
-class SchemaLoader {
-  private cache: Map<string, JSONSchema>;
-
-  async loadSchema(schemaId: string): Promise<JSONSchema> {
-    if (this.cache.has(schemaId)) {
-      return this.cache.get(schemaId)!;
-    }
-
-    const schema = await this.fetchSchema(schemaId);
-    this.cache.set(schemaId, schema);
-    return schema;
-  }
-
-  async resolveRef(ref: string): Promise<JSONSchema> {
-    // $ref の解決
-  }
-}
-```
-
-##### JSONLDProcessor
-
-#### 3.2 JSON-LD Processor
-
-```typescript
-import * as jsonld from "jsonld";
-
-// JSON-LD 1.1 完全対応（ADR-003）
-class JSONLDProcessor {
-  async expand(document: any): Promise<any> {
-    return jsonld.expand(document);
-  }
-
-  async compact(document: any, context: any): Promise<any> {
-    return jsonld.compact(document, context);
-  }
-
-  async frame(document: any, frame: any): Promise<any> {
-    return jsonld.frame(document, frame);
-  }
-
-  async normalize(document: any): Promise<string> {
-    // RDF正規化（JSON-LD 1.1機能）
-    return jsonld.normalize(document, {
-      algorithm: "URDNA2015",
-      format: "application/n-quads",
-    });
-  }
-}
-```
-
-#### 3.3 プラグイン
-
-##### Validator Plugin
-
-```typescript
-interface ValidatorPlugin {
-  name: string;
-  validate(document: any): Promise<ValidationResult>;
-}
-
-class SchemaValidator implements ValidatorPlugin {
-  name = "schema-validator";
-
-  async validate(document: any): Promise<ValidationResult> {
-    // ajv v8+ を使用（Draft-07完全対応、ADR-002/004）
-    const ajv = new Ajv({ allErrors: true, strict: true });
-    const schema = await this.loadSchema(document.$schema);
-    const valid = ajv.validate(schema, document);
-
-    return {
-      valid,
-      errors: ajv.errors || [],
-    };
-  }
-}
-
-class LinkChecker implements ValidatorPlugin {
-  name = "link-checker";
-
-  async validate(document: any): Promise<ValidationResult> {
-    const links = this.extractLinks(document);
-    const results = await Promise.all(
-      links.map((link) => this.checkLink(link))
-    );
-
-    return {
-      valid: results.every((r) => r.valid),
-      errors: results.filter((r) => !r.valid),
-    };
-  }
-}
-```
-
-##### Generator Plugin
-
-```typescript
-interface GeneratorPlugin {
-  name: string;
-  generate(template: string, data: any): Promise<any>;
-}
-
-class TemplateGenerator implements GeneratorPlugin {
-  name = "template-generator";
-
-  async generate(template: string, data: any): Promise<any> {
-    const templateContent = await this.loadTemplate(template);
-    const compiled = Handlebars.compile(templateContent);
-    return JSON.parse(compiled(data));
-  }
-}
-```
-
-##### Analyzer Plugin
-
-```typescript
-interface AnalyzerPlugin {
-  name: string;
-  analyze(document: any): Promise<AnalysisResult>;
-}
-
-class QualityAnalyzer implements AnalyzerPlugin {
-  name = 'quality-analyzer';
-
-  async analyze(document: any): Promise<AnalysisResult> {
-    const completeness = this.checkCompleteness(document);
-    const consistency = this.checkConsistency(document);
-    const freshness = this.checkFreshness(document);
-
-    return {
-      score: this.calculateScore(completeness, consistency, freshness),
-      metrics: { completeness, consistency, freshness },
-      suggestions: this.generateSuggestions(...)
-    };
-  }
-}
-```
-
----
-
-## 🔌 プラグインインターフェース
-
-### Plugin Registration
-
-```typescript
-class PluginManager {
-  private plugins: Map<string, Plugin[]> = new Map();
-
-  register(type: PluginType, plugin: Plugin): void {
-    if (!this.plugins.has(type)) {
-      this.plugins.set(type, []);
-    }
-    this.plugins.get(type)!.push(plugin);
-  }
-
-  async execute(
-    type: PluginType,
-    method: string,
-    ...args: any[]
-  ): Promise<any[]> {
-    const plugins = this.plugins.get(type) || [];
-    return Promise.all(plugins.map((plugin) => plugin[method](...args)));
-  }
-}
-```
-
-### Plugin Configuration
-
-```yaml
-# .ukiyoue/config.yml
-plugins:
-  validators:
-    - name: schema-validator
-      enabled: true
-    - name: link-checker
-      enabled: true
-      options:
-        timeout: 5000
-    - name: consistency-checker
-      enabled: true
-      dictionary: .ukiyoue/dictionary.yml
-
-  generators:
-    - name: template-generator
-      enabled: true
-      templatesPath: templates/
-
-  analyzers:
-    - name: quality-analyzer
-      enabled: true
-    - name: impact-analyzer
-      enabled: false
-```
-
----
-
-## 📂 ディレクトリ構造
+## 📂 ディレクトリ構造（計画）
 
 ```
 ukiyoue/
-├── src/
-│   ├── core/
-│   │   ├── ConfigurationManager.ts
-│   │   ├── SchemaLoader.ts
-│   │   ├── JSONLDProcessor.ts
-│   │   └── PluginManager.ts
-│   ├── plugins/
-│   │   ├── validators/
-│   │   │   ├── SchemaValidator.ts
-│   │   │   ├── LinkChecker.ts
-│   │   │   └── ConsistencyChecker.ts
-│   │   ├── generators/
-│   │   │   └── TemplateGenerator.ts
-│   │   └── analyzers/
-│   │       ├── QualityAnalyzer.ts
-│   │       └── ImpactAnalyzer.ts
-│   ├── cli/
-│   │   ├── commands/
-│   │   │   ├── validate.ts
-│   │   │   ├── generate.ts
-│   │   │   ├── analyze.ts
-│   │   │   └── search.ts
-│   │   └── index.ts
-│   └── utils/
-│       ├── logger.ts
-│       ├── fileHelper.ts
-│       └── jsonHelper.ts
-├── schemas/
-├── semantics/
-├── examples/
-└── tests/
-    ├── unit/
-    ├── integration/
-    └── e2e/
+├── specs/                    # ✅ 実装済み（Phase 0）
+│   ├── concept.md
+│   ├── requirements.md
+│   ├── architecture.md       # このドキュメント
+│   └── design-decisions/     # ADR
+│       ├── 001-data-format-and-schema.md
+│       ├── 002-json-schema-draft-version.md
+│       ├── 003-json-ld-version.md
+│       └── 004-tool-implementation-language.md
+├── schemas/                  # ⏳ 未実装（Phase 1）
+│   ├── document-base.schema.json
+│   └── types/
+│       ├── technical-spec.schema.json
+│       ├── api-doc.schema.json
+│       └── ...
+├── semantics/                # ⏳ 未実装（Phase 1）
+│   ├── context.jsonld
+│   └── vocabularies/
+│       ├── document.jsonld
+│       └── ...
+├── tools/                    # ⏳ 未実装（Phase 1）
+│   ├── src/
+│   │   ├── core/
+│   │   │   ├── SchemaLoader.ts
+│   │   │   └── JSONLDProcessor.ts
+│   │   ├── plugins/
+│   │   │   ├── validators/
+│   │   │   ├── generators/
+│   │   │   └── analyzers/
+│   │   └── cli/
+│   │       └── index.ts
+│   ├── package.json
+│   └── tsconfig.json
+├── examples/                 # ⏳ 未実装（Phase 1）
+│   ├── technical-spec-example.json
+│   ├── api-doc-example.json
+│   └── templates/
+│       └── ...
+└── package.json              # ✅ 実装済み（Phase 0）
 ```
 
----
+## 🎯 次のステップ（Phase 1）
 
-## 🔄 データフロー
+### 優先順位 1: Schema Layer
 
-### Validation Flow
+1. `document-base.schema.json` の作成
+   - すべてのドキュメントタイプの基底スキーマ
+   - メタデータ構造の定義
+   - ADR-002 に従い Draft-07 で実装
 
-```mermaid
-flowchart TD
-    Input[Input Document JSON] --> SchemaLoader
-    SchemaLoader -->|load schema| SchemaValidator
-    SchemaValidator -->|validate structure| LinkChecker
-    LinkChecker -->|check links| ConsistencyChecker
-    ConsistencyChecker -->|check consistency| Result[Validation Result]
-```
+2. ドキュメントタイプ別スキーマの作成
+   - `technical-spec.schema.json`
+   - `api-doc.schema.json`
+   - など
 
-### Generation Flow
+### 優先順位 2: Tools Layer
 
-```mermaid
-flowchart TD
-    Input[Template + Data] --> TemplateGenerator
-    TemplateGenerator -->|expand template| Generated[Generated Document]
-    Generated -->|auto-validate| SchemaValidator
-    SchemaValidator --> Final[Final Document]
-```
+1. Schema Validator の実装
+   - ajv v8+ を使用（ADR-004）
+   - CLI インターフェース
+   - エラーメッセージの改善
 
-### Analysis Flow
+2. Markdown Generator の実装
+   - JSON → Markdown 変換
+   - テンプレートエンジン統合
+   - 表示専用フォーマットとして出力
 
-```mermaid
-flowchart TD
-    Input[Input Document] --> JSONLDProcessor
-    JSONLDProcessor -->|expand to RDF| SemanticAnalyzer
-    SemanticAnalyzer -->|analyze relationships| QualityAnalyzer
-    QualityAnalyzer -->|calculate metrics| Result[Analysis Result]
-```
+### 優先順位 3: Semantics Layer
 
----
+1. `context.jsonld` の作成
+   - ADR-003 に従い JSON-LD 1.1 で実装
+   - Nested context 活用
+   - `@protected` による意味保護
 
-## 🔒 セキュリティ考慮事項
+2. Vocabularies の定義
+   - ドキュメント関連の語彙
+   - 関係性の定義
 
-### Input Validation
+## 📚 関連ドキュメント
 
-```typescript
-class SecurityValidator {
-  validateInput(input: any): void {
-    // JSONスキーマのサイズチェック
-    if (JSON.stringify(input).length > MAX_SIZE) {
-      throw new Error("Input too large");
-    }
+### フレームワーク仕様
 
-    // 循環参照のチェック
-    if (this.hasCircularRef(input)) {
-      throw new Error("Circular reference detected");
-    }
+- [concept.md](concept.md) - フレームワークのコンセプトと背景
+- [requirements.md](requirements.md) - 機能要件・非機能要件の定義
 
-    // 危険なパスのチェック
-    if (this.hasDangerousPath(input)) {
-      throw new Error("Dangerous path detected");
-    }
-  }
-}
-```
+### 技術選定（ADR）
 
-### File Access Control
+- [ADR-001: データフォーマット・スキーマ定義・セマンティック定義の選定](design-decisions/001-data-format-and-schema.md)
+  - JSON + JSON Schema + JSON-LD を採用
+  - Markdown は表示専用
+- [ADR-002: JSON Schema Draft 版の選定](design-decisions/002-json-schema-draft-version.md)
+  - Draft-07 を採用（最大のツールサポート、安定性）
+- [ADR-003: JSON-LD バージョンの選定](design-decisions/003-json-ld-version.md)
+  - JSON-LD 1.1 を採用（W3C 最新勧告、強力な新機能）
+- [ADR-004: ツール実装言語とランタイムの選定](design-decisions/004-tool-implementation-language.md)
+  - TypeScript + Bun を採用（最高の JSON エコシステム、高速実行）
 
-```typescript
-class FileAccessControl {
-  isAllowed(path: string): boolean {
-    // ワークスペース外のアクセスを禁止
-    const normalized = path.resolve(path);
-    return normalized.startsWith(this.workspaceRoot);
-  }
-}
-```
+### 実装ガイド（未作成）
 
----
-
-## 📊 パフォーマンス最適化
-
-### キャッシング戦略
-
-```typescript
-class CacheManager {
-  private schemaCache: LRUCache<string, JSONSchema>;
-  private contextCache: LRUCache<string, any>;
-
-  constructor() {
-    this.schemaCache = new LRUCache({ max: 100 });
-    this.contextCache = new LRUCache({ max: 50 });
-  }
-
-  async getSchema(id: string): Promise<JSONSchema> {
-    if (this.schemaCache.has(id)) {
-      return this.schemaCache.get(id)!;
-    }
-
-    const schema = await this.loadSchema(id);
-    this.schemaCache.set(id, schema);
-    return schema;
-  }
-}
-```
-
-### 並列処理
-
-```typescript
-class ParallelValidator {
-  async validateAll(documents: any[]): Promise<ValidationResult[]> {
-    // 並列実行（最大同時実行数: 10）
-    const pool = new PromisePool(10);
-    return pool.map(documents, (doc) => this.validate(doc));
-  }
-}
-```
-
----
-
-## 📚 Related Documents
-
-- [`concept.md`](concept.md) - コンセプトと背景
-- [`requirements.md`](requirements.md) - フレームワーク要件（FR-CONV/AUTO/REUSE）
-- [`design-decisions/`](design-decisions/) - 技術選定の意思決定記録（ADR）
-  - [ADR-001: データフォーマット選定](design-decisions/001-data-format-and-schema.md)
-  - [ADR-002: JSON Schema Draft-07 選定](design-decisions/002-json-schema-draft-version.md)
-  - [ADR-003: JSON-LD 1.1 選定](design-decisions/003-json-ld-version.md)
-  - [ADR-004: TypeScript + Bun 選定](design-decisions/004-tool-implementation-language.md)
+- ⏳ Schema 設計ガイド
+- ⏳ JSON-LD Context 設計ガイド
+- ⏳ Plugin 開発ガイド
+- ⏳ 貢献ガイド
