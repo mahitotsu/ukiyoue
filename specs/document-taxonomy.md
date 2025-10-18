@@ -322,6 +322,7 @@ graph TB
     DataModel --> UIUX
 
     %% Infrastructure Flow
+    SecDesign --> InfraDesign
     InfraDesign --> IaC
     IaC --> DeployGuide
 
@@ -381,6 +382,11 @@ graph TB
 - **Data Model**: Functional Requirements + System Architecture から派生
 - **API Specification**: System Architecture + Data Model から派生
 - **UI/UX Specification**: Functional Requirements + Data Model から派生
+- **Infrastructure Design**: System Architecture + Security Design から派生
+  - ネットワークセキュリティ（ファイアウォール、セキュリティグループ）
+  - 暗号化設定（TLS/SSL、ディスク暗号化）
+  - VPN、IAM、アクセス制御
+  - セキュリティ要件を統合したインフラ設計
 - **Implementation Guide**: System Architecture + Security Design から派生
 - **Source Code**: 最も多くの入力を持つ
   - Functional Requirements（何を実装するか）
