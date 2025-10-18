@@ -36,18 +36,28 @@
 - **Clear Hierarchy**: concept.md (WHY/WHAT) → architecture.md (HOW) → ADRs (WHY this tech)
 - **No Redundancy**: Keep concepts in one place, reference from others
 
-**README Maintenance Policy**:
+**README Hierarchy & Role Separation**:
 
-- **README.md (Root)**: Project overview for external visitors
+Each README.md serves a specific scope without duplication:
+
+- **Root README.md**: Project-wide overview for external visitors
   - Target: First-time visitors, external stakeholders
-  - Content: Concept, 3 pillars, current status, getting started
-  - Keep brief: Link to detailed docs, never duplicate
+  - Content: Project concept, goals, high-level structure, getting started
+  - Principle: Keep brief, link to subdirectory READMEs for details
   - Mark unimplemented features as "未実装"
-- **specs/README.md**: Navigation for specification documents
-  - Target: Developers reading specs
-  - Content: File structure, document descriptions, reading order
-  - Scope: Only specs/ directory contents
-  - Never duplicate project overview from root README
+- **Subdirectory README.md** (e.g., specs/, schemas/, tools/):
+  - Target: Users navigating that specific directory
+  - Content: Directory structure, file descriptions, usage/reading order
+  - Scope: Only content within that directory
+  - Principle: Never duplicate project overview from root
+  - Cross-reference: Link to related directories, not duplicate their content
+
+**Golden Rules**:
+
+1. Each README owns one scope (project-wide OR directory-specific)
+2. Link down (root → subdirs) and sideways (subdir ↔ subdir), never duplicate
+3. If information appears in 2+ READMEs, refactor to one canonical location
+4. Subdirectory READMEs assume reader knows project basics from root README
 
 ### 5. Workspace Structure
 
@@ -143,9 +153,9 @@ await jsonld.expand(doc);
 - Use Python for core tools (reserve for AI/NLP plugins only)
 - Add YAML front matter to specs/ documentation
 - Add manual version/date footers to any files
-- Duplicate content across README.md and specs/README.md
-- Add detailed specs/ directory structure to root README.md
-- Include unimplemented features in root README.md without "未実装" marker
+- Duplicate content across multiple READMEs
+- Add detailed subdirectory structure to root README.md
+- Include unimplemented features without "未実装" marker
 - Use `any` type in TypeScript code
 - Assume file contents without reading them first
 - Use JSON Schema 2019-09 or 2020-12 (use Draft-07 per ADR-002)
@@ -159,8 +169,8 @@ await jsonld.expand(doc);
 - Rely on Git for all metadata (dates, versions, authors)
 - Keep concept.md lightweight (WHY/WHAT only)
 - Keep architecture.md detailed (HOW with ADR links)
-- Keep README.md brief and link to detailed docs
-- Keep specs/README.md focused on specs/ directory navigation only
+- Keep root README.md brief and link to detailed docs
+- Keep subdirectory READMEs focused on their directory navigation only
 - Use strict TypeScript types everywhere
 - Read context before making edits
 - Use Draft-07 JSON Schema with ajv
