@@ -69,31 +69,7 @@ specs/
 
 具体的な実装の指針を提供します。
 
-## 🔄 既存ドキュメントの移行
-
-以下のドキュメントを `docs/` から `specs/` に再構成しました：
-
-```yaml
-migration_completed:
-  docs/background.md → specs/concept.md:
-    status: ✅ 完了
-    description: フレームワークのコンセプトと背景として整理
-
-  docs/requirements.md → specs/requirements.md:
-    status: ✅ 完了
-    description: フレームワークの要件（FR-CONV/AUTO/REUSE）として整理
-
-  新規作成:
-    specs/architecture.md:
-      status: ✅ 完了
-      description: 4層アーキテクチャ設計を定義
-
-    specs/design-decisions/:
-      status: ✅ 完了
-      description: 全技術選定をADRとして文書化（4件）
-```
-
-## 📚 読む順序
+## 読む順序
 
 **初めての方**:
 
@@ -105,5 +81,4 @@ migration_completed:
 
 1. `requirements.md` - 要件の確認
 2. `architecture.md` - アーキテクチャの理解
-3. `specifications/` - 詳細仕様の参照
-4. `design-decisions/` - 設計判断の背景理解
+3. `design-decisions/` - 設計判断の背景理解
