@@ -979,52 +979,6 @@ export function validateDocument(
 
 ---
 
-## Related Decisions
+## Prerequisites
 
 None (This is a foundational decision)
-
-### Decisions Based on This
-
-- ADR-002: ツール実装言語・ランタイム選定
-- ADR-003: JSON Schema Draft版選定
-- ADR-004: JSON-LD バージョン選定
-
----
-
-**Date**: 2025-10-15
-**Status**: Accepted
-**Deciders**: Framework Development Team
-
----
-
-## Appendix: エディタ設定例
-
-### VSCode settings.json
-
-```json
-{
-  "json.schemas": [
-    {
-      "fileMatch": ["data/specs/*.json"],
-      "url": "https://ukiyoue.dev/schemas/technical-spec.schema.json"
-    },
-    {
-      "fileMatch": ["data/api/*.json"],
-      "url": "https://ukiyoue.dev/schemas/api-doc.schema.json"
-    }
-  ],
-  "json.format.enable": true,
-  "json.validate.enable": true,
-  "editor.formatOnSave": true,
-  "editor.codeActionsOnSave": {
-    "source.fixAll": true
-  }
-}
-```
-
-これにより、JSONファイルを開いた瞬間から：
-
-- ✅ 自動補完
-- ✅ リアルタイム検証
-- ✅ ホバーでドキュメント表示
-- ✅ 保存時フォーマット

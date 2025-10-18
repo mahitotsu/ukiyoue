@@ -570,11 +570,9 @@ const normalized = await jsonld.normalize(doc, {
 
 ---
 
-## Related Decisions
+## Prerequisites
 
-- **ADR-001: データフォーマット選定** - JSON-LD 採用（前提）
-- **ADR-002: JSON Schema Draft 版選定** - Draft-07 採用
-- **ADR-004: ツール実装選定** - jsonld.js 採用（JSON-LD 1.1 完全サポート）
+- **ADR-001: データフォーマット選定** - JSON-LD 採用を前提とする
 
 ---
 

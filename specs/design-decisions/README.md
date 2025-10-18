@@ -4,12 +4,14 @@
 
 ## ADR Index
 
-| ID                                         | Title                                                      | Status      | Date       |
-| ------------------------------------------ | ---------------------------------------------------------- | ----------- | ---------- |
-| [001](001-data-format-and-schema.md)       | データフォーマット・スキーマ定義・セマンティック定義の選定 | ✅ Accepted | 2025-10-15 |
-| [002](002-json-schema-draft-version.md)    | JSON Schema Draft 版選定                                   | ✅ Accepted | 2025-10-15 |
-| [003](003-json-ld-version.md)              | JSON-LD バージョン選定                                     | ✅ Accepted | 2025-10-15 |
-| [004](004-tool-implementation-language.md) | ツール実装言語とランタイムの選定                           | ✅ Accepted | 2025-10-15 |
+> **Note**: 各 ADR の作成日・更新日は Git 履歴（`git log`）で確認できます。
+
+| ID                                         | Title                                                      | Status      |
+| ------------------------------------------ | ---------------------------------------------------------- | ----------- |
+| [001](001-data-format-and-schema.md)       | データフォーマット・スキーマ定義・セマンティック定義の選定 | ✅ Accepted |
+| [002](002-json-schema-draft-version.md)    | JSON Schema Draft 版選定                                   | ✅ Accepted |
+| [003](003-json-ld-version.md)              | JSON-LD バージョン選定                                     | ✅ Accepted |
+| [004](004-tool-implementation-language.md) | ツール実装言語とランタイムの選定                           | ✅ Accepted |
 
 ## Decision Flow
 
@@ -69,16 +71,12 @@ ADR-004: Tool Implementation
 
 [検討した代替案]
 
-## Related Decisions
+## Prerequisites
 
-[関連する ADR]
-
----
-
-**Date**: YYYY-MM-DD  
-**Status**: [Status]  
-**Deciders**: [Who made this decision]
+[この決定が依存する ADR]（Optional: 前提となる ADR がある場合のみ記載）
 ```
+
+> **Note**: 作成日・更新日・決定者は Git 履歴で追跡されます（`git log`、`git blame` を使用）。
 
 ## Key Decisions Summary
 

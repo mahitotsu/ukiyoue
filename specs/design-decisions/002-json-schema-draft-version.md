@@ -456,7 +456,6 @@ if (!valid) {
 
 ---
 
-## Related Decisions
+## Prerequisites
 
-- **ADR-001: データフォーマット選定** - JSON Schema 採用（前提）
-- **ADR-004: ツール実装選定** - ajv 採用（Draft-07 完全サポート）
+- **ADR-001: データフォーマット選定** - JSON Schema 採用を前提とする

@@ -631,8 +631,8 @@ bun test
 
 ---
 
-## Related Decisions
+## Prerequisites
 
-- **ADR-001: データフォーマット・スキーマ定義選定** - JSON + JSON Schema + JSON-LD 採用（データ形式の決定）
-- **ADR-002: JSON Schema Draft 版選定** - Draft-07 採用（ajv の完全対応が選定理由）
-- **ADR-003: JSON-LD バージョンの選定** - JSON-LD 1.1 採用（jsonld.js の完全対応が選定理由）
+- **ADR-001: データフォーマット・スキーマ定義選定** - JSON + JSON Schema + JSON-LD 採用を前提とする
+- **ADR-002: JSON Schema Draft 版選定** - Draft-07 採用を前提とする
+- **ADR-003: JSON-LD バージョン選定** - JSON-LD 1.1 採用を前提とする
