@@ -30,41 +30,55 @@
 
 Ukiyoue フレームワークでは、ドキュメントを以下の5つのレイヤーに分類します：
 
-```text
-┌─────────────────────────────────────────────────────────────┐
-│ Layer 1: プロジェクト管理（2種類）                          │
-│ - プロジェクト全体の方向性と計画                             │
-│ - Charter, Roadmap                                          │
-└─────────────────────────────────────────────────────────────┘
-                      ↓ 基盤
-┌─────────────────────────────────────────────────────────────┐
-│ Layer 2: 要件定義（3種類）                                  │
-│ - ビジネス要件、機能要件、非機能要件                         │
-│ - Business Req, Functional Req, Non-Functional Req          │
-└─────────────────────────────────────────────────────────────┘
-                      ↓ 詳細化
-┌─────────────────────────────────────────────────────────────┐
-│ Layer 3: 設計（8種類）                                      │
-│ - アーキテクチャ、データ、UI/UX、API、インフラ、セキュリティ │
-│ - ADR, System Arch, Data Model, UI/UX, API, DB Schema,     │
-│   Security Design, Infrastructure Design                    │
-└─────────────────────────────────────────────────────────────┘
-                      ↓ 実装
-┌─────────────────────────────────────────────────────────────┐
-│ Layer 4: 実装・テスト（8種類）                              │
-│ - アプリケーションコード、インフラコード、テスト             │
-│ - Impl Guide, IaC, Test Plan/Spec, Source Code, Test Code, │
-│   Test Results, Source Code Doc                             │
-└─────────────────────────────────────────────────────────────┘
-                      ↓ 運用
-┌─────────────────────────────────────────────────────────────┐
-│ Layer 5: 運用（4種類）                                      │
-│ - デプロイ、運用手順、トラブルシューティング                 │
-│ - Deployment Guide, Ops Manual, Incident Response,         │
-│   Troubleshooting Guide                                     │
-└─────────────────────────────────────────────────────────────┘
+```mermaid
+graph TD
+    subgraph Layer1["Layer 1: プロジェクト管理（2種類）"]
+        L1_desc["プロジェクト全体の方向性と計画"]
+        L1_docs["Charter, Roadmap"]
+    end
 
-合計: 25種類のドキュメントタイプ
+    subgraph Layer2["Layer 2: 要件定義（3種類）"]
+        L2_desc["ビジネス要件、機能要件、非機能要件"]
+        L2_docs["Business Req, Functional Req, Non-Functional Req"]
+    end
+
+    subgraph Layer3["Layer 3: 設計（8種類）"]
+        L3_desc["アーキテクチャ、データ、UI/UX、API、インフラ、セキュリティ"]
+        L3_docs["ADR, System Arch, Data Model, UI/UX, API, DB Schema,<br/>Security Design, Infrastructure Design"]
+    end
+
+    subgraph Layer4["Layer 4: 実装・テスト（8種類）"]
+        L4_desc["アプリケーションコード、インフラコード、テスト"]
+        L4_docs["Impl Guide, IaC, Test Plan/Spec, Source Code,<br/>Test Code, Test Results, Source Code Doc"]
+    end
+
+    subgraph Layer5["Layer 5: 運用（4種類）"]
+        L5_desc["デプロイ、運用手順、トラブルシューティング"]
+        L5_docs["Deployment Guide, Ops Manual, Incident Response,<br/>Troubleshooting Guide"]
+    end
+
+    Layer1 -->|"基盤"| Layer2
+    Layer2 -->|"詳細化"| Layer3
+    Layer3 -->|"実装"| Layer4
+    Layer4 -->|"運用"| Layer5
+
+    Total["合計: 25種類のドキュメントタイプ"]
+
+    Layer5 -.->|"まとめ"| Total
+
+    classDef layer1Style fill:#e1f5ff,stroke:#01579b,stroke-width:3px
+    classDef layer2Style fill:#fff9c4,stroke:#f57f17,stroke-width:3px
+    classDef layer3Style fill:#f3e5f5,stroke:#4a148c,stroke-width:3px
+    classDef layer4Style fill:#e8f5e9,stroke:#1b5e20,stroke-width:3px
+    classDef layer5Style fill:#ffe0b2,stroke:#e65100,stroke-width:3px
+    classDef totalStyle fill:#e0e0e0,stroke:#424242,stroke-width:2px,stroke-dasharray: 5 5
+
+    class Layer1 layer1Style
+    class Layer2 layer2Style
+    class Layer3 layer3Style
+    class Layer4 layer4Style
+    class Layer5 layer5Style
+    class Total totalStyle
 ```
 
 ---
