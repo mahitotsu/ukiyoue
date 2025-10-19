@@ -637,6 +637,23 @@ graph TD
 - **更新頻度**: 運用中に継続的に更新（インシデント経験、FAQ追加時）
 - **特徴**: **問題解決ナレッジベース**（運用経験を蓄積、Monitoring Configurationの補完情報）
 
+#### Operations Test Results（運用テスト結果）
+
+- **識別子**: `OPS-TESTRESULT`
+- **目的**: 運用ドキュメントのテスト結果と改善点を記録（運用品質の可視化）
+- **主な内容**:
+  - **デプロイテスト結果**: Deployment Guide実行結果、手順の正確性、所要時間
+  - **運用手順テスト結果**: Operations Manual検証結果、手順の実行可能性、問題点
+  - **障害対応シミュレーション結果**: Incident Response Guide検証結果、対応時間、改善点
+  - **トラブルシューティング検証**: Troubleshooting Guideの有効性、不足している情報
+  - **改善提案**: 手順の簡略化、自動化の機会、ドキュメント改善点
+  - **運用準備度評価**: 運用チームのスキル評価、追加トレーニング必要性
+- **入力**: Deployment Guide、Operations Manual、Incident Response Guide、Troubleshooting Guide（テスト対象のドキュメント）、Test Specification（ドキュメントテスト仕様）
+- **出力先**: 各運用ドキュメント（改善フィードバック）、Roadmap（運用開始判断）、Operations Manual（FAQ追加）
+- **読者**: 運用マネージャー、プロジェクトマネージャー、運用チーム、DevOpsエンジニア
+- **更新頻度**: 運用開始前のテスト実施時、運用開始後の定期レビュー時
+- **特徴**: **運用品質評価文書**（運用ドキュメントの品質を検証、実運用開始判断の根拠、フィードバックループの完結）
+
 ---
 
 ## 📊 成果物タイプサマリー
@@ -647,8 +664,8 @@ graph TD
 | 要件定義         | 3        | 何を実現するか                 |
 | 設計             | 11       | どう実現するか                 |
 | 実装・テスト     | 13       | コードと品質保証               |
-| 運用             | 4        | システムの継続的な稼働         |
-| **合計**         | **33**   | プロジェクトライフサイクル全体 |
+| 運用             | 5        | システムの継続的な稼働と品質   |
+| **合計**         | **34**   | プロジェクトライフサイクル全体 |
 
 ---
 
@@ -700,6 +717,7 @@ graph TB
     OpsManual[Operations Manual]
     IncidentGuide[Incident Response Guide]
     TroubleshootGuide[Troubleshooting Guide]
+    OpsTestResult[Operations Test Results]
 
     %% Project Management Flow
     Charter --> Roadmap
@@ -784,11 +802,22 @@ graph TB
     OpsManual --> IncidentGuide
     ObservabilityArch --> IncidentGuide
 
+    %% Layer 5 to Operations Test Results (new feedback loop)
+    DeployGuide --> OpsTestResult
+    OpsManual --> OpsTestResult
+    IncidentGuide --> OpsTestResult
+    TroubleshootGuide --> OpsTestResult
+    TestSpec --> OpsTestResult
+
     %% Cross-cutting Dependencies (dotted lines)
     TestResults -.-> Roadmap
     TestResults -.-> BizReq
+    OpsTestResult -.-> DeployGuide
+    OpsTestResult -.-> OpsManual
+    OpsTestResult -.-> IncidentGuide
+    OpsTestResult -.-> TroubleshootGuide
+    OpsTestResult -.-> Roadmap
     SrcDoc -.-> TroubleshootGuide
-    IncidentGuide -.-> TroubleshootGuide
 
     %% Styling
     classDef layer1 fill:#e1f5ff,stroke:#01579b,stroke-width:2px
@@ -801,6 +830,7 @@ graph TB
     class BizReq,FuncReq,NonFuncReq layer2
     class ADR,RuntimeArch,DataModel,UIUX,API,DBSchema,SecArch,ReliabilityArch,InfraArch,ObservabilityArch,DevOpsArch layer3
     class ImplGuide,IaC,PipelineDef,RepoConfig,MonitoringConfig,TestPlan,TestSpec,SrcCode,TestCode,TestResults,SrcDoc layer4
+    class DeployGuide,OpsManual,IncidentGuide,TroubleshootGuide,OpsTestResult layer5
     class DeployGuide,OpsManual,IncidentGuide,TroubleshootGuide layer5
 ```
 
@@ -928,13 +958,14 @@ Operations Manual → Incident Response Guide
 
 **リスク**: 複数の依存関係が収束、前提条件が揃わないと着手不可、統合の複雑性
 
-| 成果物                          | 入力数 | 主な入力元                                             | プロジェクト管理上の重要性                                               |
-| ------------------------------- | ------ | ------------------------------------------------------ | ------------------------------------------------------------------------ |
-| **Source Code**                 | 5      | Func Req, Impl Guide, UI/UX, API, DB Schema            | **最重要**: 全設計の統合実装、並行作業の調整が鍵、統合テスト重視         |
-| **Implementation Guide**        | 4      | Runtime Arch, Security Arch, Dev Env Arch, DevOps Arch | **重要**: 複数アーキテクチャの実装方針統合、早期ドラフト作成で並行作業可 |
-| **Infrastructure Architecture** | 3      | Reliability Arch, Runtime Arch, Security Arch          | **重要**: 信頼性・性能・セキュリティの統合設計、SREの重点作業領域        |
-| **Observability Architecture**  | 3      | Runtime Arch, Infrastructure Arch, Reliability Arch    | 運用監視の統合設計、インフラ確定後に詳細化                               |
-| **Test Specification**          | 2      | Test Plan, Functional Requirements                     | テスト戦略と機能仕様の統合、並行作業可能                                 |
+| 成果物                          | 入力数 | 主な入力元                                                         | プロジェクト管理上の重要性                                               |
+| ------------------------------- | ------ | ------------------------------------------------------------------ | ------------------------------------------------------------------------ |
+| **Source Code**                 | 5      | Func Req, Impl Guide, UI/UX, API, DB Schema                        | **最重要**: 全設計の統合実装、並行作業の調整が鍵、統合テスト重視         |
+| **Operations Test Results**     | 5      | Deploy Guide, Ops Manual, Incident Guide, Trouble Guide, Test Spec | **重要**: 運用品質の最終確認、フィードバックループ完結、運用開始判断     |
+| **Implementation Guide**        | 4      | Runtime Arch, Security Arch, Dev Env Arch, DevOps Arch             | **重要**: 複数アーキテクチャの実装方針統合、早期ドラフト作成で並行作業可 |
+| **Infrastructure Architecture** | 3      | Reliability Arch, Runtime Arch, Security Arch                      | **重要**: 信頼性・性能・セキュリティの統合設計、SREの重点作業領域        |
+| **Observability Architecture**  | 3      | Runtime Arch, Infrastructure Arch, Reliability Arch                | 運用監視の統合設計、インフラ確定後に詳細化                               |
+| **Test Specification**          | 2      | Test Plan, Functional Requirements                                 | テスト戦略と機能仕様の統合、並行作業可能                                 |
 
 ##### プロジェクト管理上の推奨アクション
 
@@ -1006,6 +1037,7 @@ gantt
     Operations Manual             :manual, after deploy monitoring testresult, 8d
     Incident Response Guide       :incident, after observ manual, 5d
     Troubleshooting Guide         :trouble, after codedoc incident, 5d
+    Operations Test Results       :crit, opstest, after deploy manual incident trouble testspec, 10d
 ```
 
 **クリティカルパス（赤色タスク）**:
@@ -1037,9 +1069,16 @@ Source Code (30日) ← 最長タスク、実装準備完了後に開始
   ↓
 Test Code (20日)
   ↓
-Test Results (10日) ← 品質ゲート
+Test Results (10日) ← 実装品質ゲート
+  ↓
+Deployment Guide (5日)
+Operations Manual (8日)
+Incident Response Guide (5日)
+Troubleshooting Guide (5日)
+  ↓
+Operations Test Results (10日) ← 運用品質ゲート（フィードバックループ完結）
 
-総クリティカルパス期間: 約136日（約6.8ヶ月）
+総クリティカルパス期間: 約146日（約7.3ヶ月）
 ```
 
 **並行作業の機会**:
@@ -1048,19 +1087,20 @@ Test Results (10日) ← 品質ゲート
 
 - **Layer 3並行**: ADR, UI/UX, API, Security, Reliability, Infrastructure, Observability, DevOps, Dev Env
 - **Layer 4並行**: Dev Env Config, IaC, CI/CD Pipeline, Repository Config, Monitoring, Test Plan
-- **Layer 5並行**: Deployment Guide, Operations Manual, Incident Guide, Troubleshooting Guide
+- **Layer 5並行**: Deployment Guide, Operations Manual, Incident Guide, Troubleshooting Guide（ただしOperations Test Resultsはこれら全てに依存）
 
 **スケジュールバッファの配置**:
 
 クリティカルパス上の高リスクタスクにバッファを配置：
 
-| 成果物           | 基本期間 | バッファ | 合計  | 理由                        |
-| ---------------- | -------- | -------- | ----- | --------------------------- |
-| ARCH-RUNTIME     | 15日     | +3日     | 18日  | 影響範囲最大（10+下流）     |
-| IMPL-CODE        | 30日     | +9日     | 39日  | 統合の複雑性（5入力）       |
-| IMPL-TESTCODE    | 20日     | +4日     | 24日  | 品質リスク                  |
-| IMPL-TESTRESULT  | 10日     | +2日     | 12日  | 修正・再テストサイクル      |
-| **合計バッファ** | -        | +18日    | 149日 | **約7.5ヶ月（バッファ込）** |
+| 成果物           | 基本期間 | バッファ | 合計  | 理由                                    |
+| ---------------- | -------- | -------- | ----- | --------------------------------------- |
+| ARCH-RUNTIME     | 15日     | +3日     | 18日  | 影響範囲最大（10+下流）                 |
+| IMPL-CODE        | 30日     | +9日     | 39日  | 統合の複雑性（5入力）                   |
+| IMPL-TESTCODE    | 20日     | +4日     | 24日  | 品質リスク                              |
+| IMPL-TESTRESULT  | 10日     | +2日     | 12日  | 修正・再テストサイクル                  |
+| OPS-TESTRESULT   | 10日     | +2日     | 12日  | 運用ドキュメント改善サイクル            |
+| **合計バッファ** | -        | +20日    | 166日 | **約8.3ヶ月（運用テスト＋バッファ込）** |
 
 ---
 
