@@ -1430,34 +1430,7 @@ gantt
 
 ---
 
-## 📐 次のステップ
-
-この成果物タクソノミーを基に、以下を段階的に詳細化します：
-
-### Phase 1.1: メタデータ設計
-
-- 各成果物タイプに共通するメタデータの定義
-- 成果物識別子の設計
-
-### Phase 1.2: スキーマ設計
-
-- 各成果物タイプの JSON Schema 設計
-- 共通スキーマ（artifact-base.schema.json）の設計
-- **新規追加成果物のスキーマ**: Reliability Architecture, Infrastructure Architecture, Observability Architecture, DevOps Architecture, Development Environment Architecture, CI/CD Pipeline Definition, Repository Configuration, Monitoring & Logging Configuration, Development Environment Configuration
-
-### Phase 1.3: セマンティック定義
-
-- 成果物間の関係性の形式的定義
-- JSON-LD Context の設計
-
-### Phase 1.4: バリデーションルール
-
-- 依存関係の検証ルール
-- 整合性チェックルール
-
----
-
-## 📚 関連ドキュメント
+## 関連ドキュメント
 
 - [concept.md](concept.md) - フレームワークの理念
 - [requirements.md](requirements.md) - フレームワークの要件
