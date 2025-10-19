@@ -640,17 +640,19 @@ graph TD
 - **識別子**: `OPS-SIT-PLAN`
 - **目的**: 実装完了後のシステム全体統合テストと受入テストの戦略を計画
 - **主な内容**:
-  - **テスト戦略**: デプロイ/運用/障害対応の統合的検証方針
+  - **テスト戦略**: システム全体の統合的検証方針（機能・非機能・運用の統合）
   - **テストレベル**:
+    - **E2Eシナリオテスト**: 本番相当環境でのエンドツーエンド業務シナリオ検証
+    - **ユーザー受入テスト（UAT）**: ビジネスユーザーによる機能要件の最終確認
     - **デプロイテスト**: デプロイ手順の実行可能性、ロールバック確認
     - **運用テスト**: 日常運用手順の実行可能性、バックアップ/リストア検証
     - **障害対応テスト**: 障害シミュレーション、復旧手順検証、エスカレーションフロー確認
     - **トラブルシューティングテスト**: 診断手順の有効性、FAQ網羅性
   - **テスト環境**: 本番相当環境（ステージング/プリプロダクション）
-  - **リソース計画**: 運用チーム参加、DevOpsチーム参加、スケジュール
-  - **合格基準**: 運用開始判断基準、UAT合格基準
-  - **リスク管理**: 運用開始リスク、軽減策
-- **入力**: Test Results（実装品質確認済み）、Non-Functional Requirements（運用性要件）
+  - **リソース計画**: 運用チーム参加、DevOpsチーム参加、ビジネスユーザー参加、スケジュール
+  - **合格基準**: 機能要件充足確認、運用開始判断基準、UAT合格基準
+  - **リスク管理**: リリースリスク、運用開始リスク、軽減策
+- **入力**: Test Results（実装品質確認済み）、Functional Requirements（機能要件の最終確認）、Non-Functional Requirements（非機能要件・運用性要件）
 - **読者**: テストマネージャー、運用マネージャー、プロジェクトマネージャー、DevOpsチーム
 - **更新頻度**: 実装完了前に作成、運用準備状況に応じて更新
 - **特徴**: **統合テスト戦略文書**（実装テスト完了後のシステム全体検証計画、運用開始判断の基準設定）
@@ -660,14 +662,16 @@ graph TD
 - **識別子**: `OPS-SIT-SPEC`
 - **目的**: システム統合テストの詳細なテストケースと実施手順を定義
 - **主な内容**:
+  - **E2Eシナリオテストケース**: 本番相当環境での業務フロー全体検証、データ整合性確認
+  - **UATテストケース**: ビジネスユーザー観点での機能要件検証、受入基準チェック
   - **デプロイテストケース**: Deployment Guide全手順の実行テスト、エラーハンドリング、ロールバックシナリオ
   - **運用テストケース**: Operations Manual全手順の検証、バックアップ/リストア実施、監視動作確認
   - **障害対応シナリオ**: Incident Response Guide検証シナリオ、障害注入（Chaos Engineering）、復旧時間測定
   - **トラブルシューティング検証**: Troubleshooting Guide診断フロー実行、問題再現と解決確認
   - **テスト手順**: ステップバイステップの実施手順、チェックリスト
   - **期待結果**: 各テストケースの合格判定基準
-  - **トレーサビリティ**: 運用ドキュメントとテストケースの紐付け
-- **入力**: System Integration Test Plan（テスト戦略を詳細化）、Deployment Guide、Operations Manual、Incident Response Guide、Troubleshooting Guide（テスト対象）
+  - **トレーサビリティ**: 要件・運用ドキュメントとテストケースの紐付け
+- **入力**: System Integration Test Plan（テスト戦略を詳細化）、Functional Requirements（E2E/UATテストケース作成）、Deployment Guide、Operations Manual、Incident Response Guide、Troubleshooting Guide（テスト対象）
 - **読者**: テスター、QAエンジニア、運用チーム、DevOpsエンジニア
 - **更新頻度**: テスト設計段階で作成、運用ドキュメント更新時
 - **特徴**: **統合テスト詳細化文書**（System Integration Test Planを実行可能なテストケースに落とし込む）
@@ -677,15 +681,16 @@ graph TD
 - **識別子**: `OPS-SIT-RESULT`
 - **目的**: システム統合テストの実施結果と運用準備状況を記録（運用開始判断の根拠）
 - **主な内容**:
+  - **E2Eシナリオテスト結果**: 業務フロー全体の検証結果、データ整合性確認結果、性能測定
+  - **UAT結果**: ビジネスユーザーによる機能要件受入結果、受入基準達成状況
   - **デプロイテスト結果**: Deployment Guide実行結果、手順の正確性、所要時間、問題点
   - **運用テスト結果**: Operations Manual検証結果、手順の実行可能性、バックアップ/リストア成功確認
   - **障害対応テスト結果**: Incident Response Guide検証結果、復旧時間、エスカレーション動作確認
   - **トラブルシューティング検証結果**: Troubleshooting Guide有効性評価、不足情報の特定
-  - **不具合一覧**: 運用ドキュメントの不備、手順のエラー、改善提案
-  - **運用準備度評価**: 運用チームのスキル評価、トレーニング完了状況、運用開始可否判断
-  - **UAT結果**: ユーザー受入テスト結果（運用観点）
-- **入力**: System Integration Test Specification（テストケース実行）、Deployment Guide、Operations Manual、Incident Response Guide、Troubleshooting Guide（テスト対象）
-- **出力先**: Deployment Guide（改善フィードバック）、Operations Manual（FAQ追加、手順修正）、Incident Response Guide（シナリオ追加）、Troubleshooting Guide（診断フロー改善）、Roadmap（運用開始判断）
+  - **不具合一覧**: 機能不備、運用ドキュメントの不備、手順のエラー、改善提案
+  - **リリース準備度評価**: 機能要件充足確認、運用チームのスキル評価、トレーニング完了状況、本番リリース可否判断
+- **入力**: System Integration Test Specification（テストケース実行）、Functional Requirements（機能要件トレーサビリティ）、Deployment Guide、Operations Manual、Incident Response Guide、Troubleshooting Guide（テスト対象）
+- **出力先**: Functional Requirements（未充足要件の特定）、Deployment Guide（改善フィードバック）、Operations Manual（FAQ追加、手順修正）、Incident Response Guide（シナリオ追加）、Troubleshooting Guide（診断フロー改善）、Roadmap（リリース判断・運用開始判断）
 - **読者**: 運用マネージャー、プロジェクトマネージャー、運用チーム、DevOpsチーム、ステークホルダー
 - **更新頻度**: 運用開始前のテスト実施時、再テスト時、運用開始後の定期レビュー時
 - **特徴**: **統合テスト結果文書**（システム全体の運用準備状況を検証、実運用開始判断の根拠、フィードバックループの完結）
@@ -842,17 +847,21 @@ graph TB
 
     %% System Integration Test Flow (Layer 5)
     TestResults --> SITPlan
+    FuncReq --> SITPlan
     NonFuncReq --> SITPlan
     SITPlan --> SITSpec
+    FuncReq --> SITSpec
     DeployGuide --> SITSpec
     OpsManual --> SITSpec
     IncidentGuide --> SITSpec
     TroubleshootGuide --> SITSpec
     SITSpec --> SITResult
+    FuncReq --> SITResult
 
     %% Cross-cutting Dependencies (dotted lines)
     TestResults -.-> Roadmap
     TestResults -.-> BizReq
+    SITResult -.-> FuncReq
     SITResult -.-> DeployGuide
     SITResult -.-> OpsManual
     SITResult -.-> IncidentGuide
@@ -989,7 +998,7 @@ Operations Manual → Incident Response Guide
 | 成果物                          | 下流影響 | 主な下流成果物                                                                         | プロジェクト管理上の重要性                                                   |
 | ------------------------------- | -------- | -------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
 | **Runtime Architecture**        | 10+      | Data Model, API, Security Arch, Infrastructure Arch, DevOps Arch, Dev Env Arch, 他多数 | **最重要**: システム全体の基盤設計、早期確定必須、アーキテクトの重点作業領域 |
-| **Functional Requirements**     | 6        | Data Model, UI/UX, Test Plan, Test Spec, Source Code                                   | **重要**: 機能仕様の明確化遅延が全実装に波及、要件凍結のマイルストーン設定   |
+| **Functional Requirements**     | 9        | Data Model, UI/UX, Test Plan, Test Spec, Source Code, SIT Plan, SIT Spec, SIT Result   | **重要**: 機能仕様の明確化遅延が全実装に波及、UAT/E2E検証まで継続参照        |
 | **Non-Functional Requirements** | 5        | ADR, Runtime Arch, Security Arch, Reliability Arch, Test Plan                          | **重要**: 性能・セキュリティ要件の曖昧さが設計やり直しを招く                 |
 | **Data Model**                  | 4        | UI/UX, API, Database Schema, Source Code                                               | **重要**: データ構造変更のコストが高い、早期レビュー必須                     |
 | **DevOps Architecture**         | 4        | Dev Env Arch, Impl Guide, Pipeline Def, Repository Config                              | 開発プロセスの基盤、プロジェクト初期に確定                                   |
@@ -998,15 +1007,16 @@ Operations Manual → Incident Response Guide
 
 **リスク**: 複数の依存関係が収束、前提条件が揃わないと着手不可、統合の複雑性
 
-| 成果物                           | 入力数 | 主な入力元                                                 | プロジェクト管理上の重要性                                               |
-| -------------------------------- | ------ | ---------------------------------------------------------- | ------------------------------------------------------------------------ |
-| **Source Code**                  | 5      | Func Req, Impl Guide, UI/UX, API, DB Schema                | **最重要**: 全設計の統合実装、並行作業の調整が鍵、統合テスト重視         |
-| **System Integration Test Spec** | 5      | SIT Plan, Deploy Guide, Ops Manual, Incident, Troubleshoot | **重要**: 4つの運用ドキュメント統合検証、テストケース設計の複雑性        |
-| **Implementation Guide**         | 4      | Runtime Arch, Security Arch, Dev Env Arch, DevOps Arch     | **重要**: 複数アーキテクチャの実装方針統合、早期ドラフト作成で並行作業可 |
-| **Infrastructure Architecture**  | 3      | Reliability Arch, Runtime Arch, Security Arch              | **重要**: 信頼性・性能・セキュリティの統合設計、SREの重点作業領域        |
-| **Observability Architecture**   | 3      | Runtime Arch, Infrastructure Arch, Reliability Arch        | 運用監視の統合設計、インフラ確定後に詳細化                               |
-| **Test Specification**           | 2      | Test Plan, Functional Requirements                         | テスト戦略と機能仕様の統合、並行作業可能                                 |
-| **System Integration Test Plan** | 2      | Test Results, Non-Functional Requirements                  | 実装完了後の統合テスト戦略、運用性要件の検証計画                         |
+| 成果物                             | 入力数 | 主な入力元                                                  | プロジェクト管理上の重要性                                               |
+| ---------------------------------- | ------ | ----------------------------------------------------------- | ------------------------------------------------------------------------ |
+| **Source Code**                    | 5      | Func Req, Impl Guide, UI/UX, API, DB Schema                 | **最重要**: 全設計の統合実装、並行作業の調整が鍵、統合テスト重視         |
+| **System Integration Test Spec**   | 6      | SIT Plan, Func Req, Deploy, Ops Manual, Incident, Trouble   | **重要**: E2E/UAT+運用統合検証、機能・非機能の最終確認                   |
+| **Implementation Guide**           | 4      | Runtime Arch, Security Arch, Dev Env Arch, DevOps Arch      | **重要**: 複数アーキテクチャの実装方針統合、早期ドラフト作成で並行作業可 |
+| **System Integration Test Result** | 4      | SIT Spec, Func Req, Deploy, Ops Manual (+ Incident/Trouble) | **重要**: リリース判断の根拠、機能受入+運用準備度の総合評価              |
+| **Infrastructure Architecture**    | 3      | Reliability Arch, Runtime Arch, Security Arch               | **重要**: 信頼性・性能・セキュリティの統合設計、SREの重点作業領域        |
+| **Observability Architecture**     | 3      | Runtime Arch, Infrastructure Arch, Reliability Arch         | 運用監視の統合設計、インフラ確定後に詳細化                               |
+| **System Integration Test Plan**   | 3      | Test Results, Func Req, Non-Func Req                        | 実装完了後の統合テスト戦略、機能+非機能の最終検証計画                    |
+| **Test Specification**             | 2      | Test Plan, Functional Requirements                          | テスト戦略と機能仕様の統合、並行作業可能                                 |
 
 ##### プロジェクト管理上の推奨アクション
 
@@ -1078,9 +1088,9 @@ gantt
     Operations Manual             :manual, after deploy monitoring testresult, 8d
     Incident Response Guide       :incident, after observ manual, 5d
     Troubleshooting Guide         :trouble, after codedoc incident, 5d
-    System Integration Test Plan  :crit, sitplan, after testresult nonfunc, 5d
-    System Integration Test Spec  :crit, sitspec, after sitplan deploy manual incident trouble, 8d
-    System Integration Test Result :crit, sitresult, after sitspec, 10d
+    System Integration Test Plan  :crit, sitplan, after testresult func nonfunc, 5d
+    System Integration Test Spec  :crit, sitspec, after sitplan func deploy manual incident trouble, 8d
+    System Integration Test Result :crit, sitresult, after sitspec func, 10d
 ```
 
 **クリティカルパス（赤色タスク）**:
