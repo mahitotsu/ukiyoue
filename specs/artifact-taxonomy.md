@@ -193,7 +193,8 @@ graph TD
 #### 15. Observability Architecture（可観測性アーキテクチャ）
 
 - **目的**: 監視・ログ・トレースの設計
-- **主な内容**: メトリクス定義、ログフォーマット・ログレベル、ログ保持期間、トレース設計、アラート設計・閾値、インシデント対応フロー
+- **主な内容**: メトリクス定義（アプリケーション・インフラ）、ログフォーマット・ログレベル、ログ保持期間、トレース設計、アラート設計・閾値、インシデント対応フロー
+- **入力**: Runtime Architecture（監視対象のアプリケーション構造）、Infrastructure Architecture（監視対象のインフラ構成）、Reliability Architecture（監視目的とSLO/SLI）
 - **読者**: SRE、運用チーム
 - **更新頻度**: 設計段階で作成、監視要件変更時
 
@@ -402,6 +403,7 @@ graph TB
     RuntimeArch --> API
     RuntimeArch --> SecArch
     RuntimeArch --> DevOpsArch
+    RuntimeArch --> ObservabilityArch
 
     %% Reliability → Infrastructure → Observability Chain (ADR-005)
     ReliabilityArch --> InfraArch
@@ -497,6 +499,7 @@ Project Charter（起点）
 | **API Specification**           | Runtime Architecture + Data Model                     | システム構成とデータ構造から API 設計                  |
 | **UI/UX Specification**         | Functional Req + Data Model                           | 機能要件とデータ構造から UI 設計                       |
 | **Infrastructure Architecture** | Reliability Arch + Runtime Arch + Security Arch       | 信頼性・実行時・セキュリティ要件を統合したインフラ設計 |
+| **Observability Architecture**  | Runtime Arch + Infrastructure Arch + Reliability Arch | 実行時構造・インフラ構成・信頼性要件から監視設計       |
 | **Implementation Guide**        | Runtime Architecture + Security Architecture          | システム構成とセキュリティ方針から実装方針             |
 | **Test Plan**                   | Functional Req + Non-Functional Req                   | 機能テストと非機能テストの計画を統合                   |
 | **Source Code**                 | Functional Req + Impl Guide + UI/UX + API + DB Schema | **最多入力**: 全設計情報を統合実装                     |
