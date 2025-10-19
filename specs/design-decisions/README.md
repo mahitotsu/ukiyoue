@@ -6,12 +6,13 @@
 
 > **Note**: 各 ADR の作成日・更新日は Git 履歴（`git log`）で確認できます。
 
-| ID                                         | Title                                                      | Status      |
-| ------------------------------------------ | ---------------------------------------------------------- | ----------- |
-| [001](001-data-format-and-schema.md)       | データフォーマット・スキーマ定義・セマンティック定義の選定 | ✅ Accepted |
-| [002](002-json-schema-draft-version.md)    | JSON Schema Draft 版選定                                   | ✅ Accepted |
-| [003](003-json-ld-version.md)              | JSON-LD バージョン選定                                     | ✅ Accepted |
-| [004](004-tool-implementation-language.md) | ツール実装言語とランタイムの選定                           | ✅ Accepted |
+| ID                                                                | Title                                                          | Status      |
+| ----------------------------------------------------------------- | -------------------------------------------------------------- | ----------- |
+| [001](001-data-format-and-schema.md)                              | データフォーマット・スキーマ定義・セマンティック定義の選定     | ✅ Accepted |
+| [002](002-json-schema-draft-version.md)                           | JSON Schema Draft 版選定                                       | ✅ Accepted |
+| [003](003-json-ld-version.md)                                     | JSON-LD バージョン選定                                         | ✅ Accepted |
+| [004](004-tool-implementation-language.md)                        | ツール実装言語とランタイムの選定                               | ✅ Accepted |
+| [005](005-reliability-infrastructure-observability-separation.md) | Reliability, Infrastructure, Observability Architecture の分離 | ✅ Accepted |
 
 ## Decision Flow
 
@@ -30,6 +31,9 @@ ADR-003: JSON-LD Version
        ↓
 ADR-004: Tool Implementation Language
   └─ TypeScript + Bun
+       ↓
+ADR-005: Architecture Separation
+  └─ Reliability → Infrastructure → Observability
 ```
 
 ## ADR Template
