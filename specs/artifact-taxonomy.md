@@ -30,7 +30,7 @@
 
 ### レイヤー構造
 
-Ukiyoue フレームワークでは、成果物を以下の5つのレイヤーに分類します：
+Ukiyoue フレームワークでは、成果物を以下の6つのレイヤーに分類します：
 
 ```mermaid
 graph TD
@@ -39,9 +39,9 @@ graph TD
         L1_docs["Charter, Roadmap"]
     end
 
-    subgraph Layer2["Layer 2: 要件定義（3種類）"]
-        L2_desc["ビジネス要件、機能要件、非機能要件"]
-        L2_docs["Business Req, Functional Req, Non-Functional Req"]
+    subgraph Layer2["Layer 2: 要件定義（4種類）"]
+        L2_desc["ビジネス要件、機能要件、非機能要件、テスト戦略"]
+        L2_docs["Business Req, Functional Req, Non-Functional Req, Test Strategy"]
     end
 
     subgraph Layer3["Layer 3: 設計（11種類）"]
@@ -59,20 +59,27 @@ graph TD
         L5_docs["Deployment Guide, Ops Manual, Incident Response,<br/>Troubleshooting Guide"]
     end
 
+    subgraph Layer6["Layer 6: 検証（6種類）"]
+        L6_desc["システム統合検証（技術）、ユーザー受入検証（ビジネス）"]
+        L6_docs["SIT Plan/Spec/Results, UAT Plan/Spec/Results"]
+    end
+
     Layer1 -->|"基盤"| Layer2
     Layer2 -->|"詳細化"| Layer3
     Layer3 -->|"実装"| Layer4
-    Layer4 -->|"運用"| Layer5
+    Layer4 -->|"運用準備"| Layer5
+    Layer5 -->|"検証"| Layer6
 
-    Total["合計: 31種類の成果物タイプ"]
+    Total["合計: 40種類の成果物タイプ"]
 
-    Layer5 -.->|"まとめ"| Total
+    Layer6 -.->|"まとめ"| Total
 
     classDef layer1Style fill:#e1f5ff,stroke:#01579b,stroke-width:3px
     classDef layer2Style fill:#fff9c4,stroke:#f57f17,stroke-width:3px
     classDef layer3Style fill:#f3e5f5,stroke:#4a148c,stroke-width:3px
     classDef layer4Style fill:#e8f5e9,stroke:#1b5e20,stroke-width:3px
     classDef layer5Style fill:#ffe0b2,stroke:#e65100,stroke-width:3px
+    classDef layer6Style fill:#fce4ec,stroke:#880e4f,stroke-width:3px
     classDef totalStyle fill:#e0e0e0,stroke:#424242,stroke-width:2px,stroke-dasharray: 5 5
 
     class Layer1 layer1Style
@@ -80,6 +87,7 @@ graph TD
     class Layer3 layer3Style
     class Layer4 layer4Style
     class Layer5 layer5Style
+    class Layer6 layer6Style
     class Total totalStyle
 ```
 
@@ -120,7 +128,7 @@ graph TD
 - **更新頻度**: 定期的（月次/四半期）、進捗状況やテスト結果に応じて調整
 - **特徴**: **スケジュール管理文書**（いつ何を達成するかの計画）
 
-### Layer 2: 要件定義（3種類）
+### Layer 2: 要件定義（4種類）
 
 #### Business Requirements（ビジネス要件）
 
