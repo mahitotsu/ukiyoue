@@ -170,6 +170,23 @@ graph TD
 - **更新頻度**: 要件定義段階で作成、品質要件変更時、法規制変更時
 - **特徴**: **品質基準文書**（機能以外のシステム品質を定量的に定義）
 
+#### Test Strategy（テスト戦略）
+
+- **識別子**: `REQ-TESTSTRATEGY`
+- **目的**: プロジェクト全体のテスト方針とリリース判定基準を定義（全テストレベルの統括）
+- **主な内容**:
+  - **テストレベル定義**: Unit → Integration → E2E → System Integration Test → UAT の各段階の役割
+  - **品質ゲート**: 各テストレベルの合格基準、次フェーズへの移行条件
+  - **リリース判定基準**: 本番リリース可否の最終判断基準（ビジネス+機能+非機能+運用）
+  - **テスト環境戦略**: 開発環境、テスト環境、ステージング環境、本番環境の使い分け
+  - **役割と責任**: 開発チーム、QAチーム、運用チーム、ビジネスユーザーの役割分担
+  - **リスクベーステスト**: 高リスク領域の重点テスト、テスト優先順位付け
+  - **自動化方針**: どのテストを自動化するか、ツール選定方針
+- **入力**: Business Requirements（ビジネスリスク評価）、Functional Requirements（機能範囲）、Non-Functional Requirements（品質基準）
+- **読者**: プロジェクトマネージャー、テストマネージャー、QAリーダー、開発リーダー、運用マネージャー
+- **更新頻度**: プロジェクト初期に作成、重大な方針変更時、リスク変化時
+- **特徴**: **全体テスト統括文書**（Test Plan/SIT Plan/UAT Planの上位方針、リリース判定の基準設定）
+
 ### Layer 3: 設計（11種類）
 
 #### Architecture Decision Record（アーキテクチャ決定記録）
@@ -635,67 +652,115 @@ graph TD
 - **更新頻度**: 運用中に継続的に更新（インシデント経験、FAQ追加時）
 - **特徴**: **問題解決ナレッジベース**（運用経験を蓄積、Monitoring Configurationの補完情報）
 
+### Layer 6: 検証（6種類）
+
 #### System Integration Test Plan（システム統合テスト計画）
 
-- **識別子**: `OPS-SIT-PLAN`
-- **目的**: 実装完了後のシステム全体統合テストと受入テストの戦略を計画
+- **識別子**: `VERIFY-SIT-PLAN`
+- **目的**: システム全体の技術的統合テスト戦略を計画（E2E + デプロイ + 運用 + 障害対応）
 - **主な内容**:
-  - **テスト戦略**: システム全体の統合的検証方針（機能・非機能・運用の統合）
-  - **テストレベル**:
-    - **E2Eシナリオテスト**: 本番相当環境でのエンドツーエンド業務シナリオ検証
-    - **ユーザー受入テスト（UAT）**: ビジネスユーザーによる機能要件の最終確認
+  - **テスト戦略**: E2Eシナリオ、デプロイ、運用、障害対応の技術的統合検証方針
+  - **テストスコープ**:
+    - **E2Eシナリオテスト**: 本番相当環境でのエンドツーエンド業務フロー検証
     - **デプロイテスト**: デプロイ手順の実行可能性、ロールバック確認
     - **運用テスト**: 日常運用手順の実行可能性、バックアップ/リストア検証
     - **障害対応テスト**: 障害シミュレーション、復旧手順検証、エスカレーションフロー確認
     - **トラブルシューティングテスト**: 診断手順の有効性、FAQ網羅性
   - **テスト環境**: 本番相当環境（ステージング/プリプロダクション）
-  - **リソース計画**: 運用チーム参加、DevOpsチーム参加、ビジネスユーザー参加、スケジュール
-  - **合格基準**: ビジネス目標達成確認、機能要件充足確認、運用開始判断基準、UAT合格基準
-  - **リスク管理**: リリースリスク、運用開始リスク、ビジネスインパクト評価、軽減策
-- **入力**: Test Results（実装品質確認済み）、Business Requirements（ビジネス目標達成度評価）、Functional Requirements（機能要件の最終確認）、Non-Functional Requirements（非機能要件・運用性要件）
-- **読者**: テストマネージャー、運用マネージャー、プロジェクトマネージャー、DevOpsチーム
-- **更新頻度**: 実装完了前に作成、運用準備状況に応じて更新
-- **特徴**: **統合テスト戦略文書**（実装テスト完了後のシステム全体検証計画、運用開始判断の基準設定）
+  - **リソース計画**: QAチーム、運用チーム、DevOpsチーム参加、スケジュール
+  - **合格基準**: 技術的統合検証の合格基準、UAT移行条件
+  - **リスク管理**: 技術的統合リスク、軽減策
+- **入力**: Test Strategy（全体テスト戦略）、Functional Requirements（E2Eシナリオ定義）、Non-Functional Requirements（非機能検証範囲）
+- **読者**: テストマネージャー、QAリーダー、運用マネージャー、プロジェクトマネージャー
+- **更新頻度**: 要件確定後に作成開始、実装進捗に応じて詳細化
+- **特徴**: **技術統合テスト戦略文書**（実装完了後の技術的統合検証計画、UAT前の品質ゲート）
 
 #### System Integration Test Specification（システム統合テスト仕様）
 
-- **識別子**: `OPS-SIT-SPEC`
+- **識別子**: `VERIFY-SIT-SPEC`
 - **目的**: システム統合テストの詳細なテストケースと実施手順を定義
 - **主な内容**:
-  - **ビジネス目標検証テストケース**: ビジネス課題解決の確認、KPI達成度測定、ROI評価シナリオ
   - **E2Eシナリオテストケース**: 本番相当環境での業務フロー全体検証、データ整合性確認
-  - **UATテストケース**: ビジネスユーザー観点での機能要件検証、受入基準チェック
   - **デプロイテストケース**: Deployment Guide全手順の実行テスト、エラーハンドリング、ロールバックシナリオ
   - **運用テストケース**: Operations Manual全手順の検証、バックアップ/リストア実施、監視動作確認
   - **障害対応シナリオ**: Incident Response Guide検証シナリオ、障害注入（Chaos Engineering）、復旧時間測定
   - **トラブルシューティング検証**: Troubleshooting Guide診断フロー実行、問題再現と解決確認
   - **テスト手順**: ステップバイステップの実施手順、チェックリスト
   - **期待結果**: 各テストケースの合格判定基準
-  - **トレーサビリティ**: ビジネス要件・機能要件・運用ドキュメントとテストケースの紐付け
-- **入力**: System Integration Test Plan（テスト戦略を詳細化）、Business Requirements（ビジネス目標検証テストケース作成）、Functional Requirements（E2E/UATテストケース作成）、Deployment Guide、Operations Manual、Incident Response Guide、Troubleshooting Guide（テスト対象）
+  - **トレーサビリティ**: 機能要件・運用ドキュメントとテストケースの紐付け
+- **入力**: System Integration Test Plan（テスト戦略を詳細化）、Functional Requirements（E2Eテストケース作成）、Deployment Guide、Operations Manual、Incident Response Guide、Troubleshooting Guide（テスト対象）
 - **読者**: テスター、QAエンジニア、運用チーム、DevOpsエンジニア
-- **更新頻度**: テスト設計段階で作成、運用ドキュメント更新時
-- **特徴**: **統合テスト詳細化文書**（System Integration Test Planを実行可能なテストケースに落とし込む）
+- **更新頻度**: SIT Plan確定後に作成、運用ドキュメント完成後に詳細化
+- **特徴**: **技術統合テスト詳細化文書**（SIT Planを実行可能なテストケースに落とし込む）
 
 #### System Integration Test Results（システム統合テスト結果）
 
-- **識別子**: `OPS-SIT-RESULT`
-- **目的**: システム統合テストの実施結果と運用準備状況を記録（運用開始判断の根拠）
+- **識別子**: `VERIFY-SIT-RESULT`
+- **目的**: システム統合テストの実施結果を記録（UAT移行判断の根拠）
 - **主な内容**:
-  - **ビジネス目標達成度評価**: ビジネス課題解決の確認結果、KPI達成度測定、ROI試算、投資判断材料
   - **E2Eシナリオテスト結果**: 業務フロー全体の検証結果、データ整合性確認結果、性能測定
-  - **UAT結果**: ビジネスユーザーによる機能要件受入結果、受入基準達成状況
   - **デプロイテスト結果**: Deployment Guide実行結果、手順の正確性、所要時間、問題点
   - **運用テスト結果**: Operations Manual検証結果、手順の実行可能性、バックアップ/リストア成功確認
   - **障害対応テスト結果**: Incident Response Guide検証結果、復旧時間、エスカレーション動作確認
   - **トラブルシューティング検証結果**: Troubleshooting Guide有効性評価、不足情報の特定
-  - **不具合一覧**: ビジネス要件未達、機能不備、運用ドキュメントの不備、手順のエラー、改善提案
-  - **リリース準備度評価**: ビジネス目標達成度、機能要件充足確認、運用チームのスキル評価、トレーニング完了状況、本番リリース可否判断
-- **入力**: System Integration Test Specification（テストケース実行）、Business Requirements（ビジネス目標トレーサビリティ）、Functional Requirements（機能要件トレーサビリティ）、Deployment Guide、Operations Manual、Incident Response Guide、Troubleshooting Guide（テスト対象）
-- **出力先**: Business Requirements（ビジネス目標未達の特定）、Functional Requirements（未充足要件の特定）、Deployment Guide（改善フィードバック）、Operations Manual（FAQ追加、手順修正）、Incident Response Guide（シナリオ追加）、Troubleshooting Guide（診断フロー改善）、Roadmap（リリース判断・運用開始判断）
-- **読者**: 運用マネージャー、プロジェクトマネージャー、運用チーム、DevOpsチーム、ステークホルダー
-- **更新頻度**: 運用開始前のテスト実施時、再テスト時、運用開始後の定期レビュー時
-- **特徴**: **統合テスト結果文書**（システム全体の運用準備状況を検証、実運用開始判断の根拠、フィードバックループの完結）
+  - **不具合一覧**: 機能不備、運用ドキュメントの不備、手順のエラー、改善提案
+  - **UAT移行可否判断**: 技術的品質確認、運用準備度評価、UAT実施可能性判断
+- **入力**: System Integration Test Specification（テストケース実行）、Functional Requirements（機能要件トレーサビリティ）、Deployment Guide、Operations Manual、Incident Response Guide、Troubleshooting Guide（テスト対象）
+- **出力先**: Functional Requirements（未充足要件の特定）、Deployment Guide（改善フィードバック）、Operations Manual（FAQ追加、手順修正）、Incident Response Guide（シナリオ追加）、Troubleshooting Guide（診断フロー改善）
+- **読者**: テストマネージャー、QAリーダー、運用マネージャー、プロジェクトマネージャー
+- **更新頻度**: SIT実施時、再テスト時
+- **特徴**: **技術統合テスト結果文書**（技術的品質と運用準備度を検証、UAT移行の品質ゲート）
+
+#### UAT Plan（ユーザー受入テスト計画）
+
+- **識別子**: `VERIFY-UAT-PLAN`
+- **目的**: ビジネスユーザーによる受入テスト戦略を計画（ビジネス目標達成度評価）
+- **主な内容**:
+  - **テスト戦略**: ビジネスゴール達成度評価、ビジネスユーザー主導の検証方針
+  - **テストスコープ**:
+    - **ビジネス目標検証**: ビジネス課題解決の確認、KPI達成度測定、ROI評価
+    - **ユーザーシナリオ検証**: 実際の業務フローでの使用感、UI/UX評価
+    - **受入基準チェック**: Business Requirements/Functional Requirementsの充足確認
+  - **テスト環境**: 本番相当環境（SIT合格済み環境）
+  - **リソース計画**: ビジネスユーザー、プロダクトオーナー、QAサポート、スケジュール
+  - **合格基準**: ビジネス目標達成確認、ユーザー受入基準、本番リリース可否判断基準
+  - **リスク管理**: ビジネスインパクトリスク、ユーザー受入リスク、軽減策
+- **入力**: Test Strategy（全体テスト戦略）、Business Requirements（ビジネス目標定義）、Functional Requirements（機能要件受入基準）
+- **読者**: ビジネスユーザー、プロダクトオーナー、プロジェクトマネージャー、テストマネージャー
+- **更新頻度**: 要件確定後に作成開始、SIT進捗に応じて詳細化
+- **特徴**: **ビジネス受入テスト戦略文書**（ビジネスユーザー主導の最終検証計画、リリース判断の鍵）
+
+#### UAT Specification（ユーザー受入テスト仕様）
+
+- **識別子**: `VERIFY-UAT-SPEC`
+- **目的**: UATの詳細なテストケースと実施手順を定義
+- **主な内容**:
+  - **ビジネス目標検証テストケース**: ビジネス課題解決確認、KPI測定方法、ROI評価シナリオ
+  - **ユーザーシナリオテストケース**: 実業務フロー検証、役割別シナリオ、エッジケース確認
+  - **受入基準チェックリスト**: Business Requirements/Functional Requirements項目別チェック
+  - **テスト手順**: ビジネスユーザー向けの平易な手順書、サポート体制
+  - **期待結果**: ビジネス観点での合格判定基準
+  - **トレーサビリティ**: ビジネス要件・機能要件とテストケースの紐付け
+- **入力**: UAT Plan（テスト戦略を詳細化）、Business Requirements（ビジネス目標テストケース作成）、Functional Requirements（機能受入テストケース作成）
+- **読者**: ビジネスユーザー、プロダクトオーナー、QAサポート、テストマネージャー
+- **更新頻度**: UAT Plan確定後に作成、SIT完了後に最終化
+- **特徴**: **ビジネス受入テスト詳細化文書**（UAT Planを実行可能なテストケースに落とし込む）
+
+#### UAT Results（ユーザー受入テスト結果）
+
+- **識別子**: `VERIFY-UAT-RESULT`
+- **目的**: UATの実施結果を記録（本番リリース判断の最終根拠）
+- **主な内容**:
+  - **ビジネス目標達成度評価**: ビジネス課題解決確認結果、KPI達成度、ROI試算、投資判断材料
+  - **ユーザーシナリオ検証結果**: 実業務での使用感評価、UI/UX評価、改善提案
+  - **受入基準達成状況**: Business Requirements/Functional Requirements充足確認
+  - **不具合一覧**: ビジネス要件未達、機能不備、ユーザビリティ問題
+  - **本番リリース判断**: ビジネス観点での最終承認、リリース可否、条件付き承認
+- **入力**: UAT Specification（テストケース実行）、Business Requirements（ビジネス目標トレーサビリティ）、Functional Requirements（機能要件トレーサビリティ）
+- **出力先**: Business Requirements（ビジネス目標未達の特定）、Functional Requirements（未充足要件の特定）、Roadmap（本番リリース最終判断）
+- **読者**: ビジネスユーザー、プロダクトオーナー、プロジェクトマネージャー、ステークホルダー、経営層
+- **更新頻度**: UAT実施時、再テスト時
+- **特徴**: **ビジネス受入テスト結果文書**（ビジネス目標達成度を検証、本番リリースの最終判断根拠）
 
 ---
 
@@ -704,10 +769,12 @@ graph TD
 | レイヤー         | 成果物数 | 主な役割                       |
 | ---------------- | -------- | ------------------------------ |
 | プロジェクト管理 | 2        | 方向性と計画                   |
-| 要件定義         | 3        | 何を実現するか                 |
+| 要件定義         | 4        | 何を実現するか + テスト戦略    |
 | 設計             | 11       | どう実現するか                 |
 | 実装・テスト     | 13       | コードと品質保証               |
-| 運用・統合テスト | 7        | 運用準備と全体統合検証         |
+| 運用             | 4        | システムの継続的な稼働         |
+| 検証             | 6        | システム統合検証とビジネス受入 |
+| **合計**         | **40**   | プロジェクトライフサイクル全体 |
 | **合計**         | **36**   | プロジェクトライフサイクル全体 |
 
 ---
@@ -726,6 +793,7 @@ graph TB
     BizReq[Business Requirements]
     FuncReq[Functional Requirements]
     NonFuncReq[Non-Functional Requirements]
+    TestStrategy[Test Strategy]
 
     %% Layer 3: Design
     ADR[Architecture Decision Record]
@@ -755,14 +823,19 @@ graph TB
     TestResults[Test Results]
     SrcDoc[Source Code Documentation]
 
-    %% Layer 5: Operations & Integration Test
+    %% Layer 5: Operations
     DeployGuide[Deployment Guide]
     OpsManual[Operations Manual]
     IncidentGuide[Incident Response Guide]
     TroubleshootGuide[Troubleshooting Guide]
+
+    %% Layer 6: Verification
     SITPlan[System Integration Test Plan]
     SITSpec[System Integration Test Specification]
     SITResult[System Integration Test Results]
+    UATPlan[UAT Plan]
+    UATSpec[UAT Specification]
+    UATResult[UAT Results]
 
     %% Project Management Flow
     Charter --> Roadmap
@@ -774,6 +847,14 @@ graph TB
     %% Requirements Decomposition
     BizReq --> FuncReq
     BizReq --> NonFuncReq
+
+    %% Test Strategy (Overall Test Policy)
+    BizReq --> TestStrategy
+    FuncReq --> TestStrategy
+    NonFuncReq --> TestStrategy
+    TestStrategy --> TestPlan
+    TestStrategy --> SITPlan
+    TestStrategy --> UATPlan
 
     %% Functional Requirements to Design
     FuncReq --> UIUX
@@ -847,32 +928,39 @@ graph TB
     OpsManual --> IncidentGuide
     ObservabilityArch --> IncidentGuide
 
-    %% System Integration Test Flow (Layer 5)
-    TestResults --> SITPlan
-    BizReq --> SITPlan
+    %% System Integration Test Flow (Layer 6 - Technical Verification)
+    TestStrategy --> SITPlan
     FuncReq --> SITPlan
     NonFuncReq --> SITPlan
     SITPlan --> SITSpec
-    BizReq --> SITSpec
     FuncReq --> SITSpec
     DeployGuide --> SITSpec
     OpsManual --> SITSpec
     IncidentGuide --> SITSpec
     TroubleshootGuide --> SITSpec
     SITSpec --> SITResult
-    BizReq --> SITResult
-    FuncReq --> SITResult
+
+    %% UAT Flow (Layer 6 - Business Acceptance)
+    TestStrategy --> UATPlan
+    BizReq --> UATPlan
+    FuncReq --> UATPlan
+    SITResult --> UATPlan
+    UATPlan --> UATSpec
+    BizReq --> UATSpec
+    FuncReq --> UATSpec
+    UATSpec --> UATResult
 
     %% Cross-cutting Dependencies (dotted lines)
     TestResults -.-> Roadmap
     TestResults -.-> BizReq
-    SITResult -.-> BizReq
     SITResult -.-> FuncReq
     SITResult -.-> DeployGuide
     SITResult -.-> OpsManual
     SITResult -.-> IncidentGuide
     SITResult -.-> TroubleshootGuide
-    SITResult -.-> Roadmap
+    UATResult -.-> BizReq
+    UATResult -.-> FuncReq
+    UATResult -.-> Roadmap
     SrcDoc -.-> TroubleshootGuide
 
     %% Styling
@@ -881,12 +969,14 @@ graph TB
     classDef layer3 fill:#f3e5f5,stroke:#4a148c,stroke-width:2px
     classDef layer4 fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px
     classDef layer5 fill:#ffe0b2,stroke:#e65100,stroke-width:2px
+    classDef layer6 fill:#fce4ec,stroke:#880e4f,stroke-width:2px
 
     class Charter,Roadmap layer1
-    class BizReq,FuncReq,NonFuncReq layer2
+    class BizReq,FuncReq,NonFuncReq,TestStrategy layer2
     class ADR,RuntimeArch,DataModel,UIUX,API,DBSchema,SecArch,ReliabilityArch,InfraArch,ObservabilityArch,DevOpsArch layer3
     class ImplGuide,IaC,PipelineDef,RepoConfig,MonitoringConfig,TestPlan,TestSpec,SrcCode,TestCode,TestResults,SrcDoc,DevEnvArch,DevEnvConfig layer4
-    class DeployGuide,OpsManual,IncidentGuide,TroubleshootGuide,SITPlan,SITSpec,SITResult layer5
+    class DeployGuide,OpsManual,IncidentGuide,TroubleshootGuide layer5
+    class SITPlan,SITSpec,SITResult,UATPlan,UATSpec,UATResult layer6
 ```
 
 ### 依存関係の特徴
@@ -1001,29 +1091,30 @@ Operations Manual → Incident Response Guide
 
 **リスク**: この成果物の遅延・品質問題が多数の下流成果物に波及
 
-| 成果物                          | 下流影響 | 主な下流成果物                                                                         | プロジェクト管理上の重要性                                                   |
-| ------------------------------- | -------- | -------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
-| **Runtime Architecture**        | 10+      | Data Model, API, Security Arch, Infrastructure Arch, DevOps Arch, Dev Env Arch, 他多数 | **最重要**: システム全体の基盤設計、早期確定必須、アーキテクトの重点作業領域 |
-| **Functional Requirements**     | 9        | Data Model, UI/UX, Test Plan, Test Spec, Source Code, SIT Plan, SIT Spec, SIT Result   | **重要**: 機能仕様の明確化遅延が全実装に波及、UAT/E2E検証まで継続参照        |
-| **Business Requirements**       | 5        | Func Req, Non-Func Req, SIT Plan, SIT Spec, SIT Result                                 | **重要**: ビジネス目標の曖昧さがプロジェクト全体の方向性を見失わせる         |
-| **Non-Functional Requirements** | 5        | ADR, Runtime Arch, Security Arch, Reliability Arch, Test Plan                          | **重要**: 性能・セキュリティ要件の曖昧さが設計やり直しを招く                 |
-| **Data Model**                  | 4        | UI/UX, API, Database Schema, Source Code                                               | **重要**: データ構造変更のコストが高い、早期レビュー必須                     |
-| **DevOps Architecture**         | 4        | Dev Env Arch, Impl Guide, Pipeline Def, Repository Config                              | 開発プロセスの基盤、プロジェクト初期に確定                                   |
+| 成果物                          | 下流影響 | 主な下流成果物                                                                                                          | プロジェクト管理上の重要性                                                   |
+| ------------------------------- | -------- | ----------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| **Runtime Architecture**        | 10+      | Data Model, API, Security Arch, Infrastructure Arch, DevOps Arch, Dev Env Arch, 他多数                                  | **最重要**: システム全体の基盤設計、早期確定必須、アーキテクトの重点作業領域 |
+| **Functional Requirements**     | 12       | Data Model, UI/UX, Test Plan, Test Spec, Source Code, Test Strategy, SIT Plan, SIT Spec, UAT Plan, UAT Spec, UAT Result | **重要**: 機能仕様の明確化遅延が全実装に波及、UAT/E2E検証まで継続参照        |
+| **Business Requirements**       | 8        | Func Req, Non-Func Req, Test Strategy, SIT Plan, SIT Spec, UAT Plan, UAT Spec, UAT Result                               | **重要**: ビジネス目標の曖昧さがプロジェクト全体の方向性を見失わせる         |
+| **Test Strategy**               | 3        | Test Plan, SIT Plan, UAT Plan                                                                                           | **重要**: 全体テスト方針、品質ゲート定義、リリース基準の統括                 |
+| **Non-Functional Requirements** | 6        | ADR, Runtime Arch, Security Arch, Reliability Arch, Test Plan, Test Strategy                                            | **重要**: 性能・セキュリティ要件の曖昧さが設計やり直しを招く                 |
+| **Data Model**                  | 4        | UI/UX, API, Database Schema, Source Code                                                                                | **重要**: データ構造変更のコストが高い、早期レビュー必須                     |
+| **DevOps Architecture**         | 4        | Dev Env Arch, Impl Guide, Pipeline Def, Repository Config                                                               | 開発プロセスの基盤、プロジェクト初期に確定                                   |
 
 ##### 統合ハブ（多数の成果物からの入力が必要）
 
 **リスク**: 複数の依存関係が収束、前提条件が揃わないと着手不可、統合の複雑性
 
-| 成果物                             | 入力数 | 主な入力元                                                           | プロジェクト管理上の重要性                                               |
-| ---------------------------------- | ------ | -------------------------------------------------------------------- | ------------------------------------------------------------------------ |
-| **System Integration Test Spec**   | 7      | SIT Plan, Biz Req, Func Req, Deploy, Ops Manual, Incident, Trouble   | **最重要**: ビジネス+機能+運用の総合検証、リリース判断の鍵               |
-| **Source Code**                    | 5      | Func Req, Impl Guide, UI/UX, API, DB Schema                          | **最重要**: 全設計の統合実装、並行作業の調整が鍵、統合テスト重視         |
-| **System Integration Test Result** | 5      | SIT Spec, Biz Req, Func Req, Deploy, Ops Manual (+ Incident/Trouble) | **重要**: リリース判断の根拠、ビジネス+機能受入+運用準備度の総合評価     |
-| **System Integration Test Plan**   | 4      | Test Results, Biz Req, Func Req, Non-Func Req                        | **重要**: 実装完了後の統合テスト戦略、ビジネス+機能+非機能の最終検証計画 |
-| **Implementation Guide**           | 4      | Runtime Arch, Security Arch, Dev Env Arch, DevOps Arch               | **重要**: 複数アーキテクチャの実装方針統合、早期ドラフト作成で並行作業可 |
-| **Infrastructure Architecture**    | 3      | Reliability Arch, Runtime Arch, Security Arch                        | **重要**: 信頼性・性能・セキュリティの統合設計、SREの重点作業領域        |
-| **Observability Architecture**     | 3      | Runtime Arch, Infrastructure Arch, Reliability Arch                  | 運用監視の統合設計、インフラ確定後に詳細化                               |
-| **Test Specification**             | 2      | Test Plan, Functional Requirements                                   | テスト戦略と機能仕様の統合、並行作業可能                                 |
+| 成果物                           | 入力数 | 主な入力元                                                | プロジェクト管理上の重要性                                               |
+| -------------------------------- | ------ | --------------------------------------------------------- | ------------------------------------------------------------------------ |
+| **System Integration Test Spec** | 6      | SIT Plan, Func Req, Deploy, Ops Manual, Incident, Trouble | **最重要**: 技術統合検証、運用準備度の総合評価                           |
+| **Source Code**                  | 5      | Func Req, Impl Guide, UI/UX, API, DB Schema               | **最重要**: 全設計の統合実装、並行作業の調整が鍵、統合テスト重視         |
+| **Implementation Guide**         | 4      | Runtime Arch, Security Arch, Dev Env Arch, DevOps Arch    | **重要**: 複数アーキテクチャの実装方針統合、早期ドラフト作成で並行作業可 |
+| **Infrastructure Architecture**  | 3      | Reliability Arch, Runtime Arch, Security Arch             | **重要**: 信頼性・性能・セキュリティの統合設計、SREの重点作業領域        |
+| **Test Strategy**                | 3      | Business Req, Functional Req, Non-Functional Req          | **重要**: 全要件に基づく包括的テスト戦略、品質ゲート定義                 |
+| **UAT Specification**            | 3      | UAT Plan, Business Req, Functional Req                    | **重要**: ビジネス受入テスト詳細化、最終リリース判断の基盤               |
+| **Observability Architecture**   | 3      | Runtime Arch, Infrastructure Arch, Reliability Arch       | 運用監視の統合設計、インフラ確定後に詳細化                               |
+| **Test Specification**           | 2      | Test Plan, Functional Requirements                        | テスト戦略と機能仕様の統合、並行作業可能                                 |
 
 ##### プロジェクト管理上の推奨アクション
 
@@ -1059,6 +1150,7 @@ gantt
     Business Requirements         :crit, biz, after charter, 10d
     Functional Requirements       :crit, func, after biz, 15d
     Non-Functional Requirements   :crit, nonfunc, after biz, 10d
+    Test Strategy                 :crit, teststrat, after biz func nonfunc, 5d
 
     section Layer 3: 設計
     Architecture Decision Record  :adr, after nonfunc, 5d
@@ -1081,7 +1173,7 @@ gantt
     CI/CD Pipeline Definition     :pipeline, after devops, 8d
     Repository Configuration      :repo, after devops devenv, 5d
     Monitoring Configuration      :monitoring, after observ, 8d
-    Test Plan                     :testplan, after func nonfunc, 8d
+    Test Plan                     :crit, testplan, after teststrat func nonfunc, 8d
     Test Specification            :testspec, after testplan func, 10d
 
     section Layer 4: 実装
@@ -1090,21 +1182,26 @@ gantt
     Test Results                  :crit, testresult, after testcode, 10d
     Source Code Documentation     :codedoc, after code, 8d
 
-    section Layer 5: 運用・統合テスト
+    section Layer 5: 運用
     Deployment Guide              :deploy, after iac pipeline testresult, 5d
     Operations Manual             :manual, after deploy monitoring testresult, 8d
     Incident Response Guide       :incident, after observ manual, 5d
     Troubleshooting Guide         :trouble, after codedoc incident, 5d
-    System Integration Test Plan  :crit, sitplan, after testresult biz func nonfunc, 5d
-    System Integration Test Spec  :crit, sitspec, after sitplan biz func deploy manual incident trouble, 8d
-    System Integration Test Result :crit, sitresult, after sitspec biz func, 10d
+
+    section Layer 6: 検証
+    System Integration Test Plan  :crit, sitplan, after teststrat func nonfunc, 5d
+    System Integration Test Spec  :crit, sitspec, after sitplan func deploy manual incident trouble, 8d
+    System Integration Test Result :crit, sitresult, after sitspec, 10d
+    UAT Plan                      :crit, uatplan, after teststrat biz func, 5d
+    UAT Specification             :crit, uatspec, after uatplan biz func sitresult, 8d
+    UAT Results                   :crit, uatresult, after uatspec, 10d
 ```
 
 **クリティカルパス（赤色タスク）**:
 
 最も遅延が許されない経路（全体スケジュールを決定する最長経路）：
 
-```text
+````text
 Charter (5日)
   ↓
 Business Requirements (10日)
@@ -1141,8 +1238,51 @@ System Integration Test Specification (8日) ← 統合テスト詳細化
   ↓
 System Integration Test Results (10日) ← 運用品質ゲート（フィードバックループ完結）
 
-総クリティカルパス期間: 約159日（約8.0ヶ月）
-```
+**クリティカルパス（赤色タスク）**:
+
+最も遅延が許されない経路（全体スケジュールを決定する最長経路）：
+
+```text
+Charter (5日)
+  ↓
+Business Requirements (10日)
+  ↓
+Functional Requirements (15日)
+  ↓
+Test Strategy (5日) ← 全テスト統括
+  ↓
+Runtime Architecture (15日) ← 最重要ハブ
+  ↓
+Data Model (10日)
+  ↓
+DevOps Architecture (5日)
+  ↓
+Dev Environment Architecture (5日)
+  ↓
+Implementation Guide (8日) ← 統合ハブ
+  ├→ Database Schema (8日)
+  └→ Repository Configuration (5日) ← 実装準備必須
+     ↓
+Dev Environment Configuration (5日) ← 実装準備必須
+  ↓
+Source Code (30日) ← 最長タスク、実装準備完了後に開始
+  ↓
+Test Code (20日)
+  ↓
+Test Results (10日) ← 実装品質ゲート
+  ↓
+[Layer 5並行作業: Deployment Guide, Operations Manual, Incident Guide, Troubleshooting Guide]
+  ↓
+System Integration Test Specification (8日) ← 技術統合テスト詳細化
+  ↓
+System Integration Test Results (10日) ← 技術品質ゲート
+  ↓
+UAT Specification (8日) ← ビジネス受入テスト詳細化
+  ↓
+UAT Results (10日) ← ビジネス受入ゲート、リリース判断
+
+総クリティカルパス期間: 約192日（約9.6ヶ月）
+````
 
 **並行作業の機会**:
 
@@ -1150,21 +1290,24 @@ System Integration Test Results (10日) ← 運用品質ゲート（フィード
 
 - **Layer 3並行**: ADR, UI/UX, API, Security, Reliability, Infrastructure, Observability, DevOps, Dev Env
 - **Layer 4並行**: Dev Env Config, IaC, CI/CD Pipeline, Repository Config, Monitoring, Test Plan
-- **Layer 5並行**: Deployment Guide, Operations Manual, Incident Guide, Troubleshooting Guide（SIT Planと並行、完了後にSIT Specへ）
+- **Layer 5並行**: Deployment Guide, Operations Manual, Incident Guide, Troubleshooting Guide（実装完了後すぐ着手、SIT Specへ）
+- **Layer 6前倒し**: SIT Plan, UAT Plan（要件確定後すぐ作成開始、実装と並行して策定）
 
 **スケジュールバッファの配置**:
 
 クリティカルパス上の高リスクタスクにバッファを配置：
 
-| 成果物           | 基本期間 | バッファ | 合計  | 理由                                            |
-| ---------------- | -------- | -------- | ----- | ----------------------------------------------- |
-| ARCH-RUNTIME     | 15日     | +3日     | 18日  | 影響範囲最大（10+下流）                         |
-| IMPL-CODE        | 30日     | +9日     | 39日  | 統合の複雑性（5入力）                           |
-| IMPL-TESTCODE    | 20日     | +4日     | 24日  | 品質リスク                                      |
-| IMPL-TESTRESULT  | 10日     | +2日     | 12日  | 修正・再テストサイクル                          |
-| OPS-SIT-SPEC     | 8日      | +2日     | 10日  | 4ドキュメント統合の複雑性                       |
-| OPS-SIT-RESULT   | 10日     | +3日     | 13日  | 運用ドキュメント改善サイクル、再テスト          |
-| **合計バッファ** | -        | +23日    | 182日 | **約9.1ヶ月（システム統合テスト＋バッファ込）** |
+| 成果物            | 基本期間 | バッファ | 合計  | 理由                                                    |
+| ----------------- | -------- | -------- | ----- | ------------------------------------------------------- |
+| ARCH-RUNTIME      | 15日     | +3日     | 18日  | 影響範囲最大（10+下流）                                 |
+| IMPL-CODE         | 30日     | +9日     | 39日  | 統合の複雑性（5入力）                                   |
+| IMPL-TESTCODE     | 20日     | +4日     | 24日  | 品質リスク                                              |
+| IMPL-TESTRESULT   | 10日     | +2日     | 12日  | 修正・再テストサイクル                                  |
+| VERIFY-SIT-SPEC   | 8日      | +2日     | 10日  | 4ドキュメント統合の複雑性                               |
+| VERIFY-SIT-RESULT | 10日     | +3日     | 13日  | 技術統合検証、運用ドキュメント改善サイクル              |
+| VERIFY-UAT-SPEC   | 8日      | +2日     | 10日  | ビジネス受入テスト詳細化                                |
+| VERIFY-UAT-RESULT | 10日     | +3日     | 13日  | ビジネス受入検証、最終リリース判断                      |
+| **合計バッファ**  | -        | +28日    | 220日 | **約11.0ヶ月（UAT含む完全な検証プロセス＋バッファ込）** |
 
 ---
 
