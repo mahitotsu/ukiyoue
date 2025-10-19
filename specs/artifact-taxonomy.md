@@ -818,24 +818,7 @@ Project Charter（起点: プロジェクト承認・正当化）
           → 運用（Layer 5: 4種類）
 ```
 
-#### 2. 複数の入力を持つ成果物（統合ポイント）
-
-以下の成果物は複数の情報源を統合します：
-
-| 成果物                                   | 入力元                                                | 統合の目的                                             |
-| ---------------------------------------- | ----------------------------------------------------- | ------------------------------------------------------ |
-| **Data Model**                           | Functional Req + Runtime Architecture                 | 機能要件とシステム構造からデータ設計                   |
-| **API Specification**                    | Runtime Architecture + Data Model                     | システム構成とデータ構造から API 設計                  |
-| **UI/UX Specification**                  | Functional Req + Data Model                           | 機能要件とデータ構造から UI 設計                       |
-| **Infrastructure Architecture**          | Reliability Arch + Runtime Arch + Security Arch       | 信頼性・実行時・セキュリティ要件を統合したインフラ設計 |
-| **Observability Architecture**           | Runtime Arch + Infrastructure Arch + Reliability Arch | 実行時構造・インフラ構成・信頼性要件から監視設計       |
-| **Development Environment Architecture** | Runtime Architecture + DevOps Architecture            | 開発対象システムと開発プロセスから開発環境設計         |
-| **Implementation Guide**                 | Runtime Architecture + Security Architecture          | システム構成とセキュリティ方針から実装方針             |
-| **Test Plan**                            | Functional Req + Non-Functional Req                   | 機能テストと非機能テストの計画を統合                   |
-| **Source Code**                          | Functional Req + Impl Guide + UI/UX + API + DB Schema | **最多入力**: 全設計情報を統合実装                     |
-| **Test Code**                            | Test Specification + Source Code                      | テスト仕様とテスト対象コード                           |
-
-#### 3. 横断的な依存関係（フィードバックループ）
+#### 2. 横断的な依存関係（フィードバックループ）
 
 - **Test Results** → **Roadmap**（品質状況に応じたマイルストーン・スケジュール調整）
   - テスト合格率が低い → リリース延期
@@ -847,7 +830,7 @@ Project Charter（起点: プロジェクト承認・正当化）
 - **Troubleshooting Guide** ← Source Code Documentation + Incident Response（運用知見の蓄積）
   - 実装の詳細と障害対応の経験を統合
 
-#### 4. レイヤー内の依存関係（詳細化チェーン）
+#### 3. レイヤー内の依存関係（詳細化チェーン）
 
 同一レイヤー内または隣接レイヤー間で詳細化が進む主要なチェーン：
 
