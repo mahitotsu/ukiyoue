@@ -1052,172 +1052,234 @@ Project Charter（起点: プロジェクト承認・正当化）
 
 ##### 要件分解チェーン（Layer 1→2）
 
-```text
-Project Charter（プロジェクト承認）
-  ├→ Roadmap（スケジュール・マイルストーン）
-  └→ Business Requirements（ビジネス課題詳細化）
-       ├→ Functional Requirements（機能要件）
-       └→ Non-Functional Requirements（非機能要件）
+```mermaid
+graph LR
+    Charter[Project Charter] --> Roadmap[Roadmap]
+    Charter --> BizReq[Business Requirements]
+    BizReq --> FuncReq[Functional Requirements]
+    BizReq --> NonFuncReq[Non-Functional Requirements]
 ```
+
+**フロー**: プロジェクト承認 → スケジュール計画 + ビジネス課題詳細化 → システム要件
 
 ##### テスト戦略チェーン（Layer 2→4→6）
 
-```text
-Business Requirements ─┐
-Functional Requirements ├→ Test Strategy（全体テスト方針）
-Non-Functional Requirements ─┘
-                         ├→ Test Plan（実装テスト計画）
-                         │   └→ Test Specification → Test Code → Test Results
-                         ├→ SIT Plan（技術統合テスト計画）
-                         │   └→ SIT Specification → SIT Results
-                         └→ UAT Plan（ビジネス受入テスト計画）
-                             └→ UAT Specification → UAT Results
+```mermaid
+graph TB
+    BizReq[Business Requirements] --> TestStrat[Test Strategy]
+    FuncReq[Functional Requirements] --> TestStrat
+    NonFuncReq[Non-Functional Requirements] --> TestStrat
 
-特徴:
+    TestStrat --> TestPlan[Test Plan]
+    TestStrat --> SITPlan[SIT Plan]
+    TestStrat --> UATPlan[UAT Plan]
+
+    TestPlan --> TestSpec[Test Specification]
+    TestSpec --> TestCode[Test Code]
+    TestCode --> TestResults[Test Results]
+
+    SITPlan --> SITSpec[SIT Specification]
+    SITSpec --> SITResults[SIT Results]
+
+    UATPlan --> UATSpec[UAT Specification]
+    UATSpec --> UATResults[UAT Results]
+```
+
+**特徴**:
+
 - Test Strategy が全テストレベルを統括
 - Layer 4: 実装レベルのテスト（Unit/Integration/E2E）
 - Layer 6: システムレベルの検証（SIT技術統合 + UATビジネス受入）
-```
 
 ##### アーキテクチャ詳細化チェーン（Layer 2→3）
 
-```text
-Non-Functional Requirements
-  └→ ADR（アーキテクチャ決定記録）
-      ├→ Runtime Architecture（実行基盤）
-      │   ├→ Data Model, API, Security Arch
-      │   ├→ DevOps Arch, Observability Arch
-      │   └→ Development Environment Arch
-      └→ Security Architecture（セキュリティ）
+```mermaid
+graph TB
+    NonFuncReq[Non-Functional Requirements] --> ADR[ADR]
+    NonFuncReq --> ReliArch[Reliability Architecture]
 
-Non-Functional Requirements
-  └→ Reliability Architecture（信頼性：可用性・性能・DR）
-      └→ Infrastructure Architecture（インフラ設計）
-          └→ Observability Architecture（監視設計）
+    ADR --> RuntimeArch[Runtime Architecture]
+    ADR --> SecArch[Security Architecture]
+
+    RuntimeArch --> DataModel[Data Model]
+    RuntimeArch --> API[API Specification]
+    RuntimeArch --> DevOpsArch[DevOps Architecture]
+    RuntimeArch --> ObservArch[Observability Architecture]
+    RuntimeArch --> DevEnvArch[Dev Environment Architecture]
+
+    ReliArch --> InfraArch[Infrastructure Architecture]
+    InfraArch --> ObservArch
+
+    SecArch --> RuntimeArch
 ```
+
+**フロー**: 非機能要件 → アーキテクチャ決定 → 各種アーキテクチャ詳細化
 
 ##### データ設計チェーン（Layer 2→3→4）
 
-```text
-Functional Requirements ─┐
-Runtime Architecture ────├→ Data Model（論理データモデル）
-                         │   ├→ Database Schema（物理スキーマ）
-                         │   ├→ API Specification（データアクセスAPI）
-                         │   ├→ UI/UX Specification（画面設計）
-                         │   └→ Source Code（実装）
+```mermaid
+graph TB
+    FuncReq[Functional Requirements] --> DataModel[Data Model]
+    RuntimeArch[Runtime Architecture] --> DataModel
+
+    DataModel --> DBSchema[Database Schema]
+    DataModel --> API[API Specification]
+    DataModel --> UIUX[UI/UX Specification]
+    DataModel --> SrcCode[Source Code]
 ```
 
-##### セキュリティチェーン（Layer 3→4→5）
+**フロー**: 機能要件 + 実行基盤 → 論理データモデル → 物理実装
 
-```text
-Non-Functional Requirements → Security Architecture
-  ├→ Implementation Guide（実装方針）
-  └→ Infrastructure Architecture → Infrastructure as Code
+##### セキュリティチェーン（Layer 2→3→4→5）
+
+```mermaid
+graph LR
+    NonFuncReq[Non-Functional Requirements] --> SecArch[Security Architecture]
+    SecArch --> ImplGuide[Implementation Guide]
+    SecArch --> InfraArch[Infrastructure Architecture]
+    InfraArch --> IaC[Infrastructure as Code]
 ```
+
+**フロー**: セキュリティ要件 → セキュリティ設計 → 実装方針 + インフラ設計
 
 ##### 信頼性・インフラ・監視チェーン（Layer 2→3→4→5）
 
-```text
-Non-Functional Requirements → Reliability Architecture
-  └→ Infrastructure Architecture
-      ├→ Infrastructure as Code → Deployment Guide
-      └→ Observability Architecture
-          └→ Monitoring & Logging Configuration
-              ├→ Operations Manual（監視手順）
-              └→ Troubleshooting Guide（診断フロー）
+```mermaid
+graph TB
+    NonFuncReq[Non-Functional Requirements] --> ReliArch[Reliability Architecture]
+    ReliArch --> InfraArch[Infrastructure Architecture]
 
-具体例:
-  可用性99.9% → SLO定義 → Multi-AZ構成 → メトリクス監視 → Prometheus設定
-  性能要件 → 容量計画 → Auto Scaling → 負荷監視 → Grafana ダッシュボード
-  DR要件 → RPO/RTO → バックアップ構成 → 復旧監視 → アラート設定
+    InfraArch --> IaC[Infrastructure as Code]
+    InfraArch --> ObservArch[Observability Architecture]
+
+    IaC --> DeployGuide[Deployment Guide]
+
+    ObservArch --> MonConfig[Monitoring & Logging Configuration]
+    MonConfig --> OpsManual[Operations Manual]
+    MonConfig --> TroubleGuide[Troubleshooting Guide]
 ```
+
+**具体例**:
+
+- 可用性99.9% → SLO定義 → Multi-AZ構成 → メトリクス監視 → Prometheus設定
+- 性能要件 → 容量計画 → Auto Scaling → 負荷監視 → Grafana ダッシュボード
+- DR要件 → RPO/RTO → バックアップ構成 → 復旧監視 → アラート設定
 
 ##### DevOps・CI/CDチェーン（Layer 3→4→5）
 
-```text
-Runtime Architecture → DevOps Architecture
-  ├→ Development Environment Architecture → Dev Environment Configuration
-  ├→ CI/CD Pipeline Definition ─┐
-  └→ Repository Configuration   ├→ Deployment Guide
-                                │
-Infrastructure as Code ─────────┘
+```mermaid
+graph TB
+    RuntimeArch[Runtime Architecture] --> DevOpsArch[DevOps Architecture]
 
-具体例:
-  パイプライン設計 → GitHub Actions定義 → デプロイ手順
-  ブランチ戦略 → .github/設定 → リリースフロー
-  成果物管理 → コンテナレジストリ設定 → イメージ配布
+    DevOpsArch --> DevEnvArch[Dev Environment Architecture]
+    DevOpsArch --> PipelineDef[CI/CD Pipeline Definition]
+    DevOpsArch --> RepoConfig[Repository Configuration]
+
+    DevEnvArch --> DevEnvConfig[Dev Environment Configuration]
+
+    PipelineDef --> DeployGuide[Deployment Guide]
+    RepoConfig --> DeployGuide
+    IaC[Infrastructure as Code] --> DeployGuide
 ```
+
+**具体例**:
+
+- パイプライン設計 → GitHub Actions定義 → デプロイ手順
+- ブランチ戦略 → .github/設定 → リリースフロー
+- 成果物管理 → コンテナレジストリ設定 → イメージ配布
 
 ##### アプリケーション実装チェーン（Layer 2→3→4）
 
-```text
-複数の設計 → Implementation Guide ─┐
-                                  │
-Functional Requirements ──────────┤
-UI/UX Specification ──────────────┤
-API Specification ────────────────├→ Source Code → Source Code Documentation
-Database Schema ──────────────────┘
+```mermaid
+graph TB
+    ImplGuide[Implementation Guide] --> SrcCode[Source Code]
+    FuncReq[Functional Requirements] --> SrcCode
+    UIUX[UI/UX Specification] --> SrcCode
+    API[API Specification] --> SrcCode
+    DBSchema[Database Schema] --> SrcCode
 
-統合の複雑性: 5つの入力源を統合
+    SrcCode --> SrcDoc[Source Code Documentation]
 ```
+
+**統合の複雑性**: 5つの入力源を統合
 
 ##### 実装テストチェーン（Layer 2→4）
 
-```text
-Functional Requirements ──┐
-Non-Functional Requirements ├→ Test Plan → Test Specification ─┐
-                           │                                     ├→ Test Code → Test Results
-Source Code（テスト対象）──┘                                     │
+```mermaid
+graph LR
+    FuncReq[Functional Requirements] --> TestPlan[Test Plan]
+    NonFuncReq[Non-Functional Requirements] --> TestPlan
+    TestPlan --> TestSpec[Test Specification]
+    TestSpec --> TestCode[Test Code]
+    SrcCode[Source Code] --> TestCode
+    TestCode --> TestResults[Test Results]
+```
 
-テスト種別:
+**テスト種別**:
+
 - 機能テスト: 機能要件の検証（ユニット、統合、E2E）
 - 非機能テスト: 非機能要件の検証
   - 性能テスト（負荷、ストレス、スパイク）
   - セキュリティテスト（脆弱性診断、ペネトレーション）
   - 可用性テスト（フェイルオーバー、復旧）
   - 運用性テスト（バックアップ/リストア、監視）
-```
 
 ##### 運用ドキュメントチェーン（Layer 4→5）
 
-```text
-Deployment Guide → Operations Manual
-  ├→ Incident Response Guide（障害対応）
-  └→ Troubleshooting Guide ← Source Code Documentation（実装詳細）
+```mermaid
+graph TB
+    DeployGuide[Deployment Guide] --> OpsManual[Operations Manual]
+    OpsManual --> IncidentGuide[Incident Response Guide]
 
-Observability Architecture → Monitoring & Logging Configuration
-  ├→ Operations Manual（監視手順）
-  └→ Troubleshooting Guide（診断フロー）
+    ObservArch[Observability Architecture] --> MonConfig[Monitoring & Logging Configuration]
+    MonConfig --> OpsManual
+    MonConfig --> TroubleGuide[Troubleshooting Guide]
+
+    SrcDoc[Source Code Documentation] -.-> TroubleGuide
+    OpsManual --> TroubleGuide
 ```
+
+**フロー**: デプロイ手順 → 運用手順 → 障害対応 + トラブルシューティング
 
 ##### システム統合テストチェーン（Layer 2→4→5→6）
 
-```text
-Test Strategy ──┐
-Functional Requirements ──┼→ SIT Plan → SIT Specification ─┐
-Non-Functional Requirements ─┘                              │
-                                                            │
-Deployment Guide ──┐                                         │
-Operations Manual ──┤                                        ├→ SIT Results
-Incident Response Guide ─┤                                   │
-Troubleshooting Guide ────┘                                 │
+```mermaid
+graph TB
+    TestStrat[Test Strategy] --> SITPlan[SIT Plan]
+    FuncReq[Functional Requirements] --> SITPlan
+    NonFuncReq[Non-Functional Requirements] --> SITPlan
 
-特徴: 技術統合検証（E2E、デプロイ、運用、障害対応）
-目的: UAT移行判断、運用準備度評価
+    SITPlan --> SITSpec[SIT Specification]
+    FuncReq --> SITSpec
+    DeployGuide[Deployment Guide] --> SITSpec
+    OpsManual[Operations Manual] --> SITSpec
+    IncidentGuide[Incident Response Guide] --> SITSpec
+    TroubleGuide[Troubleshooting Guide] --> SITSpec
+
+    SITSpec --> SITResults[SIT Results]
 ```
+
+**特徴**: 技術統合検証（E2E、デプロイ、運用、障害対応）  
+**目的**: UAT移行判断、運用準備度評価
 
 ##### ビジネス受入テストチェーン（Layer 2→6）
 
-```text
-Test Strategy ──┐
-Business Requirements ───┼→ UAT Plan → UAT Specification → UAT Results
-Functional Requirements ─┤
-                        │
-SIT Results（技術検証合格）┘
+```mermaid
+graph TB
+    TestStrat[Test Strategy] --> UATPlan[UAT Plan]
+    BizReq[Business Requirements] --> UATPlan
+    FuncReq[Functional Requirements] --> UATPlan
+    SITResults[SIT Results] --> UATPlan
 
-特徴: ビジネス受入検証（ビジネス目標達成度、KPI/ROI評価）
-目的: 本番リリース最終判断
+    UATPlan --> UATSpec[UAT Specification]
+    BizReq --> UATSpec
+    FuncReq --> UATSpec
+
+    UATSpec --> UATResults[UAT Results]
 ```
+
+**特徴**: ビジネス受入検証（ビジネス目標達成度、KPI/ROI評価）  
+**目的**: 本番リリース最終判断
 
 #### ハブ成果物（クリティカルパス・ボトルネック）
 
