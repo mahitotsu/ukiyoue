@@ -985,7 +985,7 @@ graph TB
 
 ### 依存関係の特徴
 
-#### トップダウンフロー（計画→実装）
+#### トップダウンフロー（計画→実装→検証）
 
 プロジェクトの情報は上位レイヤーから下位レイヤーへ流れます：
 
@@ -994,12 +994,20 @@ Project Charter（起点: プロジェクト承認・正当化）
   → Roadmap（スケジュールとマイルストーン）
   → Business Requirements（ビジネス課題の詳細化・KPI定義）
     → Functional Requirements & Non-Functional Requirements（システム要件）
-      → 設計（Layer 3: 11種類）
-        → 実装（Layer 4: 11種類）
-          → 運用（Layer 5: 4種類）
+      → Test Strategy（全体テスト戦略・品質ゲート定義）
+        → 設計（Layer 3: 11種類）
+          → 実装・テスト（Layer 4: 13種類）
+            → 運用（Layer 5: 4種類）
+              → 検証（Layer 6: 6種類）
+                - SIT（技術統合検証）
+                - UAT（ビジネス受入検証）
 ```
 
 #### 横断的な依存関係（フィードバックループ）
+
+実装・検証の結果が上流成果物の改善にフィードバックされます（点線の依存関係）：
+
+##### 実装テスト結果のフィードバック
 
 - **Test Results** → **Roadmap**（品質状況に応じたマイルストーン・スケジュール調整）
   - テスト合格率が低い → リリース延期
@@ -1008,26 +1016,115 @@ Project Charter（起点: プロジェクト承認・正当化）
 - **Test Results** → **Business Requirements**（品質評価による要件の再検討）
   - 実装困難な要件の発見 → 要件の見直し
   - パフォーマンス問題 → 非機能要件の調整
-- **Troubleshooting Guide** ← Source Code Documentation + Incident Response（運用知見の蓄積）
-  - 実装の詳細と障害対応の経験を統合
+
+##### システム統合テスト結果のフィードバック
+
+- **SIT Results** → **Functional Requirements**（技術的実現性による機能要件の調整）
+  - E2Eシナリオ問題 → 機能要件の修正・優先度変更
+  - 性能問題 → 機能範囲の見直し
+- **SIT Results** → **運用ドキュメント**（実テストによる運用手順の改善）
+  - Deployment Guide（デプロイ手順の修正、所要時間の更新）
+  - Operations Manual（FAQ追加、監視手順の改善）
+  - Incident Response Guide（障害シナリオ追加、復旧手順の改善）
+  - Troubleshooting Guide（診断フローの改善、不足情報の追加）
+
+##### ビジネス受入テスト結果のフィードバック
+
+- **UAT Results** → **Business Requirements**（ビジネス目標達成度による要件の調整）
+  - ビジネス目標未達 → KPI目標値の見直し
+  - ROI未達成 → スコープ調整、投資判断の再検討
+- **UAT Results** → **Functional Requirements**（ユーザー受入による機能要件の調整）
+  - ユーザビリティ問題 → UI/UX要件の見直し
+  - 業務フロー不適合 → 機能要件の修正
+- **UAT Results** → **Roadmap**（最終リリース判断による計画の確定）
+  - 本番リリース承認 → 本番展開スケジュール確定
+  - 条件付き承認 → 追加改善フェーズの計画
+
+##### 運用知見のフィードバック
+
+- **Source Code Documentation** → **Troubleshooting Guide**（実装詳細の運用知見化）
+  - コードロジックの説明 → トラブルシューティング手順への反映
+  - アーキテクチャ構造 → 診断フローへの組み込み
 
 #### レイヤー内の依存関係（詳細化チェーン）
 
 同一レイヤー内または隣接レイヤー間で詳細化が進む主要なチェーン：
 
-##### データ設計チェーン
+##### 要件分解チェーン（Layer 1→2）
 
 ```text
-Data Model（論理） → Database Schema（物理）
+Project Charter（プロジェクト承認）
+  ├→ Roadmap（スケジュール・マイルストーン）
+  └→ Business Requirements（ビジネス課題詳細化）
+       ├→ Functional Requirements（機能要件）
+       └→ Non-Functional Requirements（非機能要件）
 ```
 
-##### 信頼性・インフラ・監視チェーン（ADR-005で定義）
+##### テスト戦略チェーン（Layer 2→4→6）
 
 ```text
-Non-Functional Requirements → Reliability Architecture（抽象）
-  → Infrastructure Architecture（具体）
-    → Observability Architecture（運用）
-      → Monitoring & Logging Configuration（実装）
+Business Requirements ─┐
+Functional Requirements ├→ Test Strategy（全体テスト方針）
+Non-Functional Requirements ─┘
+                         ├→ Test Plan（実装テスト計画）
+                         │   └→ Test Specification → Test Code → Test Results
+                         ├→ SIT Plan（技術統合テスト計画）
+                         │   └→ SIT Specification → SIT Results
+                         └→ UAT Plan（ビジネス受入テスト計画）
+                             └→ UAT Specification → UAT Results
+
+特徴:
+- Test Strategy が全テストレベルを統括
+- Layer 4: 実装レベルのテスト（Unit/Integration/E2E）
+- Layer 6: システムレベルの検証（SIT技術統合 + UATビジネス受入）
+```
+
+##### アーキテクチャ詳細化チェーン（Layer 2→3）
+
+```text
+Non-Functional Requirements
+  └→ ADR（アーキテクチャ決定記録）
+      ├→ Runtime Architecture（実行基盤）
+      │   ├→ Data Model, API, Security Arch
+      │   ├→ DevOps Arch, Observability Arch
+      │   └→ Development Environment Arch
+      └→ Security Architecture（セキュリティ）
+
+Non-Functional Requirements
+  └→ Reliability Architecture（信頼性：可用性・性能・DR）
+      └→ Infrastructure Architecture（インフラ設計）
+          └→ Observability Architecture（監視設計）
+```
+
+##### データ設計チェーン（Layer 2→3→4）
+
+```text
+Functional Requirements ─┐
+Runtime Architecture ────├→ Data Model（論理データモデル）
+                         │   ├→ Database Schema（物理スキーマ）
+                         │   ├→ API Specification（データアクセスAPI）
+                         │   ├→ UI/UX Specification（画面設計）
+                         │   └→ Source Code（実装）
+```
+
+##### セキュリティチェーン（Layer 3→4→5）
+
+```text
+Non-Functional Requirements → Security Architecture
+  ├→ Implementation Guide（実装方針）
+  └→ Infrastructure Architecture → Infrastructure as Code
+```
+
+##### 信頼性・インフラ・監視チェーン（Layer 2→3→4→5）
+
+```text
+Non-Functional Requirements → Reliability Architecture
+  └→ Infrastructure Architecture
+      ├→ Infrastructure as Code → Deployment Guide
+      └→ Observability Architecture
+          └→ Monitoring & Logging Configuration
+              ├→ Operations Manual（監視手順）
+              └→ Troubleshooting Guide（診断フロー）
 
 具体例:
   可用性99.9% → SLO定義 → Multi-AZ構成 → メトリクス監視 → Prometheus設定
@@ -1035,11 +1132,15 @@ Non-Functional Requirements → Reliability Architecture（抽象）
   DR要件 → RPO/RTO → バックアップ構成 → 復旧監視 → アラート設定
 ```
 
-##### DevOps・CI/CDチェーン
+##### DevOps・CI/CDチェーン（Layer 3→4→5）
 
 ```text
-DevOps Architecture → CI/CD Pipeline Definition + Repository Configuration
-  → Deployment Guide
+Runtime Architecture → DevOps Architecture
+  ├→ Development Environment Architecture → Dev Environment Configuration
+  ├→ CI/CD Pipeline Definition ─┐
+  └→ Repository Configuration   ├→ Deployment Guide
+                                │
+Infrastructure as Code ─────────┘
 
 具体例:
   パイプライン設計 → GitHub Actions定義 → デプロイ手順
@@ -1047,29 +1148,26 @@ DevOps Architecture → CI/CD Pipeline Definition + Repository Configuration
   成果物管理 → コンテナレジストリ設定 → イメージ配布
 ```
 
-##### インフラチェーン
+##### アプリケーション実装チェーン（Layer 2→3→4）
 
 ```text
-Infrastructure Architecture（設計） → Infrastructure as Code（実装） → Deployment Guide（手順）
+複数の設計 → Implementation Guide ─┐
+                                  │
+Functional Requirements ──────────┤
+UI/UX Specification ──────────────┤
+API Specification ────────────────├→ Source Code → Source Code Documentation
+Database Schema ──────────────────┘
+
+統合の複雑性: 5つの入力源を統合
 ```
 
-##### アプリケーション実装チェーン
+##### 実装テストチェーン（Layer 2→4）
 
 ```text
-複数の設計 → Source Code → Source Code Documentation
-  ├─ Functional Requirements（機能）
-  ├─ Implementation Guide（方針）
-  ├─ UI/UX Specification（画面）
-  ├─ API Specification（API）
-  └─ Database Schema（データアクセス）
-```
-
-##### テストチェーン
-
-```text
-Functional Requirements    → Test Plan → Test Specification → Test Code → Test Results
-Non-Functional Requirements →                                   ↑
-                                                            Source Code（テスト対象）
+Functional Requirements ──┐
+Non-Functional Requirements ├→ Test Plan → Test Specification ─┐
+                           │                                     ├→ Test Code → Test Results
+Source Code（テスト対象）──┘                                     │
 
 テスト種別:
 - 機能テスト: 機能要件の検証（ユニット、統合、E2E）
@@ -1080,11 +1178,45 @@ Non-Functional Requirements →                                   ↑
   - 運用性テスト（バックアップ/リストア、監視）
 ```
 
-##### 運用知見チェーン
+##### 運用ドキュメントチェーン（Layer 4→5）
 
 ```text
-Operations Manual → Incident Response Guide
-                 └→ Troubleshooting Guide ← Source Code Documentation（実装詳細）
+Deployment Guide → Operations Manual
+  ├→ Incident Response Guide（障害対応）
+  └→ Troubleshooting Guide ← Source Code Documentation（実装詳細）
+
+Observability Architecture → Monitoring & Logging Configuration
+  ├→ Operations Manual（監視手順）
+  └→ Troubleshooting Guide（診断フロー）
+```
+
+##### システム統合テストチェーン（Layer 2→4→5→6）
+
+```text
+Test Strategy ──┐
+Functional Requirements ──┼→ SIT Plan → SIT Specification ─┐
+Non-Functional Requirements ─┘                              │
+                                                            │
+Deployment Guide ──┐                                         │
+Operations Manual ──┤                                        ├→ SIT Results
+Incident Response Guide ─┤                                   │
+Troubleshooting Guide ────┘                                 │
+
+特徴: 技術統合検証（E2E、デプロイ、運用、障害対応）
+目的: UAT移行判断、運用準備度評価
+```
+
+##### ビジネス受入テストチェーン（Layer 2→6）
+
+```text
+Test Strategy ──┐
+Business Requirements ───┼→ UAT Plan → UAT Specification → UAT Results
+Functional Requirements ─┤
+                        │
+SIT Results（技術検証合格）┘
+
+特徴: ビジネス受入検証（ビジネス目標達成度、KPI/ROI評価）
+目的: 本番リリース最終判断
 ```
 
 #### ハブ成果物（クリティカルパス・ボトルネック）
