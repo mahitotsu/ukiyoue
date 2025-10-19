@@ -800,7 +800,7 @@ graph LR
     TestStrategy[Test Strategy]
 
     %% Layer 3: Design
-    ADR[Architecture Decision Record]
+    ADR[Architecture Decision Record] %% Continuous: Created as needed throughout architecture design
     RuntimeArch[Runtime Architecture]
     DataModel[Data Model]
     UIUX[UI/UX Specification]
@@ -866,9 +866,9 @@ graph LR
     FuncReq --> DataModel
 
     %% Non-Functional Requirements to Architecture
-    NonFuncReq --> ADR
-    ADR --> RuntimeArch
-    ADR --> SecArch
+    %% Note: ADR is created continuously throughout architecture decisions (not a blocking dependency)
+    NonFuncReq --> RuntimeArch
+    NonFuncReq --> SecArch
     NonFuncReq --> ReliabilityArch
 
     %% Architecture to Detailed Design
@@ -1095,25 +1095,24 @@ graph LR
 
 ```mermaid
 graph LR
-    NonFuncReq[Non-Functional Requirements] --> ADR[ADR]
+    NonFuncReq[Non-Functional Requirements] --> RuntimeArch[Runtime Architecture]
+    NonFuncReq --> SecArch[Security Architecture]
     NonFuncReq --> ReliArch[Reliability Architecture]
-
-    ADR --> RuntimeArch[Runtime Architecture]
-    ADR --> SecArch[Security Architecture]
 
     RuntimeArch --> DataModel[Data Model]
     RuntimeArch --> API[API Specification]
     RuntimeArch --> DevOpsArch[DevOps Architecture]
     RuntimeArch --> ObservArch[Observability Architecture]
     RuntimeArch --> DevEnvArch[Dev Environment Architecture]
+    RuntimeArch --> SecArch
 
     ReliArch --> InfraArch[Infrastructure Architecture]
     InfraArch --> ObservArch
-
-    SecArch --> RuntimeArch
 ```
 
-**フロー**: 非機能要件 → アーキテクチャ決定 → 各種アーキテクチャ詳細化
+**フロー**: 非機能要件 → 各種アーキテクチャ詳細化
+
+**注**: ADR（Architecture Decision Record）は、このフロー全体を通じてアーキテクチャ上の決定が必要になった時点で継続的に作成されます。ADRは成果物間のフローではなく、意思決定の記録プロセスです。
 
 ##### データ設計チェーン（Layer 2→3→4）
 
