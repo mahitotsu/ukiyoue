@@ -950,27 +950,109 @@ Operations Manual → Incident Response Guide
 - ✅ **統合テスト重視**: Source Codeは特に統合テストに時間を確保
 - ✅ **段階的統合**: 一度に全てを統合せず、段階的に統合して複雑性を管理
 
-**クリティカルパスの可視化**:
+**全成果物の作成順序とクリティカルパス**:
+
+以下のガントチャートは、全33成果物の推奨作成順序を示します。赤色のタスクがクリティカルパス（最も遅延が許されない経路）です。
+
+```mermaid
+gantt
+    title 成果物作成スケジュール（クリティカルパス強調）
+    dateFormat YYYY-MM-DD
+    axisFormat %m/%d
+
+    section Layer 1: PM
+    PM-CHARTER (Charter)           :crit, charter, 2025-01-01, 5d
+    PM-ROADMAP (Roadmap)          :crit, roadmap, after charter, 3d
+
+    section Layer 2: 要件
+    REQ-BIZ (Business Req)        :crit, biz, after charter, 10d
+    REQ-FUNC (Functional Req)     :crit, func, after biz, 15d
+    REQ-NONFUNC (Non-Functional)  :crit, nonfunc, after biz, 10d
+
+    section Layer 3: 設計
+    ARCH-ADR (ADR)                :adr, after nonfunc, 5d
+    ARCH-RUNTIME (Runtime Arch)   :crit, runtime, after nonfunc adr, 15d
+    ARCH-DATA (Data Model)        :crit, datamodel, after func runtime, 10d
+    ARCH-UI (UI/UX)               :ui, after func datamodel, 8d
+    ARCH-API (API Spec)           :api, after runtime datamodel, 8d
+    ARCH-SECURITY (Security)      :security, after nonfunc runtime, 8d
+    ARCH-RELIABILITY (Reliability):reliability, after nonfunc, 5d
+    ARCH-INFRA (Infrastructure)   :infra, after reliability runtime security, 10d
+    ARCH-OBSERVABILITY (Observ)   :observ, after runtime infra reliability, 8d
+    ARCH-DEVOPS (DevOps Arch)     :devops, after runtime, 5d
+    ARCH-DEVENV (Dev Env Arch)    :devenv, after runtime devops, 5d
+
+    section Layer 4: 実装準備
+    IMPL-GUIDE (Impl Guide)       :crit, implguide, after runtime security devenv devops, 8d
+    IMPL-DEVENV (Dev Env Config)  :devenvconf, after devenv, 5d
+    IMPL-DBSCHEMA (DB Schema)     :crit, dbschema, after datamodel, 8d
+    IMPL-IAC (IaC)                :iac, after infra, 10d
+    IMPL-PIPELINE (CI/CD Pipeline):pipeline, after devops, 8d
+    IMPL-REPO (Repository Config) :repo, after devops devenv, 5d
+    IMPL-MONITORING (Monitoring)  :monitoring, after observ, 8d
+    IMPL-TESTPLAN (Test Plan)     :testplan, after func nonfunc, 8d
+    IMPL-TESTSPEC (Test Spec)     :testspec, after testplan func, 10d
+
+    section Layer 4: 実装
+    IMPL-CODE (Source Code)       :crit, code, after func implguide ui api dbschema, 30d
+    IMPL-TESTCODE (Test Code)     :crit, testcode, after testspec code, 20d
+    IMPL-TESTRESULT (Test Results):crit, testresult, after testcode, 10d
+    IMPL-CODEDOC (Code Doc)       :codedoc, after code, 8d
+
+    section Layer 5: 運用
+    OPS-DEPLOY (Deployment Guide) :deploy, after iac pipeline, 5d
+    OPS-MANUAL (Operations Manual):manual, after deploy monitoring, 8d
+    OPS-INCIDENT (Incident Guide) :incident, after observ manual, 5d
+    OPS-TROUBLESHOOT (Troubleshoot):trouble, after codedoc incident, 5d
+```
+
+**クリティカルパス（赤色タスク）**:
+
+最も遅延が許されない経路（全体スケジュールを決定する最長経路）：
 
 ```text
-Project Charter
-  ↓（最速着手）
-Non-Functional Requirements ────┐
-  ↓                             ↓
-Runtime Architecture（早期確定必須）→ Implementation Guide ────┐
-  ↓                                                          ↓
-Data Model（データ構造凍結）                                  Source Code（統合実装）
-  ↓                                                          ↓
-Database Schema                                              Test Code
-                                                             ↓
-                                                          Test Results（品質ゲート）
+PM-CHARTER (5日)
+  ↓
+REQ-BIZ (10日)
+  ↓
+REQ-FUNC / REQ-NONFUNC (並行、最長15日)
+  ↓
+ARCH-RUNTIME (15日) ← 最重要ハブ
+  ↓
+ARCH-DATA (10日)
+  ↓
+IMPL-GUIDE (8日) ← 統合ハブ
+  ↓
+IMPL-DBSCHEMA (8日)
+  ↓
+IMPL-CODE (30日) ← 最長タスク、統合ハブ
+  ↓
+IMPL-TESTCODE (20日)
+  ↓
+IMPL-TESTRESULT (10日) ← 品質ゲート
+
+総クリティカルパス期間: 約131日（約6.5ヶ月）
 ```
+
+**並行作業の機会**:
+
+クリティカルパス以外の成果物は並行作業可能：
+
+- **Layer 3並行**: ADR, UI/UX, API, Security, Reliability, Infrastructure, Observability, DevOps, Dev Env
+- **Layer 4並行**: Dev Env Config, IaC, CI/CD Pipeline, Repository Config, Monitoring, Test Plan
+- **Layer 5並行**: Deployment Guide, Operations Manual, Incident Guide, Troubleshooting Guide
 
 **スケジュールバッファの配置**:
 
-- Runtime Architecture: +20% バッファ（影響範囲最大）
-- Source Code: +30% バッファ（統合の複雑性）
-- Test Results: +20% バッファ（品質問題の発見・修正）
+クリティカルパス上の高リスクタスクにバッファを配置：
+
+| 成果物           | 基本期間 | バッファ | 合計  | 理由                        |
+| ---------------- | -------- | -------- | ----- | --------------------------- |
+| ARCH-RUNTIME     | 15日     | +3日     | 18日  | 影響範囲最大（10+下流）     |
+| IMPL-CODE        | 30日     | +9日     | 39日  | 統合の複雑性（5入力）       |
+| IMPL-TESTCODE    | 20日     | +4日     | 24日  | 品質リスク                  |
+| IMPL-TESTRESULT  | 10日     | +2日     | 12日  | 修正・再テストサイクル      |
+| **合計バッファ** | -        | +18日    | 149日 | **約7.5ヶ月（バッファ込）** |
 
 ---
 
