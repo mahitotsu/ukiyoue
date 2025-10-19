@@ -994,7 +994,7 @@ gantt
     Test Specification            :testspec, after testplan func, 10d
 
     section Layer 4: 実装
-    Source Code                   :crit, code, after func implguide ui api dbschema, 30d
+    Source Code                   :crit, code, after func implguide ui api dbschema repo devenvconf, 30d
     Test Code                     :crit, testcode, after testspec code, 20d
     Test Results                  :crit, testresult, after testcode, 10d
     Source Code Documentation     :codedoc, after code, 8d
@@ -1011,27 +1011,33 @@ gantt
 最も遅延が許されない経路（全体スケジュールを決定する最長経路）：
 
 ```text
-PM-CHARTER (5日)
+Charter (5日)
   ↓
-REQ-BIZ (10日)
+Business Requirements (10日)
   ↓
-REQ-FUNC / REQ-NONFUNC (並行、最長15日)
+Functional Requirements (15日)
   ↓
-ARCH-RUNTIME (15日) ← 最重要ハブ
+Runtime Architecture (15日) ← 最重要ハブ
   ↓
-ARCH-DATA (10日)
+Data Model (10日)
   ↓
-IMPL-GUIDE (8日) ← 統合ハブ
+DevOps Architecture (5日)
   ↓
-IMPL-DBSCHEMA (8日)
+Dev Environment Architecture (5日)
   ↓
-IMPL-CODE (30日) ← 最長タスク、統合ハブ
+Implementation Guide (8日) ← 統合ハブ
+  ├→ Database Schema (8日)
+  └→ Repository Configuration (5日) ← 実装準備必須
+     ↓
+Dev Environment Configuration (5日) ← 実装準備必須
   ↓
-IMPL-TESTCODE (20日)
+Source Code (30日) ← 最長タスク、実装準備完了後に開始
   ↓
-IMPL-TESTRESULT (10日) ← 品質ゲート
+Test Code (20日)
+  ↓
+Test Results (10日) ← 品質ゲート
 
-総クリティカルパス期間: 約131日（約6.5ヶ月）
+総クリティカルパス期間: 約136日（約6.8ヶ月）
 ```
 
 **並行作業の機会**:
