@@ -582,10 +582,10 @@ graph TD
   - **検証手順**: デプロイ後の動作確認、ヘルスチェック
   - **ロールバック手順**: 問題発生時の切り戻し方法
   - **デプロイチェックリスト**: 作業前確認事項、作業後確認事項
-- **入力**: Infrastructure as Code（デプロイ対象のインフラ）、CI/CD Pipeline Definition（デプロイ自動化の手順）
+- **入力**: Infrastructure as Code（デプロイ対象のインフラ）、CI/CD Pipeline Definition（デプロイ自動化の手順）、Test Results（品質確認されたシステムのデプロイ手順）
 - **読者**: DevOpsエンジニア、リリース担当者、運用担当者
 - **更新頻度**: デプロイ準備時に作成、インフラ変更時、デプロイ戦略変更時
-- **特徴**: **リリース手順書**（Infrastructure as CodeとCI/CD Pipelineを本番環境に適用する手順）
+- **特徴**: **リリース手順書**（テスト完了後、本番環境へのデプロイ手順を文書化）
 
 #### Operations Manual（運用マニュアル）
 
@@ -1000,8 +1000,8 @@ gantt
     Source Code Documentation     :codedoc, after code, 8d
 
     section Layer 5: 運用
-    Deployment Guide              :deploy, after iac pipeline, 5d
-    Operations Manual             :manual, after deploy monitoring, 8d
+    Deployment Guide              :deploy, after iac pipeline testresult, 5d
+    Operations Manual             :manual, after deploy monitoring testresult, 8d
     Incident Response Guide       :incident, after observ manual, 5d
     Troubleshooting Guide         :trouble, after codedoc incident, 5d
 ```
