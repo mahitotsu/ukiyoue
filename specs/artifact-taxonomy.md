@@ -1357,8 +1357,7 @@ gantt
     Test Strategy                 :crit, teststrat, after biz func nonfunc, 5d
 
     section Layer 3: 設計
-    Architecture Decision Record  :adr, after nonfunc, 5d
-    Runtime Architecture          :crit, runtime, after nonfunc adr, 15d
+    Runtime Architecture          :crit, runtime, after nonfunc, 15d
     Data Model                    :crit, datamodel, after func runtime, 10d
     UI/UX Specification           :ui, after func datamodel, 8d
     API Specification             :api, after runtime datamodel, 8d
@@ -1405,10 +1404,12 @@ gantt
 
 クリティカルパス以外の成果物は並行作業可能：
 
-- **Layer 3並行**: ADR, UI/UX, API, Security, Reliability, Infrastructure, Observability, DevOps, Dev Env
+- **Layer 3並行**: UI/UX, API, Security, Reliability, Infrastructure, Observability, DevOps, Dev Env
 - **Layer 4並行**: Dev Env Config, IaC, CI/CD Pipeline, Repository Config, Monitoring, Test Plan
 - **Layer 5並行**: Deployment Guide, Operations Manual, Incident Guide, Troubleshooting Guide（実装完了後すぐ着手、SIT Specへ）
 - **Layer 6前倒し**: SIT Plan, UAT Plan（要件確定後すぐ作成開始、実装と並行して策定）
+
+**注**: ADR（Architecture Decision Record）はプロジェクト全体を通じて継続的に作成される成果物であり、単一のタスクとしてスケジュールされません。アーキテクチャ上の決定が必要になった時点で遅滞なく作成・記録されます。
 
 **スケジュールバッファの配置**:
 
