@@ -906,6 +906,72 @@ Operations Manual → Incident Response Guide
                  └→ Troubleshooting Guide ← Source Code Documentation（実装詳細）
 ```
 
+#### ハブ成果物（クリティカルパス・ボトルネック）
+
+多数の成果物と依存関係を持つ「ハブ成果物」は、プロジェクトのクリティカルパスとボトルネックになりやすく、スケジュールと品質の重点管理対象です。
+
+##### 上流ハブ（多数の成果物への入力源）
+
+**リスク**: この成果物の遅延・品質問題が多数の下流成果物に波及
+
+| 成果物                          | 下流影響 | 主な下流成果物                                                                         | プロジェクト管理上の重要性                                                   |
+| ------------------------------- | -------- | -------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| **Runtime Architecture**        | 10+      | Data Model, API, Security Arch, Infrastructure Arch, DevOps Arch, Dev Env Arch, 他多数 | **最重要**: システム全体の基盤設計、早期確定必須、アーキテクトの重点作業領域 |
+| **Functional Requirements**     | 6        | Data Model, UI/UX, Test Plan, Test Spec, Source Code                                   | **重要**: 機能仕様の明確化遅延が全実装に波及、要件凍結のマイルストーン設定   |
+| **Non-Functional Requirements** | 5        | ADR, Runtime Arch, Security Arch, Reliability Arch, Test Plan                          | **重要**: 性能・セキュリティ要件の曖昧さが設計やり直しを招く                 |
+| **Data Model**                  | 4        | UI/UX, API, Database Schema, Source Code                                               | **重要**: データ構造変更のコストが高い、早期レビュー必須                     |
+| **DevOps Architecture**         | 4        | Dev Env Arch, Impl Guide, Pipeline Def, Repository Config                              | 開発プロセスの基盤、プロジェクト初期に確定                                   |
+
+##### 統合ハブ（多数の成果物からの入力が必要）
+
+**リスク**: 複数の依存関係が収束、前提条件が揃わないと着手不可、統合の複雑性
+
+| 成果物                          | 入力数 | 主な入力元                                             | プロジェクト管理上の重要性                                               |
+| ------------------------------- | ------ | ------------------------------------------------------ | ------------------------------------------------------------------------ |
+| **Source Code**                 | 5      | Func Req, Impl Guide, UI/UX, API, DB Schema            | **最重要**: 全設計の統合実装、並行作業の調整が鍵、統合テスト重視         |
+| **Implementation Guide**        | 4      | Runtime Arch, Security Arch, Dev Env Arch, DevOps Arch | **重要**: 複数アーキテクチャの実装方針統合、早期ドラフト作成で並行作業可 |
+| **Infrastructure Architecture** | 3      | Reliability Arch, Runtime Arch, Security Arch          | **重要**: 信頼性・性能・セキュリティの統合設計、SREの重点作業領域        |
+| **Observability Architecture**  | 3      | Runtime Arch, Infrastructure Arch, Reliability Arch    | 運用監視の統合設計、インフラ確定後に詳細化                               |
+| **Test Specification**          | 2      | Test Plan, Functional Requirements                     | テスト戦略と機能仕様の統合、並行作業可能                                 |
+
+##### プロジェクト管理上の推奨アクション
+
+**上流ハブへの対策**:
+
+- ✅ **早期着手**: プロジェクト初期フェーズで優先的にリソース配分
+- ✅ **厳格なレビュー**: アーキテクチャレビュー、要件レビューの義務化
+- ✅ **変更管理**: 変更の影響範囲が大きいため、変更プロセスを厳格化
+- ✅ **経験者配置**: Runtime Architectureには経験豊富なアーキテクトを配置
+
+**統合ハブへの対策**:
+
+- ✅ **並行作業の最大化**: 依存関係を分析し、可能な限り並行で進める
+- ✅ **早期の依存関係解決**: 入力成果物の完成を待たず、ドラフトベースで着手
+- ✅ **統合テスト重視**: Source Codeは特に統合テストに時間を確保
+- ✅ **段階的統合**: 一度に全てを統合せず、段階的に統合して複雑性を管理
+
+**クリティカルパスの可視化**:
+
+```text
+Project Charter
+  ↓（最速着手）
+Non-Functional Requirements ────┐
+  ↓                             ↓
+Runtime Architecture（早期確定必須）→ Implementation Guide ────┐
+  ↓                                                          ↓
+Data Model（データ構造凍結）                                  Source Code（統合実装）
+  ↓                                                          ↓
+Database Schema                                              Test Code
+                                                             ↓
+                                                          Test Results（品質ゲート）
+```
+
+**スケジュールバッファの配置**:
+
+- Runtime Architecture: +20% バッファ（影響範囲最大）
+- Source Code: +30% バッファ（統合の複雑性）
+- Test Results: +20% バッファ（品質問題の発見・修正）
+
 ---
 
 ## 📐 次のステップ
