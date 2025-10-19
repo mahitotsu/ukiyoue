@@ -961,49 +961,49 @@ gantt
     axisFormat %m/%d
 
     section Layer 1: PM
-    PM-CHARTER (Charter)           :crit, charter, 2025-01-01, 5d
-    PM-ROADMAP (Roadmap)          :crit, roadmap, after charter, 3d
+    Charter                       :crit, charter, 2025-01-01, 5d
+    Roadmap                       :crit, roadmap, after charter, 3d
 
     section Layer 2: 要件
-    REQ-BIZ (Business Req)        :crit, biz, after charter, 10d
-    REQ-FUNC (Functional Req)     :crit, func, after biz, 15d
-    REQ-NONFUNC (Non-Functional)  :crit, nonfunc, after biz, 10d
+    Business Requirements         :crit, biz, after charter, 10d
+    Functional Requirements       :crit, func, after biz, 15d
+    Non-Functional Requirements   :crit, nonfunc, after biz, 10d
 
     section Layer 3: 設計
-    ARCH-ADR (ADR)                :adr, after nonfunc, 5d
-    ARCH-RUNTIME (Runtime Arch)   :crit, runtime, after nonfunc adr, 15d
-    ARCH-DATA (Data Model)        :crit, datamodel, after func runtime, 10d
-    ARCH-UI (UI/UX)               :ui, after func datamodel, 8d
-    ARCH-API (API Spec)           :api, after runtime datamodel, 8d
-    ARCH-SECURITY (Security)      :security, after nonfunc runtime, 8d
-    ARCH-RELIABILITY (Reliability):reliability, after nonfunc, 5d
-    ARCH-INFRA (Infrastructure)   :infra, after reliability runtime security, 10d
-    ARCH-OBSERVABILITY (Observ)   :observ, after runtime infra reliability, 8d
-    ARCH-DEVOPS (DevOps Arch)     :devops, after runtime, 5d
-    ARCH-DEVENV (Dev Env Arch)    :devenv, after runtime devops, 5d
+    Architecture Decision Record  :adr, after nonfunc, 5d
+    Runtime Architecture          :crit, runtime, after nonfunc adr, 15d
+    Data Model                    :crit, datamodel, after func runtime, 10d
+    UI/UX Specification           :ui, after func datamodel, 8d
+    API Specification             :api, after runtime datamodel, 8d
+    Security Architecture         :security, after nonfunc runtime, 8d
+    Reliability Architecture      :reliability, after nonfunc, 5d
+    Infrastructure Architecture   :infra, after reliability runtime security, 10d
+    Observability Architecture    :observ, after runtime infra reliability, 8d
+    DevOps Architecture           :devops, after runtime, 5d
+    Dev Environment Architecture  :devenv, after runtime devops, 5d
 
     section Layer 4: 実装準備
-    IMPL-GUIDE (Impl Guide)       :crit, implguide, after runtime security devenv devops, 8d
-    IMPL-DEVENV (Dev Env Config)  :devenvconf, after devenv, 5d
-    IMPL-DBSCHEMA (DB Schema)     :crit, dbschema, after datamodel, 8d
-    IMPL-IAC (IaC)                :iac, after infra, 10d
-    IMPL-PIPELINE (CI/CD Pipeline):pipeline, after devops, 8d
-    IMPL-REPO (Repository Config) :repo, after devops devenv, 5d
-    IMPL-MONITORING (Monitoring)  :monitoring, after observ, 8d
-    IMPL-TESTPLAN (Test Plan)     :testplan, after func nonfunc, 8d
-    IMPL-TESTSPEC (Test Spec)     :testspec, after testplan func, 10d
+    Implementation Guide          :crit, implguide, after runtime security devenv devops, 8d
+    Dev Environment Configuration :devenvconf, after devenv, 5d
+    Database Schema               :crit, dbschema, after datamodel, 8d
+    Infrastructure as Code        :iac, after infra, 10d
+    CI/CD Pipeline Definition     :pipeline, after devops, 8d
+    Repository Configuration      :repo, after devops devenv, 5d
+    Monitoring Configuration      :monitoring, after observ, 8d
+    Test Plan                     :testplan, after func nonfunc, 8d
+    Test Specification            :testspec, after testplan func, 10d
 
     section Layer 4: 実装
-    IMPL-CODE (Source Code)       :crit, code, after func implguide ui api dbschema, 30d
-    IMPL-TESTCODE (Test Code)     :crit, testcode, after testspec code, 20d
-    IMPL-TESTRESULT (Test Results):crit, testresult, after testcode, 10d
-    IMPL-CODEDOC (Code Doc)       :codedoc, after code, 8d
+    Source Code                   :crit, code, after func implguide ui api dbschema, 30d
+    Test Code                     :crit, testcode, after testspec code, 20d
+    Test Results                  :crit, testresult, after testcode, 10d
+    Source Code Documentation     :codedoc, after code, 8d
 
     section Layer 5: 運用
-    OPS-DEPLOY (Deployment Guide) :deploy, after iac pipeline, 5d
-    OPS-MANUAL (Operations Manual):manual, after deploy monitoring, 8d
-    OPS-INCIDENT (Incident Guide) :incident, after observ manual, 5d
-    OPS-TROUBLESHOOT (Troubleshoot):trouble, after codedoc incident, 5d
+    Deployment Guide              :deploy, after iac pipeline, 5d
+    Operations Manual             :manual, after deploy monitoring, 8d
+    Incident Response Guide       :incident, after observ manual, 5d
+    Troubleshooting Guide         :trouble, after codedoc incident, 5d
 ```
 
 **クリティカルパス（赤色タスク）**:
