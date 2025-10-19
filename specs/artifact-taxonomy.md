@@ -323,34 +323,35 @@ graph TD
 #### DevOps Architecture（DevOps アーキテクチャ）
 
 - **識別子**: `ARCH-DEVOPS`
-- **目的**: 開発・運用プロセスとCI/CDの全体設計
+- **目的**: チーム開発・リリースプロセスの全体設計（git push以降のプロセス）
 - **主な内容**:
+  - **ブランチ戦略**: Git Flow/GitHub Flow/Trunk-Based Development、ブランチ命名規則
+  - **PR/MRプロセス**: レビュープロセス、承認フロー、マージ条件
   - **CI/CDパイプライン設計**: ビルド→テスト→デプロイフロー、各ステージの自動化範囲
-  - **ソースコードリポジトリ戦略**: モノレポ/マルチレポ、ブランチ戦略（Git Flow/GitHub Flow/Trunk-Based）
-  - **成果物管理**: コンテナレジストリ、パッケージレポジトリ、アーティファクト保管
-  - **環境管理**: dev/staging/production環境、環境間の差異管理
   - **リリース戦略**: Blue-Green Deployment、Canary Release、Feature Flag
+  - **環境管理**: dev/staging/production環境、環境間の差異管理、プロモーション戦略
+  - **成果物管理**: コンテナレジストリ、パッケージレポジトリ、アーティファクト保管
   - **自動化方針**: どこまで自動化するか、手動承認ポイント
 - **入力**: Runtime Architecture（CI/CD対象のシステム構成）
 - **読者**: DevOpsエンジニア、開発リーダー、リリースマネージャー
 - **更新頻度**: 設計段階で作成、開発プロセス変更時、ツール変更時
-- **特徴**: **開発・運用プロセス設計文書**（継続的デリバリーの全体戦略）
+- **特徴**: **チーム協調プロセス設計文書**（git push以降の継続的デリバリー戦略）
 
 #### Development Environment Architecture（開発環境アーキテクチャ）
 
 - **識別子**: `ARCH-DEVENV`
-- **目的**: 開発者の生産性を最大化する環境の設計
+- **目的**: ローカル開発環境と個人生産性の最大化（git push以前のプロセス）
 - **主な内容**:
   - **開発ツール選定**: IDE（VS Code、IntelliJ等）、エディタ、デバッガ、プロファイラ
-  - **ローカル環境構成**: Docker Compose、仮想環境、コンテナ化戦略
-  - **開発ワークフロー設計**: ブランチ作成→実装→テスト→レビュー→マージのフロー
-  - **品質ツール選定**: Linter、Formatter、静的解析ツール、pre-commit hooks
+  - **ローカル環境構成**: Docker Compose、仮想環境、ローカル開発サーバー設定
+  - **ローカルワークフロー**: コーディング→ローカルテスト→デバッグ→コミットまでの流れ
+  - **デバッグ環境**: ブレークポイント設定、変数監視、ステップ実行環境
   - **依存関係管理方針**: パッケージマネージャ、ロックファイル戦略
   - **開発環境の統一方針**: チーム全体で共通化する設定、個人設定の許容範囲
-- **入力**: Runtime Architecture（開発対象のシステム構成）、DevOps Architecture（開発プロセスとの整合性）
+- **入力**: Runtime Architecture（開発対象のシステム構成）、DevOps Architecture（チームプロセスとの整合性）
 - **読者**: 開発リーダー、開発者、新規参画メンバー
 - **更新頻度**: プロジェクト開始時、ツール変更時、開発プロセス改善時
-- **特徴**: **開発生産性設計文書**（開発者オンボーディングと日常作業の効率化）
+- **特徴**: **個人生産性設計文書**（ローカル環境での日常作業の効率化）
 
 ### Layer 4: 実装・テスト（13種類）
 
@@ -365,28 +366,31 @@ graph TD
   - **禁止事項**: アンチパターン、避けるべきコード
   - **ライブラリ選定**: 承認済みライブラリ、使用禁止ライブラリ
   - **エラーハンドリング**: 例外処理の方針、ログ出力ルール
+  - **開発環境使用ガイド**: ローカル開発サーバー起動、デバッグ方法、トラブルシューティング
+  - **ブランチ・コミット規約**: ブランチ命名規則、コミットメッセージフォーマット、PR作成前チェックリスト
   - **レビュー基準**: コードレビューのチェックポイント
-- **入力**: Runtime Architecture（実装対象のアーキテクチャパターン）、Security Architecture（セキュアコーディング規約）
+- **入力**: Runtime Architecture（実装対象のアーキテクチャパターン）、Security Architecture（セキュアコーディング規約）、Development Environment Architecture（ローカル開発環境での作業方法）、DevOps Architecture（ブランチ戦略、PR/レビュープロセス）
 - **読者**: 開発者（全員）、新規参画メンバー
 - **更新頻度**: 実装開始時に作成、知見蓄積時、チームコンセンサス変更時
-- **特徴**: **開発標準文書**（Runtime ArchitectureとSecurity Architectureを実装レベルで具体化）
+- **特徴**: **開発標準文書**（複数のアーキテクチャ設計を実装レベルで統合・具体化）
 
 #### Development Environment Configuration（開発環境設定）
 
 - **識別子**: `IMPL-DEVENV`
-- **目的**: 開発環境のセットアップ自動化とチーム統一
+- **目的**: ローカル開発環境のセットアップ自動化（個人作業環境の構築）
 - **主な内容**:
   - **IDE設定ファイル**: .vscode/settings.json、.idea/、EditorConfig
   - **開発用コンテナ定義**: docker-compose.dev.yml、Dockerfile.dev、devcontainer.json
-  - **環境変数テンプレート**: .env.example、環境変数の説明
-  - **セットアップスクリプト**: bootstrap.sh、環境構築自動化スクリプト
-  - **品質ツール設定**: .eslintrc、.prettierrc、.editorconfig、pre-commit設定
+  - **ローカルサーバー設定**: 開発サーバー起動スクリプト、ホットリロード設定
+  - **デバッグ設定**: launch.json、デバッガ設定、ブレークポイント設定例
+  - **環境変数テンプレート**: .env.example、ローカル開発用の環境変数説明
   - **依存関係固定**: package-lock.json、poetry.lock、Gemfile.lock
+  - **セットアップスクリプト**: bootstrap.sh、環境構築自動化スクリプト
   - **READMEと手順書**: 開発環境構築手順、トラブルシューティング
 - **入力**: Development Environment Architecture（開発環境設計を実装に落とす）
 - **読者**: 開発者（全員）、新規参画メンバー、オンボーディング担当者
 - **更新頻度**: プロジェクト開始時、ツール追加時、環境変更時、継続的に更新
-- **特徴**: **開発環境実装コード**（開発者が即座に開発を開始できる環境の自動構築）
+- **特徴**: **ローカル環境実装コード**（開発者が即座にローカル開発を開始できる環境の自動構築）
 
 #### Database Schema（データベーススキーマ）
 
@@ -439,15 +443,16 @@ graph TD
 #### Repository Configuration（リポジトリ設定）
 
 - **識別子**: `IMPL-REPO`
-- **目的**: ソースコード管理とパッケージ管理の設定（DevOps Architectureの基盤）
+- **目的**: リポジトリ基盤とチーム品質ゲートの設定（git push以降の品質保証）
 - **主な内容**:
   - **リポジトリ設定**: .github/（GitHub Actions、PR template、Issue template）、.gitlab-ci.yml
+  - **品質ゲート**: pre-commit hooks、commit-msg hooks、lint設定、フォーマッター設定（.eslintrc、.prettierrc等）
+  - **ブランチ保護ルール**: mainブランチ保護、レビュー必須設定、ステータスチェック必須化
   - **依存関係管理自動化**: Dependabot、Renovate Bot設定
   - **パッケージマニフェスト**: package.json、requirements.txt、go.mod、pom.xml
   - **コンテナレジストリ設定**: Docker Hub、ECR、GCR、ACR
   - **アーティファクトリポジトリ**: Artifactory、Nexus、GitHub Packages
-  - **品質ゲート**: pre-commit hooks、lint設定、フォーマッター設定
-- **入力**: DevOps Architecture（リポジトリ戦略とブランチ戦略）
+- **入力**: DevOps Architecture（リポジトリ戦略とブランチ戦略）、Development Environment Architecture（品質ツール選定）
 - **読者**: DevOpsエンジニア、開発者、リポジトリ管理者
 - **更新頻度**: プロジェクト開始時、ツール変更時、依存関係更新時
 - **特徴**: **リポジトリ基盤設定**（開発の起点となる設定ファイル群）
