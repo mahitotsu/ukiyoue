@@ -788,7 +788,7 @@ graph TD
 ### 全体の依存関係グラフ
 
 ```mermaid
-graph TB
+graph LR
     %% Layer 1: Project Management
     Charter[Project Charter]
     Roadmap[Roadmap]
@@ -1065,7 +1065,7 @@ graph LR
 ##### テスト戦略チェーン（Layer 2→4→6）
 
 ```mermaid
-graph TB
+graph LR
     BizReq[Business Requirements] --> TestStrat[Test Strategy]
     FuncReq[Functional Requirements] --> TestStrat
     NonFuncReq[Non-Functional Requirements] --> TestStrat
@@ -1094,7 +1094,7 @@ graph TB
 ##### アーキテクチャ詳細化チェーン（Layer 2→3）
 
 ```mermaid
-graph TB
+graph LR
     NonFuncReq[Non-Functional Requirements] --> ADR[ADR]
     NonFuncReq --> ReliArch[Reliability Architecture]
 
@@ -1118,7 +1118,7 @@ graph TB
 ##### データ設計チェーン（Layer 2→3→4）
 
 ```mermaid
-graph TB
+graph LR
     FuncReq[Functional Requirements] --> DataModel[Data Model]
     RuntimeArch[Runtime Architecture] --> DataModel
 
@@ -1145,7 +1145,7 @@ graph LR
 ##### 信頼性・インフラ・監視チェーン（Layer 2→3→4→5）
 
 ```mermaid
-graph TB
+graph LR
     NonFuncReq[Non-Functional Requirements] --> ReliArch[Reliability Architecture]
     ReliArch --> InfraArch[Infrastructure Architecture]
 
@@ -1168,7 +1168,7 @@ graph TB
 ##### DevOps・CI/CDチェーン（Layer 3→4→5）
 
 ```mermaid
-graph TB
+graph LR
     RuntimeArch[Runtime Architecture] --> DevOpsArch[DevOps Architecture]
 
     DevOpsArch --> DevEnvArch[Dev Environment Architecture]
@@ -1191,7 +1191,7 @@ graph TB
 ##### アプリケーション実装チェーン（Layer 2→3→4）
 
 ```mermaid
-graph TB
+graph LR
     ImplGuide[Implementation Guide] --> SrcCode[Source Code]
     FuncReq[Functional Requirements] --> SrcCode
     UIUX[UI/UX Specification] --> SrcCode
@@ -1227,7 +1227,7 @@ graph LR
 ##### 運用ドキュメントチェーン（Layer 4→5）
 
 ```mermaid
-graph TB
+graph LR
     DeployGuide[Deployment Guide] --> OpsManual[Operations Manual]
     OpsManual --> IncidentGuide[Incident Response Guide]
 
@@ -1244,7 +1244,7 @@ graph TB
 ##### システム統合テストチェーン（Layer 2→4→5→6）
 
 ```mermaid
-graph TB
+graph LR
     TestStrat[Test Strategy] --> SITPlan[SIT Plan]
     FuncReq[Functional Requirements] --> SITPlan
     NonFuncReq[Non-Functional Requirements] --> SITPlan
@@ -1265,7 +1265,7 @@ graph TB
 ##### ビジネス受入テストチェーン（Layer 2→6）
 
 ```mermaid
-graph TB
+graph LR
     TestStrat[Test Strategy] --> UATPlan[UAT Plan]
     BizReq[Business Requirements] --> UATPlan
     FuncReq[Functional Requirements] --> UATPlan
