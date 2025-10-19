@@ -565,7 +565,6 @@ graph TD
   - **品質メトリクス**: 欠陥密度、修正コスト、テスト効率
   - **トレンド分析**: 品質の推移、リグレッション検知
 - **入力**: Test Code実行結果（品質評価の根拠）
-- **出力先**: Roadmap（スケジュール調整）、Business Requirements（要件見直し）
 - **読者**: テストマネージャー、プロジェクトマネージャー、開発者、QAチーム
 - **更新頻度**: テスト実行の都度（CI/CD実行時、定期テスト時）
 - **特徴**: **品質評価文書**（システムの品質状況を可視化、リリース判断の根拠）
@@ -706,7 +705,6 @@ graph TD
   - **不具合一覧**: 機能不備、運用ドキュメントの不備、手順のエラー、改善提案
   - **UAT移行可否判断**: 技術的品質確認、運用準備度評価、UAT実施可能性判断
 - **入力**: System Integration Test Specification（テストケース実行）、Functional Requirements（機能要件トレーサビリティ）、Deployment Guide、Operations Manual、Incident Response Guide、Troubleshooting Guide（テスト対象）
-- **出力先**: Functional Requirements（未充足要件の特定）、Deployment Guide（改善フィードバック）、Operations Manual（FAQ追加、手順修正）、Incident Response Guide（シナリオ追加）、Troubleshooting Guide（診断フロー改善）
 - **読者**: テストマネージャー、QAリーダー、運用マネージャー、プロジェクトマネージャー
 - **更新頻度**: SIT実施時、再テスト時
 - **特徴**: **技術統合テスト結果文書**（技術的品質と運用準備度を検証、UAT移行の品質ゲート）
@@ -757,7 +755,6 @@ graph TD
   - **不具合一覧**: ビジネス要件未達、機能不備、ユーザビリティ問題
   - **本番リリース判断**: ビジネス観点での最終承認、リリース可否、条件付き承認
 - **入力**: UAT Specification（テストケース実行）、Business Requirements（ビジネス目標トレーサビリティ）、Functional Requirements（機能要件トレーサビリティ）
-- **出力先**: Business Requirements（ビジネス目標未達の特定）、Functional Requirements（未充足要件の特定）、Roadmap（本番リリース最終判断）
 - **読者**: ビジネスユーザー、プロダクトオーナー、プロジェクトマネージャー、ステークホルダー、経営層
 - **更新頻度**: UAT実施時、再テスト時
 - **特徴**: **ビジネス受入テスト結果文書**（ビジネス目標達成度を検証、本番リリースの最終判断根拠）
