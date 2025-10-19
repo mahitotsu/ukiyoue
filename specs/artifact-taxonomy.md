@@ -1088,19 +1088,23 @@ Operations Manual → Incident Response Guide
 
 **リスク**: この成果物の遅延・品質問題が多数の下流成果物に波及
 
-| 成果物                          | 下流影響 | 主な下流成果物                                                                                                          | プロジェクト管理上の重要性                                                   |
-| ------------------------------- | -------- | ----------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
-| **Runtime Architecture**        | 10+      | Data Model, API, Security Arch, Infrastructure Arch, DevOps Arch, Dev Env Arch, 他多数                                  | **最重要**: システム全体の基盤設計、早期確定必須、アーキテクトの重点作業領域 |
-| **Functional Requirements**     | 12       | Data Model, UI/UX, Test Plan, Test Spec, Source Code, Test Strategy, SIT Plan, SIT Spec, UAT Plan, UAT Spec, UAT Result | **重要**: 機能仕様の明確化遅延が全実装に波及、UAT/E2E検証まで継続参照        |
-| **Business Requirements**       | 8        | Func Req, Non-Func Req, Test Strategy, SIT Plan, SIT Spec, UAT Plan, UAT Spec, UAT Result                               | **重要**: ビジネス目標の曖昧さがプロジェクト全体の方向性を見失わせる         |
-| **Test Strategy**               | 3        | Test Plan, SIT Plan, UAT Plan                                                                                           | **重要**: 全体テスト方針、品質ゲート定義、リリース基準の統括                 |
-| **Non-Functional Requirements** | 6        | ADR, Runtime Arch, Security Arch, Reliability Arch, Test Plan, Test Strategy                                            | **重要**: 性能・セキュリティ要件の曖昧さが設計やり直しを招く                 |
-| **Data Model**                  | 4        | UI/UX, API, Database Schema, Source Code                                                                                | **重要**: データ構造変更のコストが高い、早期レビュー必須                     |
-| **DevOps Architecture**         | 4        | Dev Env Arch, Impl Guide, Pipeline Def, Repository Config                                                               | 開発プロセスの基盤、プロジェクト初期に確定                                   |
+**注**: フィードバックループ（点線の依存関係）はカウントから除外
+
+| 成果物                          | 下流影響 | 主な下流成果物                                                                                              | プロジェクト管理上の重要性                                                   |
+| ------------------------------- | -------- | ----------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| **Runtime Architecture**        | 10+      | Data Model, API, Security Arch, Infrastructure Arch, DevOps Arch, Dev Env Arch, 他多数                      | **最重要**: システム全体の基盤設計、早期確定必須、アーキテクトの重点作業領域 |
+| **Functional Requirements**     | 9        | Data Model, UI/UX, Test Strategy, Test Plan, Test Spec, Source Code, SIT Plan, SIT Spec, UAT Plan, UAT Spec | **重要**: 機能仕様の明確化遅延が全実装に波及、UAT/E2E検証まで継続参照        |
+| **Business Requirements**       | 6        | Func Req, Non-Func Req, Test Strategy, UAT Plan, UAT Spec                                                   | **重要**: ビジネス目標の曖昧さがプロジェクト全体の方向性を見失わせる         |
+| **Non-Functional Requirements** | 6        | ADR, Runtime Arch, Security Arch, Reliability Arch, Test Strategy, Test Plan                                | **重要**: 性能・セキュリティ要件の曖昧さが設計やり直しを招く                 |
+| **Data Model**                  | 4        | UI/UX, API, Database Schema, Source Code                                                                    | **重要**: データ構造変更のコストが高い、早期レビュー必須                     |
+| **DevOps Architecture**         | 4        | Dev Env Arch, Impl Guide, Pipeline Def, Repository Config                                                   | 開発プロセスの基盤、プロジェクト初期に確定                                   |
+| **Test Strategy**               | 3        | Test Plan, SIT Plan, UAT Plan                                                                               | **重要**: 全体テスト方針、品質ゲート定義、リリース基準の統括                 |
 
 ##### 統合ハブ（多数の成果物からの入力が必要）
 
 **リスク**: 複数の依存関係が収束、前提条件が揃わないと着手不可、統合の複雑性
+
+**注**: フィードバックループ（点線の依存関係）はカウントから除外
 
 | 成果物                           | 入力数 | 主な入力元                                                | プロジェクト管理上の重要性                                               |
 | -------------------------------- | ------ | --------------------------------------------------------- | ------------------------------------------------------------------------ |
