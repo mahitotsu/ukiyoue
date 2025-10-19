@@ -43,14 +43,14 @@ graph TD
         L2_docs["Business Req, Functional Req, Non-Functional Req"]
     end
 
-    subgraph Layer3["Layer 3: 設計（11種類）"]
+    subgraph Layer3["Layer 3: 設計（10種類）"]
         L3_desc["アーキテクチャ、データ、UI/UX、API、セキュリティ、信頼性、インフラ、監視、DevOps"]
-        L3_docs["ADR, Runtime Arch, Data Model, UI/UX, API, DB Schema,<br/>Security Arch, Reliability Arch, Infrastructure Arch,<br/>Observability Arch, DevOps Arch"]
+        L3_docs["ADR, Runtime Arch, Data Model, UI/UX, API,<br/>Security Arch, Reliability Arch, Infrastructure Arch,<br/>Observability Arch, DevOps Arch"]
     end
 
-    subgraph Layer4["Layer 4: 実装・テスト（11種類）"]
-        L4_desc["アプリケーションコード、インフラコード、CI/CD、監視、テスト"]
-        L4_docs["Impl Guide, IaC, CI/CD Pipeline, Repository Config,<br/>Monitoring & Logging Config, Test Plan/Spec,<br/>Source Code, Test Code, Test Results, Source Code Doc"]
+    subgraph Layer4["Layer 4: 実装・テスト（12種類）"]
+        L4_desc["アプリケーションコード、インフラコード、データベース実装、CI/CD、監視、テスト"]
+        L4_docs["Impl Guide, IaC, DB Schema, CI/CD Pipeline, Repository Config,<br/>Monitoring & Logging Config, Test Plan/Spec,<br/>Source Code, Test Code, Test Results, Source Code Doc"]
     end
 
     subgraph Layer5["Layer 5: 運用（4種類）"]
@@ -164,7 +164,7 @@ graph TD
 - **更新頻度**: 要件定義段階で作成、品質要件変更時、法規制変更時
 - **特徴**: **品質基準文書**（機能以外のシステム品質を定量的に定義）
 
-### Layer 3: 設計（11種類）
+### Layer 3: 設計（10種類）
 
 #### 6. Architecture Decision Record（アーキテクチャ決定記録）
 
@@ -242,22 +242,7 @@ graph TD
 - **更新頻度**: API設計段階で作成、API変更時、バージョンアップ時
 - **特徴**: **インターフェース契約文書**（OpenAPI/Swagger等の機械可読形式推奨）
 
-#### 11. Database Schema（データベーススキーマ）
-
-- **目的**: データベースの物理設計を定義（Data Modelの物理実装）
-- **主な内容**:
-  - **DDL**: CREATE TABLE文、ALTER文
-  - **テーブル定義**: カラム名、型、NULL/NOT NULL、デフォルト値
-  - **主キー・外部キー**: 制約、参照整合性
-  - **インデックス定義**: 検索性能最適化、複合インデックス
-  - **パーティション設計**: テーブルパーティショニング戦略
-  - **ストレージ設計**: テーブルスペース、ファイルグループ
-- **入力**: Data Model（論理設計を物理設計に変換）
-- **読者**: DBA、バックエンド開発者、インフラエンジニア
-- **更新頻度**: 設計段階で作成、スキーマ変更時、パフォーマンスチューニング時
-- **特徴**: **物理データ設計文書**（Data Modelを特定DBMSで実装する設計）
-
-#### 12. Security Architecture（セキュリティアーキテクチャ）
+#### 11. Security Architecture（セキュリティアーキテクチャ）
 
 - **目的**: システム全体のセキュリティ対策を体系的に設計
 - **主な内容**:
@@ -273,7 +258,7 @@ graph TD
 - **更新頻度**: 設計段階で作成、セキュリティ要件変更時、脆弱性発見時
 - **特徴**: **セキュリティ設計文書**（Non-Functional Requirementsのセキュリティ要件を実装方針に落とし込む）
 
-#### 13. Reliability Architecture（信頼性アーキテクチャ）
+#### 12. Reliability Architecture（信頼性アーキテクチャ）
 
 - **目的**: システムの信頼性要件を抽象的に定義（Infrastructure Architectureへのインプット）
 - **主な内容**:
@@ -288,7 +273,7 @@ graph TD
 - **更新頻度**: 設計段階で作成、非機能要件変更時、ビジネス成長に応じて見直し
 - **特徴**: **信頼性要件文書**（「どのくらい信頼性が必要か」を定義、ADR-005参照）
 
-#### 14. Infrastructure Architecture（インフラストラクチャアーキテクチャ）
+#### 13. Infrastructure Architecture（インフラストラクチャアーキテクチャ）
 
 - **目的**: インフラストラクチャの具体的構成を設計（Reliability Architectureの具体化）
 - **主な内容**:
@@ -304,7 +289,7 @@ graph TD
 - **更新頻度**: 設計段階で作成、インフラ要件変更時、スケーリング要件変更時
 - **特徴**: **インフラ具体設計文書**（Reliability Architectureを実現する具体的構成、ADR-005参照）
 
-#### 15. Observability Architecture（可観測性アーキテクチャ）
+#### 14. Observability Architecture（可観測性アーキテクチャ）
 
 - **目的**: 監視・ログ・トレースの設計（Infrastructure Architectureの運用面）
 - **主な内容**:
@@ -320,7 +305,7 @@ graph TD
 - **更新頻度**: 設計段階で作成、監視要件変更時、インシデント経験の反映時
 - **特徴**: **運用監視設計文書**（システムの健全性を継続的に監視する設計、ADR-005参照）
 
-#### 16. DevOps Architecture（DevOps アーキテクチャ）
+#### 15. DevOps Architecture（DevOps アーキテクチャ）
 
 - **目的**: 開発・運用プロセスとCI/CDの全体設計
 - **主な内容**:
@@ -335,9 +320,9 @@ graph TD
 - **更新頻度**: 設計段階で作成、開発プロセス変更時、ツール変更時
 - **特徴**: **開発・運用プロセス設計文書**（継続的デリバリーの全体戦略）
 
-### Layer 4: 実装・テスト（11種類）
+### Layer 4: 実装・テスト（12種類）
 
-#### 17. Implementation Guide（実装ガイド）
+#### 16. Implementation Guide（実装ガイド）
 
 - **目的**: 実装の品質とチーム内の一貫性を保つための開発標準
 - **主な内容**:
@@ -352,6 +337,21 @@ graph TD
 - **読者**: 開発者（全員）、新規参画メンバー
 - **更新頻度**: 実装開始時に作成、知見蓄積時、チームコンセンサス変更時
 - **特徴**: **開発標準文書**（Runtime ArchitectureとSecurity Architectureを実装レベルで具体化）
+
+#### 17. Database Schema（データベーススキーマ）
+
+- **目的**: データベースの物理実装を定義（Data Modelの実装コード化）
+- **主な内容**:
+  - **DDL**: CREATE TABLE文、ALTER文
+  - **テーブル定義**: カラム名、型、NULL/NOT NULL、デフォルト値
+  - **主キー・外部キー**: 制約、参照整合性
+  - **インデックス定義**: 検索性能最適化、複合インデックス
+  - **パーティション設計**: テーブルパーティショニング戦略
+  - **ストレージ設計**: テーブルスペース、ファイルグループ
+- **入力**: Data Model（論理設計を物理実装に変換）
+- **読者**: DBA、バックエンド開発者、インフラエンジニア
+- **更新頻度**: 実装段階で作成、スキーマ変更時、パフォーマンスチューニング時
+- **特徴**: **データベース実装コード**（Data Modelを実行可能なDDLとして実装）
 
 #### 18. Infrastructure as Code（インフラストラクチャコード）
 
@@ -573,8 +573,8 @@ graph TD
 | ---------------- | -------- | ------------------------------ |
 | プロジェクト管理 | 2        | 方向性と計画                   |
 | 要件定義         | 3        | 何を実現するか                 |
-| 設計             | 11       | どう実現するか                 |
-| 実装・テスト     | 11       | コードと品質保証               |
+| 設計             | 10       | どう実現するか                 |
+| 実装・テスト     | 12       | コードと品質保証               |
 | 運用             | 4        | システムの継続的な稼働         |
 | **合計**         | **31**   | プロジェクトライフサイクル全体 |
 
@@ -601,7 +601,6 @@ graph TB
     DataModel[Data Model]
     UIUX[UI/UX Specification]
     API[API Specification]
-    DBSchema[Database Schema]
     SecArch[Security Architecture]
     ReliabilityArch[Reliability Architecture]
     InfraArch[Infrastructure Architecture]
@@ -610,6 +609,7 @@ graph TB
 
     %% Layer 4: Implementation & Test
     ImplGuide[Implementation Guide]
+    DBSchema[Database Schema]
     IaC[Infrastructure as Code]
     PipelineDef[CI/CD Pipeline Definition]
     RepoConfig[Repository Configuration]
