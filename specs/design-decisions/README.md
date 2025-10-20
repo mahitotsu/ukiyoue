@@ -14,6 +14,7 @@
 | [004](004-tool-implementation-language.md)                        | ツール実装言語とランタイムの選定                               | ✅ Accepted |
 | [005](005-executable-code-representation.md)                      | 実行可能コードのJSON化適用範囲                                 | ✅ Accepted |
 | [006](006-reliability-infrastructure-observability-separation.md) | Reliability, Infrastructure, Observability Architecture の分離 | ✅ Accepted |
+| [007](007-json-artifact-traceability.md)                          | JSON成果物のトレーサビリティ実現方式                           | ✅ Accepted |
 
 ## Decision Flow
 
@@ -34,10 +35,14 @@ ADR-004: Tool Implementation Language
   └─ TypeScript + Bun
        ↓
 ADR-005: Executable Code Representation
-  └─ Native language (not JSON)
+  ├─ Native language (not JSON)
+  └─ Traceability: External Matrix (JSON-LD)
        ↓
 ADR-006: Architecture Separation
   └─ Reliability → Infrastructure → Observability
+       ↓
+ADR-007: JSON Artifact Traceability
+  └─ Hybrid: Embedded + Auto-generated Matrix
 ```
 
 ## ADR Template
