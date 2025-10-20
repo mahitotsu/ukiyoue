@@ -37,6 +37,8 @@ graph LR
     ObservabilityArch[Observability Architecture]
     DevOpsArch[DevOps Architecture]
     DevEnvArch[Development Environment Architecture]
+    TestPlan[Test Plan]
+    TestSpec[Test Specification]
 
     %% Layer 4: Implementation & Test
     ImplGuide[Implementation Guide]
@@ -46,8 +48,6 @@ graph LR
     PipelineDef[CI/CD Pipeline Definition]
     RepoConfig[Repository Configuration]
     MonitoringConfig[Monitoring & Logging Configuration]
-    TestPlan[Test Plan]
-    TestSpec[Test Specification]
     SrcCode[Source Code]
     TestCode[Test Code]
     TestResults[Test Results]
@@ -203,8 +203,8 @@ graph LR
 
     class Charter,Roadmap layer1
     class BizReq,FuncReq,NonFuncReq,TestStrategy layer2
-    class ADR,RuntimeArch,DataModel,UIUX,API,DBSchema,SecArch,ReliabilityArch,InfraArch,ObservabilityArch,DevOpsArch layer3
-    class ImplGuide,IaC,PipelineDef,RepoConfig,MonitoringConfig,TestPlan,TestSpec,SrcCode,TestCode,TestResults,SrcDoc,DevEnvArch,DevEnvConfig layer4
+    class ADR,RuntimeArch,DataModel,UIUX,API,SecArch,ReliabilityArch,InfraArch,ObservabilityArch,DevOpsArch,DevEnvArch,TestPlan,TestSpec layer3
+    class ImplGuide,DBSchema,DevEnvConfig,IaC,PipelineDef,RepoConfig,MonitoringConfig,SrcCode,TestCode,TestResults,SrcDoc layer4
     class DeployGuide,OpsManual,IncidentGuide,TroubleshootGuide layer5
     class SITPlan,SITSpec,SITResult,UATPlan,UATSpec,UATResult layer6
 ```
@@ -592,6 +592,8 @@ gantt
     Observability Architecture    :observ, after runtime infra reliability, 8d
     DevOps Architecture           :devops, after runtime, 5d
     Dev Environment Architecture  :devenv, after runtime devops, 5d
+    Test Plan                     :crit, testplan, after teststrat func nonfunc, 8d
+    Test Specification            :testspec, after testplan func, 10d
 
     section Layer 4: 実装準備
     Implementation Guide          :crit, implguide, after runtime security devenv devops, 8d
@@ -601,8 +603,6 @@ gantt
     CI/CD Pipeline Definition     :pipeline, after devops, 8d
     Repository Configuration      :repo, after devops devenv, 5d
     Monitoring Configuration      :monitoring, after observ, 8d
-    Test Plan                     :crit, testplan, after teststrat func nonfunc, 8d
-    Test Specification            :testspec, after testplan func, 10d
 
     section Layer 4: 実装
     Source Code                   :crit, code, after func implguide ui api dbschema repo devenvconf, 30d
@@ -629,8 +629,8 @@ gantt
 
 クリティカルパス以外の成果物は並行作業可能：
 
-- **Layer 3並行**: UI/UX, API, Security, Reliability, Infrastructure, Observability, DevOps, Dev Env
-- **Layer 4並行**: Dev Env Config, IaC, CI/CD Pipeline, Repository Config, Monitoring, Test Plan
+- **Layer 3並行**: UI/UX, API, Security, Reliability, Infrastructure, Observability, DevOps, Dev Env, Test Plan, Test Spec
+- **Layer 4並行**: Dev Env Config, IaC, CI/CD Pipeline, Repository Config, Monitoring
 - **Layer 5並行**: Deployment Guide, Operations Manual, Incident Guide, Troubleshooting Guide（実装完了後すぐ着手、SIT Specへ）
 - **Layer 6前倒し**: SIT Plan, UAT Plan（要件確定後すぐ作成開始、実装と並行して策定）
 

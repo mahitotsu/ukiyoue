@@ -42,14 +42,14 @@ graph TD
         L2_docs["Business Req, Functional Req, Non-Functional Req, Test Strategy"]
     end
 
-    subgraph Layer3["Layer 3: 設計（11種類）"]
-        L3_desc["アーキテクチャ、データ、UI/UX、API、セキュリティ、信頼性、インフラ、監視、DevOps、開発環境"]
-        L3_docs["ADR, Runtime Arch, Data Model, UI/UX, API,<br/>Security Arch, Reliability Arch, Infrastructure Arch,<br/>Observability Arch, DevOps Arch, Dev Env Arch"]
+    subgraph Layer3["Layer 3: 設計（13種類）"]
+        L3_desc["アーキテクチャ、データ、UI/UX、API、セキュリティ、信頼性、インフラ、監視、DevOps、開発環境、テスト計画・仕様"]
+        L3_docs["ADR, Runtime Arch, Data Model, UI/UX, API,<br/>Security Arch, Reliability Arch, Infrastructure Arch,<br/>Observability Arch, DevOps Arch, Dev Env Arch,<br/>Test Plan, Test Specification"]
     end
 
-    subgraph Layer4["Layer 4: 実装・テスト（13種類）"]
+    subgraph Layer4["Layer 4: 実装・テスト（11種類）"]
         L4_desc["アプリケーションコード、インフラコード、データベース実装、開発環境実装、CI/CD、監視、テスト"]
-        L4_docs["Impl Guide, DB Schema, Dev Env Config, IaC, CI/CD Pipeline, Repository Config,<br/>Monitoring & Logging Config, Test Plan/Spec,<br/>Source Code, Test Code, Test Results, Source Code Doc"]
+        L4_docs["Impl Guide, DB Schema, Dev Env Config, IaC, CI/CD Pipeline, Repository Config,<br/>Monitoring & Logging Config,<br/>Source Code, Test Code, Test Results, Source Code Doc"]
     end
 
     subgraph Layer5["Layer 5: 運用（4種類）"]
@@ -95,8 +95,8 @@ graph TD
 | ---------------- | -------- | ------------------------------ |
 | プロジェクト管理 | 2        | 方向性と計画                   |
 | 要件定義         | 4        | 何を実現するか + テスト戦略    |
-| 設計             | 11       | どう実現するか                 |
-| 実装・テスト     | 13       | コードと品質保証               |
+| 設計             | 13       | どう実現するか + テスト計画    |
+| 実装・テスト     | 11       | コードと品質保証               |
 | 運用             | 4        | システムの継続的な稼働         |
 | 検証             | 6        | システム統合検証とビジネス受入 |
 | **合計**         | **40**   | プロジェクトライフサイクル全体 |
