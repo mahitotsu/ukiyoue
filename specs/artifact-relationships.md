@@ -702,7 +702,7 @@ Ukiyoue フレームワークでは、成果物間のトレーサビリティを
 - **変更影響分析**: 特定成果物の変更が影響する範囲の特定
 - **JSON-LD SPARQL**: セマンティッククエリによる高度な分析
 
-詳細は [ADR-007](design-decisions/007-json-artifact-traceability.md) を参照。
+詳細は [ADR-007](architecture-decisions/007-json-artifact-traceability.md) を参照。
 
 ---
 
@@ -710,4 +710,4 @@ Ukiyoue フレームワークでは、成果物間のトレーサビリティを
 
 - [artifact-overview.md](artifact-overview.md) - 成果物分類の全体像
 - [artifact-definitions.md](artifact-definitions.md) - 40種類の成果物詳細定義
-- [ADR-007](design-decisions/007-json-artifact-traceability.md) - JSON成果物のトレーサビリティ実現方式
+- [ADR-007](architecture-decisions/007-json-artifact-traceability.md) - JSON成果物のトレーサビリティ実現方式

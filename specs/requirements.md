@@ -528,8 +528,8 @@ definition_of_done:
 
 ---
 
-## 📚 Related Documents
+## 📚 関連ドキュメント
 
-- [`concept.md`](concept.md) - フレームワークのコンセプト
-- [`architecture.md`](architecture.md) - アーキテクチャ設計
-- [`design-decisions/`](design-decisions/) - 技術選定の ADR
+- [concept.md](concept.md) - コンセプトと背景
+- [architecture.md](architecture.md) - システムアーキテクチャ
+- [`architecture-decisions/`](architecture-decisions/) - 技術選定の ADR

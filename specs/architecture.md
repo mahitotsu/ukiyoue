@@ -13,14 +13,14 @@ Ukiyoue フレームワークの全体アーキテクチャと技術選定を示
 
 以下の技術基盤が ADR（Architecture Decision Record）で決定されています：
 
-| 決定事項                         | 選定結果                     | ADR                                                               |
-| -------------------------------- | ---------------------------- | ----------------------------------------------------------------- |
-| **データフォーマット**           | JSON + JSON Schema + JSON-LD | [ADR-001](design-decisions/001-data-format-and-schema.md)         |
-| **JSON Schema バージョン**       | Draft-07                     | [ADR-002](design-decisions/002-json-schema-draft-version.md)      |
-| **JSON-LD バージョン**           | 1.1                          | [ADR-003](design-decisions/003-json-ld-version.md)                |
-| **ツール実装言語/ランタイム**    | TypeScript + Bun             | [ADR-004](design-decisions/004-tool-implementation-language.md)   |
-| **実行可能コードの取り扱い**     | ネイティブ形式（JSON化なし） | [ADR-005](design-decisions/005-executable-code-representation.md) |
-| **JSON成果物のトレーサビリティ** | ハイブリッド方式             | [ADR-007](design-decisions/007-json-artifact-traceability.md)     |
+| 決定事項                         | 選定結果                     | ADR                                                                     |
+| -------------------------------- | ---------------------------- | ----------------------------------------------------------------------- |
+| **データフォーマット**           | JSON + JSON Schema + JSON-LD | [ADR-001](architecture-decisions/001-data-format-and-schema.md)         |
+| **JSON Schema バージョン**       | Draft-07                     | [ADR-002](architecture-decisions/002-json-schema-draft-version.md)      |
+| **JSON-LD バージョン**           | 1.1                          | [ADR-003](architecture-decisions/003-json-ld-version.md)                |
+| **ツール実装言語/ランタイム**    | TypeScript + Bun             | [ADR-004](architecture-decisions/004-tool-implementation-language.md)   |
+| **実行可能コードの取り扱い**     | ネイティブ形式（JSON化なし） | [ADR-005](architecture-decisions/005-executable-code-representation.md) |
+| **JSON成果物のトレーサビリティ** | ハイブリッド方式             | [ADR-007](architecture-decisions/007-json-artifact-traceability.md)     |
 
 **選定理由の要約**:
 
@@ -35,13 +35,13 @@ Ukiyoue フレームワークの全体アーキテクチャと技術選定を示
 
 ### データフォーマット適用範囲
 
-JSON フォーマットは**すべての成果物**に適用されますが、以下の例外があります（[ADR-005](design-decisions/005-executable-code-representation.md)）：
+JSON フォーマットは**すべての成果物**に適用されますが、以下の例外があります（[ADR-005](architecture-decisions/005-executable-code-representation.md)）：
 
 - **Layer 4 実装成果物**（ソースコード、テストコード、DB スキーマ、IaC）: **ネイティブ形式を維持**
   - 理由: 既に非曖昧で実行可能、既存ツールチェーン活用の必要性
   - トレーサビリティ: 外部トレーサビリティマトリックス（JSON-LD）で管理
 
-その他のすべての成果物（Layer 1-3, 5-6）は JSON フォーマットで記述し、[ADR-007](design-decisions/007-json-artifact-traceability.md) に従ってトレーサビリティを管理します。
+その他のすべての成果物（Layer 1-3, 5-6）は JSON フォーマットで記述し、[ADR-007](architecture-decisions/007-json-artifact-traceability.md) に従ってトレーサビリティを管理します。
 
 ## 🏗️ アーキテクチャ概要
 
@@ -86,7 +86,7 @@ ukiyoue/
 │   ├── concept.md
 │   ├── requirements.md
 │   ├── architecture.md       # このドキュメント
-│   └── design-decisions/
+│   └── architecture-decisions/
 │       ├── 001-data-format-and-schema.md
 │       ├── 002-json-schema-draft-version.md
 │       ├── 003-json-ld-version.md
@@ -112,4 +112,4 @@ Phase 1 以降の詳細は、実装開始時に別途設計します。
 
 - [concept.md](concept.md) - フレームワークのコンセプトと背景
 - [requirements.md](requirements.md) - 機能要件・非機能要件
-- [design-decisions/](design-decisions/) - 技術選定の根拠（ADR）
+- [architecture-decisions/](architecture-decisions/) - 技術選定の根拠（ADR）

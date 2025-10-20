@@ -17,7 +17,7 @@ specs/
 ├── artifact-overview.md         # 成果物分類の全体像
 ├── artifact-definitions.md      # 成果物詳細定義（40種類）
 ├── artifact-relationships.md    # 成果物間の依存関係
-└── design-decisions/            # 設計判断記録（ADR）
+└── architecture-decisions/      # 設計判断記録（ADR）
     ├── README.md
     ├── 001-data-format-and-schema.md
     ├── 002-json-schema-draft-version.md
@@ -66,7 +66,7 @@ specs/
 - **読者**: スキーマ設計者、開発者
 - **重要度**: 🟡 High
 
-### design-decisions/
+### architecture-decisions/
 
 - **内容**: 技術選定の意思決定記録（ADR）
 - **読者**: 開発者、アーキテクト
@@ -110,11 +110,11 @@ specs/
 1. `requirements.md` - 要件の確認
 2. `architecture.md` - アーキテクチャの理解
 3. `artifact-definitions.md` - 成果物の詳細理解
-4. `design-decisions/` - 設計判断の背景理解
+4. `architecture-decisions/` - 設計判断の背景理解
 
 **スキーマ設計者**:
 
 1. `artifact-overview.md` - 全体構造の把握
 2. `artifact-definitions.md` - 各成果物の詳細仕様
 3. `artifact-relationships.md` - 依存関係とトレーサビリティ
-4. `design-decisions/005-` および `007-` - データ表現方式の理解
+4. `architecture-decisions/005-` および `007-` - データ表現方式の理解

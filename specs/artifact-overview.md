@@ -116,6 +116,6 @@ graph TD
 
 ### 設計判断記録（ADR）
 
-- [ADR-005](design-decisions/005-executable-code-representation.md) - 実行可能コードのJSON化適用範囲
-- [ADR-006](design-decisions/006-reliability-infrastructure-observability-separation.md) - Reliability, Infrastructure, Observability Architecture の分離
-- [ADR-007](design-decisions/007-json-artifact-traceability.md) - JSON成果物のトレーサビリティ実現方式
+- [ADR-005](architecture-decisions/005-executable-code-representation.md) - 実行可能コードのJSON化適用範囲
+- [ADR-006](architecture-decisions/006-reliability-infrastructure-observability-separation.md) - Reliability, Infrastructure, Observability Architecture の分離
+- [ADR-007](architecture-decisions/007-json-artifact-traceability.md) - JSON成果物のトレーサビリティ実現方式
