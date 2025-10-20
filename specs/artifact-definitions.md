@@ -307,7 +307,7 @@
 
 ### Layer 4: 実装・テスト（13種類）
 
-> **Note**: Layer 4の実行可能コード（Source Code/Test Code/Database Schema/Infrastructure as Code）は、プログラミング言語・SQL・HCLなどの**実装言語で直接表現**され、JSON化されません（ADR-005）。これらは既に非曖昧な形式言語であり、実行環境で直接実行可能であることが重要です。Ukiyoueフレームワーク（JSON+JSON Schema+JSON-LD）は、**曖昧性を持つ可能性のあるドキュメント成果物**に適用されます。
+> **Note**: Layer 4の実行可能コード（Source Code/Test Code/Database Schema/Infrastructure as Code/CI/CD Pipeline Definition/Repository Configuration/Development Environment Configuration/Monitoring & Logging Configuration）は、プログラミング言語・SQL・HCL・YAML等の**実装言語で直接表現**され、JSON化されません（ADR-005）。これらは既に非曖昧な形式言語であり、実行環境で直接実行可能であることが重要です。名称に「Configuration」と含まれる成果物も、設定書（ドキュメント）ではなく**実装コード**（実行可能な設定ファイル）です。Ukiyoueフレームワーク（JSON+JSON Schema+JSON-LD）は、**曖昧性を持つ可能性のあるドキュメント成果物**に適用されます。
 
 #### Implementation Guide（実装ガイド）
 
@@ -344,7 +344,7 @@
 - **入力**: Development Environment Architecture（開発環境設計を実装に落とす）
 - **読者**: 開発者（全員）、新規参画メンバー、オンボーディング担当者
 - **更新頻度**: プロジェクト開始時、ツール追加時、環境変更時、継続的に更新
-- **特徴**: **ローカル環境実装コード**（開発者が即座にローカル開発を開始できる環境の自動構築）
+- **特徴**: **ローカル環境実装コード**（開発者が即座にローカル開発を開始できる環境の自動構築、ADR-005参照: Layer 4実装成果物）
 
 #### Database Schema（データベーススキーマ）
 
@@ -392,7 +392,7 @@
 - **入力**: DevOps Architecture（パイプライン設計方針）
 - **読者**: DevOpsエンジニア、開発者、リリース担当者
 - **更新頻度**: 実装段階で作成、パイプライン変更時、デプロイ戦略変更時
-- **特徴**: **パイプライン実装コード**（DevOps Architectureを自動化パイプラインとして実装）
+- **特徴**: **パイプライン実装コード**（DevOps Architectureを自動化パイプラインとして実装、ADR-005参照: Layer 4実装成果物）
 
 #### Repository Configuration（リポジトリ設定）
 
@@ -409,7 +409,7 @@
 - **入力**: DevOps Architecture（リポジトリ戦略とブランチ戦略）、Development Environment Architecture（品質ツール選定）
 - **読者**: DevOpsエンジニア、開発者、リポジトリ管理者
 - **更新頻度**: プロジェクト開始時、ツール変更時、依存関係更新時
-- **特徴**: **リポジトリ基盤設定**（開発の起点となる設定ファイル群）
+- **特徴**: **リポジトリ基盤実装コード**（開発の起点となる設定ファイル群、ADR-005参照: Layer 4実装成果物）
 
 #### Monitoring & Logging Configuration（監視・ログ設定）
 
@@ -425,7 +425,7 @@
 - **入力**: Observability Architecture（監視設計を実装に落とす）
 - **読者**: SRE、運用チーム、DevOpsエンジニア
 - **更新頻度**: 実装段階で作成、監視要件変更時、アラート調整時
-- **特徴**: **監視実装設定**（Observability Architectureを実際の監視システムとして実装、ADR-005参照）
+- **特徴**: **監視実装コード**（Observability Architectureを実際の監視システムとして実装、ADR-005参照: Layer 4実装成果物）
 
 #### Test Plan（テスト計画）
 
