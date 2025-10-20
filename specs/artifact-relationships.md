@@ -25,7 +25,8 @@ graph LR
     TestStrategy[Test Strategy]
 
     %% Layer 3: Design
-    ADR[Architecture Decision Record] %% Continuous: Created as needed throughout architecture design
+    %% Note: ADR is created continuously throughout architecture design (not a blocking dependency)
+    ADR[Architecture Decision Record]
     RuntimeArch[Runtime Architecture]
     DataModel[Data Model]
     UIUX[UI/UX Specification]
