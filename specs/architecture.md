@@ -13,12 +13,14 @@ Ukiyoue フレームワークの全体アーキテクチャと技術選定を示
 
 以下の技術基盤が ADR（Architecture Decision Record）で決定されています：
 
-| 決定事項                      | 選定結果                     | ADR                                                             |
-| ----------------------------- | ---------------------------- | --------------------------------------------------------------- |
-| **データフォーマット**        | JSON + JSON Schema + JSON-LD | [ADR-001](design-decisions/001-data-format-and-schema.md)       |
-| **JSON Schema バージョン**    | Draft-07                     | [ADR-002](design-decisions/002-json-schema-draft-version.md)    |
-| **JSON-LD バージョン**        | 1.1                          | [ADR-003](design-decisions/003-json-ld-version.md)              |
-| **ツール実装言語/ランタイム** | TypeScript + Bun             | [ADR-004](design-decisions/004-tool-implementation-language.md) |
+| 決定事項                         | 選定結果                     | ADR                                                               |
+| -------------------------------- | ---------------------------- | ----------------------------------------------------------------- |
+| **データフォーマット**           | JSON + JSON Schema + JSON-LD | [ADR-001](design-decisions/001-data-format-and-schema.md)         |
+| **JSON Schema バージョン**       | Draft-07                     | [ADR-002](design-decisions/002-json-schema-draft-version.md)      |
+| **JSON-LD バージョン**           | 1.1                          | [ADR-003](design-decisions/003-json-ld-version.md)                |
+| **ツール実装言語/ランタイム**    | TypeScript + Bun             | [ADR-004](design-decisions/004-tool-implementation-language.md)   |
+| **実行可能コードの取り扱い**     | ネイティブ形式（JSON化なし） | [ADR-005](design-decisions/005-executable-code-representation.md) |
+| **JSON成果物のトレーサビリティ** | ハイブリッド方式             | [ADR-007](design-decisions/007-json-artifact-traceability.md)     |
 
 **選定理由の要約**:
 
@@ -26,8 +28,20 @@ Ukiyoue フレームワークの全体アーキテクチャと技術選定を示
 - **Draft-07**: 最大のツールサポート（ajv, VSCode）、6年以上の実績
 - **JSON-LD 1.1**: W3C 最新勧告、強力な意味定義機能
 - **TypeScript + Bun**: 最高の JSON エコシステム、高速実行
+- **実行可能コードのネイティブ形式**: 既存ツールチェーン活用、実行可能性優先（詳細は ADR-005）
+- **ハイブリッドトレーサビリティ**: 埋め込み型（単方向）+ 自動生成マトリックス（詳細は ADR-007）
 
 詳細は各 ADR を参照してください。
+
+### データフォーマット適用範囲
+
+JSON フォーマットは**すべての成果物**に適用されますが、以下の例外があります（[ADR-005](design-decisions/005-executable-code-representation.md)）：
+
+- **Layer 4 実装成果物**（ソースコード、テストコード、DB スキーマ、IaC）: **ネイティブ形式を維持**
+  - 理由: 既に非曖昧で実行可能、既存ツールチェーン活用の必要性
+  - トレーサビリティ: 外部トレーサビリティマトリックス（JSON-LD）で管理
+
+その他のすべての成果物（Layer 1-3, 5-6）は JSON フォーマットで記述し、[ADR-007](design-decisions/007-json-artifact-traceability.md) に従ってトレーサビリティを管理します。
 
 ## 🏗️ アーキテクチャ概要
 
