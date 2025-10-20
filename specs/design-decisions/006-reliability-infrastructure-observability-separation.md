@@ -1,4 +1,4 @@
-# ADR-005: Reliability, Infrastructure, Observability Architecture の分離
+# ADR-006: Reliability, Infrastructure, Observability Architecture の分離
 
 ## Status
 

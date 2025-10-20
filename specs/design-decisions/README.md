@@ -12,7 +12,8 @@
 | [002](002-json-schema-draft-version.md)                           | JSON Schema Draft 版選定                                       | ✅ Accepted |
 | [003](003-json-ld-version.md)                                     | JSON-LD バージョン選定                                         | ✅ Accepted |
 | [004](004-tool-implementation-language.md)                        | ツール実装言語とランタイムの選定                               | ✅ Accepted |
-| [005](005-reliability-infrastructure-observability-separation.md) | Reliability, Infrastructure, Observability Architecture の分離 | ✅ Accepted |
+| [005](005-executable-code-representation.md)                      | 実行可能コードのJSON化適用範囲                                 | ✅ Accepted |
+| [006](006-reliability-infrastructure-observability-separation.md) | Reliability, Infrastructure, Observability Architecture の分離 | ✅ Accepted |
 
 ## Decision Flow
 
@@ -32,7 +33,10 @@ ADR-003: JSON-LD Version
 ADR-004: Tool Implementation Language
   └─ TypeScript + Bun
        ↓
-ADR-005: Architecture Separation
+ADR-005: Executable Code Representation
+  └─ Native language (not JSON)
+       ↓
+ADR-006: Architecture Separation
   └─ Reliability → Infrastructure → Observability
 ```
 

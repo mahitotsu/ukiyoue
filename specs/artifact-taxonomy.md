@@ -380,6 +380,8 @@ graph TD
 
 ### Layer 4: 実装・テスト（13種類）
 
+> **Note**: Layer 4の実行可能コード（Source Code/Test Code/Database Schema/Infrastructure as Code）は、プログラミング言語・SQL・HCLなどの**実装言語で直接表現**され、JSON化されません（ADR-005）。これらは既に非曖昧な形式言語であり、実行環境で直接実行可能であることが重要です。Ukiyoueフレームワーク（JSON+JSON Schema+JSON-LD）は、**曖昧性を持つ可能性のあるドキュメント成果物**に適用されます。
+
 #### Implementation Guide（実装ガイド）
 
 - **識別子**: `IMPL-GUIDE`
