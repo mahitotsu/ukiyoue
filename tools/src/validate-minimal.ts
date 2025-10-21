@@ -13,9 +13,9 @@
 
 import Ajv from 'ajv';
 import addFormats from 'ajv-formats';
-import { readFileSync } from 'fs';
-import { resolve, basename, dirname } from 'path';
 import chalk from 'chalk';
+import { readFileSync } from 'fs';
+import { basename, dirname, resolve } from 'path';
 
 // Parse command line arguments
 const args = process.argv.slice(2);
@@ -31,8 +31,8 @@ if (args.length < 2) {
   process.exit(1);
 }
 
-const schemaPath = resolve(args[0]);
-const dataPath = resolve(args[1]);
+const schemaPath = resolve(args[0]!);
+const dataPath = resolve(args[1]!);
 
 try {
   // Load schema
