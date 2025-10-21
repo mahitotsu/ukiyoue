@@ -1,0 +1,43 @@
+{
+  "@context": {
+    "@version": 1.1,
+    "@protected": true,
+    "id": "@id",
+    "type": "@type",
+    "title": {
+      "@id": "http://purl.org/dc/terms/title",
+      "@type": "http://www.w3.org/2001/XMLSchema#string",
+      "rdfs:comment": "成果物のタイトル"
+    },
+    "description": {
+      "@id": "http://purl.org/dc/terms/description",
+      "@type": "http://www.w3.org/2001/XMLSchema#string",
+      "rdfs:comment": "成果物の説明"
+    },
+    "created": {
+      "@id": "http://purl.org/dc/terms/created",
+      "@type": "http://www.w3.org/2001/XMLSchema#dateTime",
+      "rdfs:comment": "作成日時（Git管理対象外、オプション）"
+    },
+    "modified": {
+      "@id": "http://purl.org/dc/terms/modified",
+      "@type": "http://www.w3.org/2001/XMLSchema#dateTime",
+      "rdfs:comment": "最終更新日時（Git管理対象外、オプション）"
+    },
+    "status": {
+      "@id": "https://ukiyoue.example.org/vocab#status",
+      "@type": "http://www.w3.org/2001/XMLSchema#string",
+      "rdfs:comment": "成果物のステータス（draft, in-review, approved, deprecated）"
+    },
+    "start": {
+      "@id": "https://schema.org/startDate",
+      "@type": "http://www.w3.org/2001/XMLSchema#date",
+      "rdfs:comment": "開始日（dateRange用）"
+    },
+    "end": {
+      "@id": "https://schema.org/endDate",
+      "@type": "http://www.w3.org/2001/XMLSchema#date",
+      "rdfs:comment": "終了日（dateRange用）"
+    }
+  }
+}

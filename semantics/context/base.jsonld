@@ -1,0 +1,57 @@
+{
+  "@context": {
+    "@version": 1.1,
+    "@vocab": "https://ukiyoue.example.org/vocab#",
+    "@protected": true,
+    "ukiyoue": "https://ukiyoue.example.org/vocab#",
+    "schema": "https://schema.org/",
+    "dc": "http://purl.org/dc/terms/",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+    "Artifact": {
+      "@id": "ukiyoue:Artifact",
+      "@type": "@id",
+      "rdfs:comment": "Ukiyoueフレームワークで管理される成果物の基底クラス"
+    },
+    "Project": {
+      "@id": "ukiyoue:Project",
+      "@type": "@id",
+      "rdfs:comment": "プロジェクト管理レイヤー（Layer 1）の成果物"
+    },
+    "Requirement": {
+      "@id": "ukiyoue:Requirement",
+      "@type": "@id",
+      "rdfs:comment": "要件定義レイヤー（Layer 2）の成果物"
+    },
+    "Design": {
+      "@id": "ukiyoue:Design",
+      "@type": "@id",
+      "rdfs:comment": "設計レイヤー（Layer 3）の成果物"
+    },
+    "Implementation": {
+      "@id": "ukiyoue:Implementation",
+      "@type": "@id",
+      "rdfs:comment": "実装・テストレイヤー（Layer 4）の成果物"
+    },
+    "Operation": {
+      "@id": "ukiyoue:Operation",
+      "@type": "@id",
+      "rdfs:comment": "運用レイヤー（Layer 5）の成果物"
+    },
+    "Verification": {
+      "@id": "ukiyoue:Verification",
+      "@type": "@id",
+      "rdfs:comment": "検証レイヤー（Layer 6）の成果物"
+    },
+    "layer": {
+      "@id": "ukiyoue:layer",
+      "@type": "xsd:integer",
+      "rdfs:comment": "成果物が属するレイヤー番号（1-6）"
+    },
+    "artifactType": {
+      "@id": "ukiyoue:artifactType",
+      "@type": "@id",
+      "rdfs:comment": "成果物のタイプ識別子"
+    }
+  }
+}

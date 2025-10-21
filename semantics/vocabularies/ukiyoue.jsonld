@@ -1,0 +1,8 @@
+{
+  "@context": [
+    "https://ukiyoue.example.org/context/base.jsonld",
+    "https://ukiyoue.example.org/context/properties.jsonld",
+    "https://ukiyoue.example.org/context/traceability.jsonld",
+    "https://ukiyoue.example.org/context/artifact-types.jsonld"
+  ]
+}
