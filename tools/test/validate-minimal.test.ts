@@ -1,8 +1,8 @@
-import { describe, test, expect } from 'bun:test';
-import { readFileSync } from 'fs';
-import { resolve } from 'path';
 import Ajv from 'ajv';
 import addFormats from 'ajv-formats';
+import { describe, expect, test } from 'bun:test';
+import { readFileSync } from 'fs';
+import { resolve } from 'path';
 
 describe('validate-minimal', () => {
   const ajv = new Ajv({

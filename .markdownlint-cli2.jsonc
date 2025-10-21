@@ -4,14 +4,8 @@
     "default": true,
     "MD013": false,
     "MD024": {
-      "siblings_only": true
-    }
+      "siblings_only": true,
+    },
   },
-  "ignores": [
-    "**/node_modules/**",
-    "node_modules",
-    "**/dist/**",
-    "**/build/**",
-    "**/.git/**"
-  ]
+  "ignores": ["**/node_modules/**", "node_modules", "**/dist/**", "**/build/**", "**/.git/**"],
 }
