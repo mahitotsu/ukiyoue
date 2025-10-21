@@ -1,0 +1,19 @@
+# markdownlint-cli2 ignore file
+
+# Dependencies
+
+node_modules/
+\*\*/node_modules/
+
+# Build outputs
+
+dist/
+build/
+
+# Git
+
+.git/
+
+# Lockfiles
+
+bun.lockb
