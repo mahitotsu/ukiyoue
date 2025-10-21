@@ -15,14 +15,16 @@
 - **Semantics**: JSON-LD 1.1 (W3C Recommendation 2020)
 - **Runtime**: Bun (not Node.js)
 - **Language**: TypeScript
-- **Key Libraries**: ajv v8+, jsonld.js v5+, commander, chalk, ora
+- **Key Libraries**: ajv v8+, ajv-formats, chalk, jsonld.js v5+ (planned)
 
-**Current Status**: Phase 0 (Specification & Design) - ✅ Complete
+**Current Status**: Phase 1 (Implementation) - 🚧 In Progress
 
-- ✅ Implemented: Concept, requirements, architecture, ADRs (001-004)
-- ✅ Tooling: Prettier, markdownlint-cli2, lint-staged, Husky
-- ✅ Documentation: Clear hierarchy (concept → architecture → ADRs)
-- 📋 Next: Document taxonomy and I/O relationships design (Phase 1)
+- ✅ Phase 0 Complete: Concept, requirements, architecture, ADRs (001-004)
+- ✅ JSON Schema: 30 files (29 artifacts + \_common.json)
+- ✅ JSON-LD: 6 files (4 contexts + 1 vocabulary + README)
+- ✅ Tools: Minimal validator (validate-minimal.ts) with 7 unit tests
+- ✅ Tooling: Prettier, markdownlint-cli2, lint-staged, Husky, TypeScript strict mode
+- 📋 Next: Example documents and full validator implementation
 
 ### 3. Critical Design Decisions (ADRs)
 
@@ -64,10 +66,13 @@ Each README.md serves a specific scope without duplication:
 
 ### 5. Workspace Structure
 
-Current state (Phase 0):
+Current state (Phase 1):
 
 - **🎨 Ukiyoue Framework** (Root): specs/ (specification documents and ADRs)
-- **📁 Empty directories**: schemas/, semantics/, tools/, examples/ (to be implemented)
+- **� schemas/**: 30 JSON Schema files (29 artifacts + \_common.json)
+- **🔗 semantics/**: 6 JSON-LD files (4 contexts + vocabulary + README)
+- **🛠️ tools/**: Minimal validator with Bun tests (7 test cases)
+- **📁 Empty**: examples/ (to be implemented)
 
 Next steps:
 

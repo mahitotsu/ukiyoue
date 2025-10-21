@@ -103,8 +103,10 @@ AI によって編集可能。形式的にも内容的にも妥当性が検証�
   - [`requirements.md`](specs/requirements.md) - 何を実現するのか
   - [`architecture.md`](specs/architecture.md) - どう実現するのか
   - [`design-decisions/`](specs/design-decisions/) - 技術選定の背景（ADR）
-- **使い方**: 未実装（Phase 1 以降で整備予定）
-- **開発ガイド**: 未実装（Phase 1 以降で整備予定）
+- **スキーマ定義**: [`schemas/`](schemas/) - JSON Schema Draft-07 で定義された 29 成果物
+- **セマンティクス定義**: [`semantics/`](semantics/) - JSON-LD 1.1 コンテキストと語彙
+- **ツール**: [`tools/`](tools/) - バリデーター、ジェネレーター（開発中）
+- **サンプル**: [`examples/`](examples/) - 実証実験とテンプレート（未実装）
 
 ---
 
