@@ -61,6 +61,5 @@
       "type": "string",
       "description": "検知→通知→対応→事後対応"
     }
-  },
-  "additionalProperties": false
+  }
 }

@@ -93,6 +93,5 @@
       "items": { "type": "string" },
       "description": "UAT後のアクション: 修正対応、ドキュメント更新"
     }
-  },
-  "additionalProperties": false
+  }
 }

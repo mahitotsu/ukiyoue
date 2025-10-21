@@ -80,6 +80,5 @@
       "type": "string",
       "description": "エスカレーション判断: どの段階で開発チームにエスカレートするか"
     }
-  },
-  "additionalProperties": false
+  }
 }

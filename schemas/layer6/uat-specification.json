@@ -63,6 +63,5 @@
       "items": { "type": "string" },
       "description": "ユーザビリティチェック項目: 操作のわかりやすさ、エラーメッセージの明瞭さ"
     }
-  },
-  "additionalProperties": false
+  }
 }

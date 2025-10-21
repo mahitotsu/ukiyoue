@@ -102,6 +102,5 @@
       "type": "string",
       "description": "APIバージョン管理戦略"
     }
-  },
-  "additionalProperties": false
+  }
 }

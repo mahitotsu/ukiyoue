@@ -43,6 +43,5 @@
       "type": "string",
       "description": "テスト用マスタ、トランザクションデータ"
     }
-  },
-  "additionalProperties": false
+  }
 }

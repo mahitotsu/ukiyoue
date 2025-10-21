@@ -120,6 +120,5 @@
         }
       }
     }
-  },
-  "additionalProperties": false
+  }
 }

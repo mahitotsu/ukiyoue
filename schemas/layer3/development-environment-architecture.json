@@ -45,6 +45,5 @@
       "type": "string",
       "description": "チーム全体で共通化する設定、個人設定の許容範囲"
     }
-  },
-  "additionalProperties": false
+  }
 }

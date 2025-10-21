@@ -42,6 +42,5 @@
       "type": "string",
       "description": "AWS/Azure/GCPサービス選定、構成図"
     }
-  },
-  "additionalProperties": false
+  }
 }

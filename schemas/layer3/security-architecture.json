@@ -98,6 +98,5 @@
       },
       "description": "脅威モデリング"
     }
-  },
-  "additionalProperties": false
+  }
 }

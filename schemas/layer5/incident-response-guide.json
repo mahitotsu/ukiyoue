@@ -82,6 +82,5 @@
       },
       "description": "事後対応"
     }
-  },
-  "additionalProperties": false
+  }
 }

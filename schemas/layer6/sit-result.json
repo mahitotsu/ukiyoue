@@ -80,6 +80,5 @@
       "enum": ["pass", "conditional-pass", "fail"],
       "description": "総合判定: SIT全体の合否判定"
     }
-  },
-  "additionalProperties": false
+  }
 }

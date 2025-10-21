@@ -85,6 +85,5 @@
       },
       "description": "運用連絡先: エスカレーション先、サポート窓口"
     }
-  },
-  "additionalProperties": false
+  }
 }

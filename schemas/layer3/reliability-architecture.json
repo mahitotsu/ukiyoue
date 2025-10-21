@@ -51,6 +51,5 @@
       "type": "string",
       "description": "単一障害点（SPOF）の許容範囲"
     }
-  },
-  "additionalProperties": false
+  }
 }

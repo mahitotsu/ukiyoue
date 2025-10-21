@@ -213,6 +213,5 @@
       "items": { "type": "string" },
       "description": "テスト成果物（テスト計画、テスト仕様など）"
     }
-  },
-  "additionalProperties": false
+  }
 }

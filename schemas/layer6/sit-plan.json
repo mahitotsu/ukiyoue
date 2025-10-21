@@ -85,6 +85,5 @@
       },
       "description": "リスクと対策"
     }
-  },
-  "additionalProperties": false
+  }
 }

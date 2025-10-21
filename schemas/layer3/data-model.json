@@ -104,6 +104,5 @@
       },
       "description": "ドメイン定義"
     }
-  },
-  "additionalProperties": false
+  }
 }

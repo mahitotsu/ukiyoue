@@ -111,6 +111,5 @@
       },
       "description": "統合ポイント"
     }
-  },
-  "additionalProperties": false
+  }
 }
