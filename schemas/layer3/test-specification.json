@@ -1,0 +1,48 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://ukiyoue.example.org/schemas/layer3/test-specification.json",
+  "title": "Test Specification",
+  "description": "テスト仕様（ARCH-TESTSPEC）: テストケースとテスト手順を詳細に定義",
+  "allOf": [{ "$ref": "../_common.json#/definitions/baseArtifact" }],
+  "type": "object",
+  "required": ["title", "testCases"],
+  "properties": {
+    "@type": {
+      "const": "TestSpecification"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1
+    },
+    "testCases": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "testItem", "purpose"],
+        "properties": {
+          "id": { "type": "string", "description": "テストケースID" },
+          "testItem": { "type": "string", "description": "テスト項目" },
+          "purpose": { "type": "string", "description": "目的" },
+          "testConditions": { "type": "string", "description": "入力データ、前提条件" },
+          "testProcedure": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "ステップバイステップの実行手順"
+          },
+          "expectedResult": { "type": "string", "description": "合格判定基準" },
+          "traceability": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "要件IDとの紐付け"
+          }
+        }
+      },
+      "minItems": 1
+    },
+    "testData": {
+      "type": "string",
+      "description": "テスト用マスタ、トランザクションデータ"
+    }
+  },
+  "additionalProperties": false
+}

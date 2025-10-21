@@ -1,0 +1,85 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://ukiyoue.example.org/schemas/layer5/troubleshooting-guide.json",
+  "title": "Troubleshooting Guide",
+  "description": "トラブルシューティングガイド（OPS-TROUBLESHOOT）: 問題発生時の診断と解決方法を体系化",
+  "allOf": [{ "$ref": "../_common.json#/definitions/baseArtifact" }],
+  "type": "object",
+  "required": ["title", "commonIssues"],
+  "properties": {
+    "@type": {
+      "const": "TroubleshootingGuide"
+    },
+    "title": {
+      "type": "string",
+      "description": "トラブルシューティングガイドのタイトル",
+      "minLength": 1
+    },
+    "commonIssues": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["issue", "symptoms"],
+        "properties": {
+          "issue": { "type": "string", "description": "問題" },
+          "symptoms": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "症状"
+          },
+          "possibleCauses": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "考えられる原因"
+          },
+          "resolution": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "step": { "type": "integer" },
+                "action": { "type": "string" }
+              }
+            },
+            "description": "解決手順"
+          }
+        }
+      },
+      "description": "よくある問題",
+      "minItems": 1
+    },
+    "diagnosticProcedures": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "symptom": { "type": "string" },
+          "diagnosticSteps": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "ログ確認、メトリクス確認、コマンド実行"
+          },
+          "interpretation": { "type": "string", "description": "結果の解釈" }
+        }
+      },
+      "description": "診断方法: 症状から原因を特定する診断フロー"
+    },
+    "faq": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["question", "answer"],
+        "properties": {
+          "question": { "type": "string" },
+          "answer": { "type": "string" }
+        }
+      },
+      "description": "よくある質問と回答"
+    },
+    "escalationCriteria": {
+      "type": "string",
+      "description": "エスカレーション判断: どの段階で開発チームにエスカレートするか"
+    }
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,90 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://ukiyoue.example.org/schemas/layer5/operations-manual.json",
+  "title": "Operations Manual",
+  "description": "運用マニュアル（OPS-MANUAL）: システムの日常運用手順を提供",
+  "allOf": [{ "$ref": "../_common.json#/definitions/baseArtifact" }],
+  "type": "object",
+  "required": ["title", "monitoringItems"],
+  "properties": {
+    "@type": {
+      "const": "OperationsManual"
+    },
+    "title": {
+      "type": "string",
+      "description": "運用マニュアルのタイトル",
+      "minLength": 1
+    },
+    "monitoringItems": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["metric", "normalRange"],
+        "properties": {
+          "metric": { "type": "string", "description": "監視対象メトリクス" },
+          "normalRange": { "type": "string", "description": "正常範囲" },
+          "abnormalDetection": { "type": "string", "description": "異常検知基準" }
+        }
+      },
+      "description": "監視項目",
+      "minItems": 1
+    },
+    "dailyOperations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "task": { "type": "string" },
+          "frequency": { "type": "string" },
+          "procedure": { "type": "string" }
+        }
+      },
+      "description": "日次運用: 日次チェック項目、定期作業"
+    },
+    "backupProcedure": {
+      "type": "object",
+      "properties": {
+        "execution": { "type": "string", "description": "バックアップ実行" },
+        "verification": { "type": "string", "description": "確認" },
+        "retention": { "type": "string", "description": "世代管理" }
+      },
+      "description": "バックアップ手順"
+    },
+    "restoreProcedure": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "step": { "type": "integer" },
+          "action": { "type": "string" }
+        }
+      },
+      "description": "リストア手順: バックアップからの復元手順"
+    },
+    "periodicMaintenance": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "task": { "type": "string", "description": "パッチ適用、証明書更新、ログローテーション" },
+          "frequency": { "type": "string" },
+          "procedure": { "type": "string" }
+        }
+      },
+      "description": "定期メンテナンス"
+    },
+    "operationalContacts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "role": { "type": "string" },
+          "contact": { "type": "string" },
+          "responsibility": { "type": "string" }
+        }
+      },
+      "description": "運用連絡先: エスカレーション先、サポート窓口"
+    }
+  },
+  "additionalProperties": false
+}

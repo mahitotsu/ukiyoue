@@ -1,0 +1,66 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://ukiyoue.example.org/schemas/layer3/architecture-decision-record.json",
+  "title": "Architecture Decision Record",
+  "description": "アーキテクチャ決定記録（ARCH-ADR）: 重要な技術選定の理由と経緯を記録",
+  "allOf": [{ "$ref": "../_common.json#/definitions/baseArtifact" }],
+  "type": "object",
+  "required": ["title", "decision", "context", "rationale"],
+  "properties": {
+    "@type": {
+      "const": "ArchitectureDecisionRecord"
+    },
+    "title": {
+      "type": "string",
+      "description": "ADRのタイトル",
+      "minLength": 1
+    },
+    "status": {
+      "$ref": "../_common.json#/definitions/status",
+      "description": "決定のステータス"
+    },
+    "decision": {
+      "type": "string",
+      "description": "何を選択したか（技術、パターン、アプローチ）"
+    },
+    "context": {
+      "type": "string",
+      "description": "背景・コンテキスト: なぜこの決定が必要だったか"
+    },
+    "alternatives": {
+      "type": "array",
+      "description": "検討した選択肢",
+      "items": {
+        "type": "object",
+        "required": ["option", "pros", "cons"],
+        "properties": {
+          "option": { "type": "string", "description": "選択肢" },
+          "pros": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "利点"
+          },
+          "cons": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "欠点"
+          }
+        }
+      }
+    },
+    "rationale": {
+      "type": "string",
+      "description": "なぜこの選択肢を選んだか（技術的理由、コスト、リスク）"
+    },
+    "impact": {
+      "type": "string",
+      "description": "この決定が他のコンポーネントに与える影響"
+    },
+    "relatedDecisions": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "関連する他のADR"
+    }
+  },
+  "additionalProperties": false
+}

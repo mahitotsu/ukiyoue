@@ -1,0 +1,90 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://ukiyoue.example.org/schemas/layer6/sit-plan.json",
+  "title": "System Integration Test Plan",
+  "description": "システムテスト計画（VERIFY-SIT-PLAN）: SITのテスト戦略と計画",
+  "allOf": [{ "$ref": "../_common.json#/definitions/baseArtifact" }],
+  "type": "object",
+  "required": ["title", "testObjective", "testScope"],
+  "properties": {
+    "@type": {
+      "const": "SITPlan"
+    },
+    "title": {
+      "type": "string",
+      "description": "SIT計画のタイトル",
+      "minLength": 1
+    },
+    "testObjective": {
+      "type": "string",
+      "description": "テスト目的: システム全体が統合されて正しく動作するか検証",
+      "minLength": 1
+    },
+    "testScope": {
+      "type": "object",
+      "required": ["included"],
+      "properties": {
+        "included": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "テスト対象範囲"
+        },
+        "excluded": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "対象外範囲"
+        }
+      },
+      "description": "テスト範囲",
+      "minProperties": 1
+    },
+    "testEnvironment": {
+      "type": "string",
+      "description": "テスト環境: 本番相当の統合環境"
+    },
+    "testSchedule": {
+      "$ref": "../_common.json#/definitions/dateRange",
+      "description": "テストスケジュール"
+    },
+    "testResources": {
+      "type": "object",
+      "properties": {
+        "personnel": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "role": { "type": "string" },
+              "responsibility": { "type": "string" }
+            }
+          },
+          "description": "テスト要員"
+        },
+        "infrastructure": { "type": "string", "description": "テストインフラ" }
+      },
+      "description": "テストリソース"
+    },
+    "entryCriteria": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "開始条件: 単体テスト完了、環境構築完了"
+    },
+    "exitCriteria": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "終了条件: 全テストケース実行完了、クリティカルバグ0件"
+    },
+    "riskManagement": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "risk": { "type": "string" },
+          "mitigation": { "type": "string" }
+        }
+      },
+      "description": "リスクと対策"
+    }
+  },
+  "additionalProperties": false
+}

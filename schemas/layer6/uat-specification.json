@@ -1,0 +1,68 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://ukiyoue.example.org/schemas/layer6/uat-specification.json",
+  "title": "User Acceptance Test Specification",
+  "description": "受け入れテスト仕様（VERIFY-UAT-SPEC）: UATのシナリオと評価基準",
+  "allOf": [{ "$ref": "../_common.json#/definitions/baseArtifact" }],
+  "type": "object",
+  "required": ["title", "testScenarios"],
+  "properties": {
+    "@type": {
+      "const": "UATSpecification"
+    },
+    "title": {
+      "type": "string",
+      "description": "UAT仕様のタイトル",
+      "minLength": 1
+    },
+    "testScenarios": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["scenarioId", "businessProcess", "procedure", "acceptanceCriteria"],
+        "properties": {
+          "scenarioId": {
+            "type": "string",
+            "pattern": "^UAT-[0-9]{3}$",
+            "description": "シナリオID（例: UAT-001）"
+          },
+          "businessProcess": { "type": "string", "description": "業務プロセス名" },
+          "userRole": { "type": "string", "description": "ユーザーロール" },
+          "preconditions": { "type": "string", "description": "前提条件" },
+          "procedure": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "step": { "type": "integer" },
+                "action": { "type": "string", "description": "ユーザーの操作" },
+                "expectedBehavior": { "type": "string", "description": "期待される動作" }
+              }
+            },
+            "description": "シナリオ手順",
+            "minItems": 1
+          },
+          "acceptanceCriteria": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "受け入れ基準",
+            "minItems": 1
+          },
+          "coverage": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "カバレッジ: 対応するビジネス要件ID、機能要件ID"
+          }
+        }
+      },
+      "description": "テストシナリオ一覧",
+      "minItems": 1
+    },
+    "usabilityChecklist": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "ユーザビリティチェック項目: 操作のわかりやすさ、エラーメッセージの明瞭さ"
+    }
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,119 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://ukiyoue.example.org/schemas/layer1/roadmap.json",
+  "title": "Roadmap",
+  "description": "ロードマップ（PM-ROADMAP）: プロジェクトの全体スケジュールとフェーズ計画",
+  "allOf": [{ "$ref": "../_common.json#/definitions/baseArtifact" }],
+  "type": "object",
+  "required": ["title", "phases"],
+  "properties": {
+    "@type": {
+      "const": "Roadmap"
+    },
+    "title": {
+      "type": "string",
+      "description": "ロードマップタイトル",
+      "minLength": 1
+    },
+    "overview": {
+      "type": "string",
+      "description": "ロードマップ全体の概要"
+    },
+    "phases": {
+      "type": "array",
+      "description": "プロジェクトフェーズ",
+      "items": {
+        "type": "object",
+        "required": ["name", "objectives", "timeline"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "フェーズ名（例: Phase 0, Phase 1）"
+          },
+          "objectives": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "フェーズの目標",
+            "minItems": 1
+          },
+          "timeline": {
+            "$ref": "../_common.json#/definitions/dateRange",
+            "description": "フェーズの期間"
+          },
+          "deliverables": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "主要成果物"
+          },
+          "milestones": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["name", "date"],
+              "properties": {
+                "name": { "type": "string" },
+                "date": { "type": "string", "format": "date" },
+                "description": { "type": "string" }
+              }
+            },
+            "description": "フェーズ内のマイルストーン"
+          },
+          "status": {
+            "$ref": "../_common.json#/definitions/status",
+            "description": "フェーズのステータス"
+          }
+        }
+      },
+      "minItems": 1
+    },
+    "dependencies": {
+      "type": "array",
+      "description": "フェーズ間の依存関係",
+      "items": {
+        "type": "object",
+        "required": ["from", "to", "type"],
+        "properties": {
+          "from": {
+            "type": "string",
+            "description": "依存元フェーズ名"
+          },
+          "to": {
+            "type": "string",
+            "description": "依存先フェーズ名"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["finish-to-start", "start-to-start", "finish-to-finish"],
+            "description": "依存関係のタイプ"
+          },
+          "description": {
+            "type": "string",
+            "description": "依存関係の説明"
+          }
+        }
+      }
+    },
+    "risks": {
+      "type": "array",
+      "description": "ロードマップレベルの主要リスク",
+      "items": {
+        "type": "object",
+        "required": ["description", "impact"],
+        "properties": {
+          "description": { "type": "string" },
+          "impact": {
+            "type": "string",
+            "enum": ["high", "medium", "low"]
+          },
+          "affectedPhases": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "影響を受けるフェーズ名"
+          },
+          "mitigation": { "type": "string" }
+        }
+      }
+    }
+  },
+  "additionalProperties": false
+}

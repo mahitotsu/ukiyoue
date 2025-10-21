@@ -1,0 +1,94 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://ukiyoue.example.org/schemas/_common.json",
+  "title": "Ukiyoue Framework - Common Definitions",
+  "description": "共通定義と再利用可能な型定義",
+  "definitions": {
+    "baseArtifact": {
+      "type": "object",
+      "required": ["@context", "@type", "id"],
+      "properties": {
+        "@context": {
+          "description": "JSON-LD context",
+          "oneOf": [
+            { "type": "string", "format": "uri" },
+            { "type": "object" },
+            { "type": "array" }
+          ]
+        },
+        "@type": {
+          "type": "string",
+          "description": "成果物のタイプ（例: ProjectCharter, BusinessRequirements）"
+        },
+        "id": {
+          "type": "string",
+          "description": "成果物の一意識別子（例: charter-001, req-biz-001）",
+          "pattern": "^[a-z0-9-]+$"
+        },
+        "traceability": {
+          "$ref": "#/definitions/traceability",
+          "description": "成果物間のトレーサビリティ情報（ADR-007準拠）"
+        }
+      }
+    },
+    "traceability": {
+      "type": "object",
+      "description": "トレーサビリティ情報（単方向: downstream → upstream）",
+      "properties": {
+        "derivedFrom": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "この成果物の派生元（上流成果物のIDリスト）"
+        },
+        "satisfies": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "この成果物が満たす要件（要件IDリスト）"
+        },
+        "implements": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "この成果物が実装する設計（設計IDリスト）"
+        },
+        "testedBy": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "この成果物をテストするテスト成果物（テストIDリスト）"
+        },
+        "relatedTo": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "関連する成果物（関連IDリスト）"
+        },
+        "dependsOn": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "依存する成果物（依存IDリスト）"
+        }
+      },
+      "additionalProperties": false
+    },
+    "dateRange": {
+      "type": "object",
+      "description": "期間（開始日と終了日）",
+      "properties": {
+        "start": {
+          "type": "string",
+          "format": "date",
+          "description": "開始日（ISO 8601形式: YYYY-MM-DD）"
+        },
+        "end": {
+          "type": "string",
+          "format": "date",
+          "description": "終了日（ISO 8601形式: YYYY-MM-DD）"
+        }
+      },
+      "required": ["start"]
+    },
+    "status": {
+      "type": "string",
+      "enum": ["draft", "in-review", "approved", "deprecated"],
+      "description": "成果物のステータス（オプショナル: Gitブランチ戦略で管理可能）"
+    }
+  }
+}

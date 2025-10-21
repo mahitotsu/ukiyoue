@@ -1,0 +1,51 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://ukiyoue.example.org/schemas/layer3/devops-architecture.json",
+  "title": "DevOps Architecture",
+  "description": "DevOpsアーキテクチャ（ARCH-DEVOPS）: チーム開発・リリースプロセスの全体設計",
+  "allOf": [{ "$ref": "../_common.json#/definitions/baseArtifact" }],
+  "type": "object",
+  "required": ["title", "branchStrategy"],
+  "properties": {
+    "@type": {
+      "const": "DevOpsArchitecture"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1
+    },
+    "branchStrategy": {
+      "type": "string",
+      "description": "Git Flow/GitHub Flow/Trunk-Based Development、ブランチ命名規則"
+    },
+    "prMrProcess": {
+      "type": "string",
+      "description": "レビュープロセス、承認フロー、マージ条件"
+    },
+    "cicdPipeline": {
+      "type": "string",
+      "description": "ビルド→テスト→デプロイフロー、各ステージの自動化範囲"
+    },
+    "releaseStrategy": {
+      "type": "string",
+      "description": "Blue-Green Deployment、Canary Release、Feature Flag"
+    },
+    "environmentManagement": {
+      "type": "object",
+      "properties": {
+        "environments": { "type": "array", "items": { "type": "string" } },
+        "differences": { "type": "string" },
+        "promotionStrategy": { "type": "string" }
+      }
+    },
+    "artifactManagement": {
+      "type": "string",
+      "description": "コンテナレジストリ、パッケージレポジトリ、アーティファクト保管"
+    },
+    "automationPolicy": {
+      "type": "string",
+      "description": "どこまで自動化するか、手動承認ポイント"
+    }
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,61 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://ukiyoue.example.org/schemas/layer6/sit-specification.json",
+  "title": "System Integration Test Specification",
+  "description": "システムテスト仕様（VERIFY-SIT-SPEC）: SITのテストケースと実施方法",
+  "allOf": [{ "$ref": "../_common.json#/definitions/baseArtifact" }],
+  "type": "object",
+  "required": ["title", "testCases"],
+  "properties": {
+    "@type": {
+      "const": "SITSpecification"
+    },
+    "title": {
+      "type": "string",
+      "description": "SIT仕様のタイトル",
+      "minLength": 1
+    },
+    "testCases": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["testCaseId", "objective", "procedure", "expectedResult"],
+        "properties": {
+          "testCaseId": {
+            "type": "string",
+            "pattern": "^SIT-[0-9]{3}$",
+            "description": "テストケースID（例: SIT-001）"
+          },
+          "objective": { "type": "string", "description": "テスト目的" },
+          "preconditions": { "type": "string", "description": "前提条件" },
+          "testData": { "type": "string", "description": "テストデータ" },
+          "procedure": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "step": { "type": "integer" },
+                "action": { "type": "string" }
+              }
+            },
+            "description": "実施手順",
+            "minItems": 1
+          },
+          "expectedResult": { "type": "string", "description": "期待結果", "minLength": 1 },
+          "coverage": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "カバレッジ: 対応する機能要件ID、NFR-ID"
+          }
+        }
+      },
+      "description": "テストケース一覧",
+      "minItems": 1
+    },
+    "testDataPreparation": {
+      "type": "string",
+      "description": "テストデータ準備: マスタデータ、サンプルデータのセットアップ手順"
+    }
+  },
+  "additionalProperties": false
+}

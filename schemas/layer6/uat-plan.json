@@ -1,0 +1,88 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://ukiyoue.example.org/schemas/layer6/uat-plan.json",
+  "title": "User Acceptance Test Plan",
+  "description": "受け入れテスト計画（VERIFY-UAT-PLAN）: UATのテスト戦略と計画",
+  "allOf": [{ "$ref": "../_common.json#/definitions/baseArtifact" }],
+  "type": "object",
+  "required": ["title", "testObjective", "testScope"],
+  "properties": {
+    "@type": {
+      "const": "UATPlan"
+    },
+    "title": {
+      "type": "string",
+      "description": "UAT計画のタイトル",
+      "minLength": 1
+    },
+    "testObjective": {
+      "type": "string",
+      "description": "テスト目的: ビジネス要件を満たしているか、ユーザーが実際に使える状態か検証",
+      "minLength": 1
+    },
+    "testScope": {
+      "type": "object",
+      "required": ["included"],
+      "properties": {
+        "included": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "テスト対象範囲"
+        },
+        "excluded": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "対象外範囲"
+        }
+      },
+      "description": "テスト範囲",
+      "minProperties": 1
+    },
+    "testEnvironment": {
+      "type": "string",
+      "description": "テスト環境: 本番環境またはステージング環境"
+    },
+    "testSchedule": {
+      "$ref": "../_common.json#/definitions/dateRange",
+      "description": "テストスケジュール"
+    },
+    "testParticipants": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "role": { "type": "string", "description": "エンドユーザー、ビジネスオーナー" },
+          "responsibility": { "type": "string" }
+        }
+      },
+      "description": "テスト参加者: ユーザー代表、業務担当者"
+    },
+    "acceptanceCriteria": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "受け入れ基準: ビジネス要件の達成、ユーザビリティの確認"
+    },
+    "entryCriteria": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "開始条件: SIT合格、ユーザートレーニング完了"
+    },
+    "exitCriteria": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "終了条件: 全シナリオ実行完了、ビジネスオーナー承認"
+    },
+    "riskManagement": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "risk": { "type": "string" },
+          "mitigation": { "type": "string" }
+        }
+      },
+      "description": "リスクと対策"
+    }
+  },
+  "additionalProperties": false
+}

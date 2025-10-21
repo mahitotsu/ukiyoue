@@ -1,0 +1,85 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://ukiyoue.example.org/schemas/layer6/sit-result.json",
+  "title": "System Integration Test Result",
+  "description": "システムテスト結果（VERIFY-SIT-RESULT）: SITの実施結果とバグレポート",
+  "allOf": [{ "$ref": "../_common.json#/definitions/baseArtifact" }],
+  "type": "object",
+  "required": ["title", "executionSummary", "testResults"],
+  "properties": {
+    "@type": {
+      "const": "SITResult"
+    },
+    "title": {
+      "type": "string",
+      "description": "SIT結果のタイトル",
+      "minLength": 1
+    },
+    "executionSummary": {
+      "type": "object",
+      "required": ["totalCases", "passed", "failed"],
+      "properties": {
+        "totalCases": { "type": "integer", "minimum": 0, "description": "総ケース数" },
+        "passed": { "type": "integer", "minimum": 0, "description": "合格数" },
+        "failed": { "type": "integer", "minimum": 0, "description": "不合格数" },
+        "skipped": { "type": "integer", "minimum": 0, "description": "スキップ数" },
+        "passRate": { "type": "number", "minimum": 0, "maximum": 100, "description": "合格率（%）" }
+      },
+      "description": "実行サマリ",
+      "minProperties": 3
+    },
+    "testResults": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["testCaseId", "result"],
+        "properties": {
+          "testCaseId": {
+            "type": "string",
+            "pattern": "^SIT-[0-9]{3}$",
+            "description": "テストケースID"
+          },
+          "result": {
+            "type": "string",
+            "enum": ["pass", "fail", "skip"],
+            "description": "結果"
+          },
+          "executedAt": { "type": "string", "format": "date-time", "description": "実施日時" },
+          "tester": { "type": "string", "description": "実施者" },
+          "actualResult": { "type": "string", "description": "実測結果" },
+          "note": { "type": "string", "description": "備考" },
+          "bugId": { "type": "string", "description": "関連バグID（不合格の場合）" }
+        }
+      },
+      "description": "テスト結果一覧",
+      "minItems": 1
+    },
+    "defects": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "bugId": { "type": "string", "description": "バグID" },
+          "severity": {
+            "type": "string",
+            "enum": ["critical", "high", "medium", "low"],
+            "description": "重大度"
+          },
+          "description": { "type": "string", "description": "バグ内容" },
+          "status": {
+            "type": "string",
+            "enum": ["open", "in-progress", "resolved", "closed"],
+            "description": "ステータス"
+          }
+        }
+      },
+      "description": "検出バグ一覧"
+    },
+    "judgement": {
+      "type": "string",
+      "enum": ["pass", "conditional-pass", "fail"],
+      "description": "総合判定: SIT全体の合否判定"
+    }
+  },
+  "additionalProperties": false
+}

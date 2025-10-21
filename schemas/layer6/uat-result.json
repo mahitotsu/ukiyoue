@@ -1,0 +1,98 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://ukiyoue.example.org/schemas/layer6/uat-result.json",
+  "title": "User Acceptance Test Result",
+  "description": "受け入れテスト結果（VERIFY-UAT-RESULT）: UATの実施結果とユーザーフィードバック",
+  "allOf": [{ "$ref": "../_common.json#/definitions/baseArtifact" }],
+  "type": "object",
+  "required": ["title", "executionSummary", "scenarioResults"],
+  "properties": {
+    "@type": {
+      "const": "UATResult"
+    },
+    "title": {
+      "type": "string",
+      "description": "UAT結果のタイトル",
+      "minLength": 1
+    },
+    "executionSummary": {
+      "type": "object",
+      "required": ["totalScenarios", "accepted", "rejected"],
+      "properties": {
+        "totalScenarios": { "type": "integer", "minimum": 0, "description": "総シナリオ数" },
+        "accepted": { "type": "integer", "minimum": 0, "description": "受け入れ数" },
+        "rejected": { "type": "integer", "minimum": 0, "description": "却下数" },
+        "conditionallyAccepted": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "条件付き受け入れ数"
+        },
+        "acceptanceRate": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100,
+          "description": "受け入れ率（%）"
+        }
+      },
+      "description": "実行サマリ",
+      "minProperties": 3
+    },
+    "scenarioResults": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["scenarioId", "result"],
+        "properties": {
+          "scenarioId": {
+            "type": "string",
+            "pattern": "^UAT-[0-9]{3}$",
+            "description": "シナリオID"
+          },
+          "result": {
+            "type": "string",
+            "enum": ["accepted", "conditionally-accepted", "rejected"],
+            "description": "結果"
+          },
+          "executedAt": { "type": "string", "format": "date-time", "description": "実施日時" },
+          "tester": { "type": "string", "description": "実施者（ユーザー代表）" },
+          "feedback": { "type": "string", "description": "ユーザーフィードバック" },
+          "issueId": { "type": "string", "description": "関連課題ID（却下の場合）" }
+        }
+      },
+      "description": "シナリオ結果一覧",
+      "minItems": 1
+    },
+    "userFeedback": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "category": {
+            "type": "string",
+            "enum": ["usability", "functionality", "performance", "other"],
+            "description": "フィードバック分類"
+          },
+          "comment": { "type": "string", "description": "コメント内容" },
+          "severity": {
+            "type": "string",
+            "enum": ["critical", "high", "medium", "low"],
+            "description": "重要度"
+          },
+          "actionRequired": { "type": "boolean", "description": "対応必要" }
+        }
+      },
+      "description": "ユーザーフィードバック一覧"
+    },
+    "overallJudgement": {
+      "type": "string",
+      "enum": ["accepted", "conditionally-accepted", "rejected"],
+      "description": "総合判定: ビジネスオーナーによる最終判断"
+    },
+    "postUATActions": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "UAT後のアクション: 修正対応、ドキュメント更新"
+    }
+  },
+  "additionalProperties": false
+}

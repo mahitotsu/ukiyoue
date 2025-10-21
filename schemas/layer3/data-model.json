@@ -1,0 +1,109 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://ukiyoue.example.org/schemas/layer3/data-model.json",
+  "title": "Data Model",
+  "description": "データモデル（ARCH-DATA）: システムが扱うデータの構造と関係性を論理的に定義",
+  "allOf": [{ "$ref": "../_common.json#/definitions/baseArtifact" }],
+  "type": "object",
+  "required": ["title", "entities"],
+  "properties": {
+    "@type": {
+      "const": "DataModel"
+    },
+    "title": {
+      "type": "string",
+      "description": "データモデルのタイトル",
+      "minLength": 1
+    },
+    "overview": {
+      "type": "string",
+      "description": "データモデルの概要"
+    },
+    "entities": {
+      "type": "array",
+      "description": "エンティティ",
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "description"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^ENT-[0-9]{3}$",
+            "description": "エンティティID"
+          },
+          "name": {
+            "type": "string",
+            "description": "エンティティ名"
+          },
+          "description": {
+            "type": "string",
+            "description": "ビジネス概念としてのデータの意味"
+          },
+          "attributes": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["name", "type"],
+              "properties": {
+                "name": { "type": "string" },
+                "type": { "type": "string" },
+                "description": { "type": "string" },
+                "required": { "type": "boolean" },
+                "constraints": {
+                  "type": "array",
+                  "items": { "type": "string" }
+                }
+              }
+            },
+            "description": "属性定義"
+          },
+          "relationships": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "type": { "type": "string", "enum": ["one-to-one", "one-to-many", "many-to-many"] },
+                "target": { "type": "string", "pattern": "^ENT-[0-9]{3}$" },
+                "cardinality": { "type": "string" },
+                "description": { "type": "string" }
+              }
+            },
+            "description": "リレーションシップ"
+          }
+        }
+      },
+      "minItems": 1
+    },
+    "dataDictionary": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "attribute": { "type": "string" },
+          "type": { "type": "string" },
+          "constraints": { "type": "string" },
+          "description": { "type": "string" }
+        }
+      },
+      "description": "データ辞書"
+    },
+    "normalization": {
+      "type": "string",
+      "description": "正規化レベル（第3正規形までの正規化設計）"
+    },
+    "domains": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string", "description": "ドメイン名（メールアドレス、電話番号等）" },
+          "type": { "type": "string" },
+          "format": { "type": "string" },
+          "validation": { "type": "string" }
+        }
+      },
+      "description": "ドメイン定義"
+    }
+  },
+  "additionalProperties": false
+}
