@@ -145,11 +145,11 @@ export async function validateJsonLd(
     try {
       const documentLoader = options.documentLoader || secureDocumentLoader;
 
-      const expanded = (await jsonld.expand(doc, {
+      const expanded = await jsonld.expand(doc, {
         documentLoader,
         // JSON-LD 1.1 compliance (ADR-003)
         processingMode: 'json-ld-1.1',
-      })) as jsonld.NodeObject[];
+      });
 
       // Check if expansion resulted in valid output
       if (!expanded || expanded.length === 0) {

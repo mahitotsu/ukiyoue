@@ -67,7 +67,9 @@ function parseArgs(): { paths: string[]; options: CliOptions } {
 
   for (let i = 0; i < args.length; i++) {
     const arg = args[i];
-    if (!arg) continue;
+    if (!arg) {
+      continue;
+    }
 
     if (arg === '--skip-schema') {
       options.skipSchema = true;
@@ -117,7 +119,9 @@ function collectJsonFiles(path: string): string[] {
 // Infer schema path from document type
 function inferSchemaPath(document: Record<string, unknown>): string | null {
   const type = document['@type'];
-  if (typeof type !== 'string') return null;
+  if (typeof type !== 'string') {
+    return null;
+  }
 
   // Convert PascalCase to kebab-case
   const kebab = type
@@ -317,7 +321,7 @@ async function main() {
   const successCount = results.filter((r) => r).length;
   const failCount = results.length - successCount;
 
-  console.log(chalk.bold.blue('\n' + '='.repeat(60)));
+  console.log(chalk.bold.blue(`\n${'='.repeat(60)}`));
   if (failCount === 0) {
     console.log(chalk.green.bold(`✅ All ${successCount} file(s) validated successfully`));
     process.exit(0);

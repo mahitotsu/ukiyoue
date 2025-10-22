@@ -177,7 +177,9 @@ export function validateReferencesAcrossDocuments(
   // First pass: collect all references
   for (const doc of documents) {
     const docId = doc.id as string;
-    if (!docId) continue;
+    if (!docId) {
+      continue;
+    }
 
     const refs = extractReferences(doc);
     references.set(
