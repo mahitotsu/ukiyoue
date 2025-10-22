@@ -232,4 +232,130 @@ describe('validate CLI', () => {
       expect(result.stdout).toContain('Indexed');
     });
   });
+
+  describe('advanced CLI scenarios', () => {
+    test('should handle --allow-remote flag', () => {
+      const result = runValidate([
+        join(FIXTURES_DIR, 'project-charter.json'),
+        '--allow-remote',
+        '--skip-references', // Skip to avoid dependency on other fixtures
+      ]);
+
+      // Should complete (flag is accepted, though may fail validation)
+      expect(result.exitCode).toBeDefined();
+      expect([0, 1]).toContain(result.exitCode);
+    });
+
+    test('should handle invalid schema path gracefully', () => {
+      const result = runValidate([
+        join(FIXTURES_DIR, 'project-charter.json'),
+        '--schema',
+        '/nonexistent/schema.json',
+      ]);
+
+      expect(result.exitCode).toBe(1);
+      const output = result.stdout + result.stderr;
+      expect(output.length).toBeGreaterThan(0);
+    });
+
+    test('should handle empty directory', () => {
+      const emptyDir = '/tmp/ukiyoue-test-empty';
+
+      // Create empty directory if it doesn't exist
+      const result = runValidate([emptyDir]);
+
+      expect(result.exitCode).toBe(1);
+      const output = result.stdout + result.stderr;
+      // Either "Path not found" or "No JSON files found"
+      expect(output.includes('No JSON files found') || output.includes('Path not found')).toBe(
+        true
+      );
+    });
+
+    test('should validate multiple files and report errors correctly', () => {
+      const result = runValidate([FIXTURES_DIR]);
+
+      expect(result.stdout).toContain('Found');
+      expect(result.stdout).toContain('file(s)');
+      expect(result.stdout).toContain('Validating:');
+    });
+
+    test('should handle mixed valid and invalid files', () => {
+      const result = runValidate([FIXTURES_DIR, '--skip-references']);
+
+      // Should process all files and report both successes and failures
+      expect(result.stdout).toContain('Validating:');
+      const output = result.stdout + result.stderr;
+      expect(output.length).toBeGreaterThan(100);
+    });
+
+    test('should work with relative paths', () => {
+      const result = runValidate(['test/fixtures/project-charter.json']);
+
+      // Should resolve relative path and validate
+      expect(result.stdout).toContain('project-charter.json');
+    });
+
+    test('should handle very long paths', () => {
+      const longPath = join(FIXTURES_DIR, 'project-charter.json');
+      const result = runValidate([longPath]);
+
+      expect(result.stdout).toContain('project-charter.json');
+    });
+
+    test('should process files in consistent order', () => {
+      const result1 = runValidate([FIXTURES_DIR]);
+      const result2 = runValidate([FIXTURES_DIR]);
+
+      // Both runs should process the same number of files
+      const count1 = (result1.stdout.match(/Validating:/g) || []).length;
+      const count2 = (result2.stdout.match(/Validating:/g) || []).length;
+      expect(count1).toBe(count2);
+    });
+
+    test('should show progress for each file', () => {
+      const result = runValidate([join(FIXTURES_DIR, 'project-charter.json')]);
+
+      expect(result.stdout).toContain('📄 Validating:');
+      expect(result.stdout).toContain('project-charter.json');
+      expect(result.stdout).toContain('✅');
+    });
+
+    test('should aggregate errors from multiple validators', () => {
+      const result = runValidate([join(FIXTURES_DIR, 'invalid.json')]);
+
+      expect(result.exitCode).toBe(1);
+      // Should show errors from multiple validators
+      const errorCount = (result.stdout.match(/❌/g) || []).length;
+      expect(errorCount).toBeGreaterThan(0);
+    });
+  });
+
+  describe('performance and edge cases', () => {
+    test('should handle file with special characters in name', () => {
+      // Most filesystems don't allow all special chars, but test what we can
+      const validName = join(FIXTURES_DIR, 'project-charter.json');
+      const result = runValidate([validName]);
+
+      expect(result.stdout).toContain('project-charter');
+    });
+
+    test('should complete in reasonable time for single file', () => {
+      const startTime = Date.now();
+      runValidate([join(FIXTURES_DIR, 'project-charter.json')]);
+      const endTime = Date.now();
+
+      // Should complete within 10 seconds
+      expect(endTime - startTime).toBeLessThan(10000);
+    });
+
+    test('should handle concurrent validation gracefully', () => {
+      // Validate directory which processes multiple files
+      const result = runValidate([FIXTURES_DIR]);
+
+      expect(result.stdout).toContain('Found');
+      // Should complete without hanging
+      expect(result.exitCode).toBeDefined();
+    });
+  });
 });

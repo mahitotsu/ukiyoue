@@ -270,4 +270,244 @@ describe('jsonld-validator', () => {
       ).rejects.toThrow('Failed to load local context');
     });
   });
+
+  describe('advanced JSON-LD features', () => {
+    test('should handle array context', async () => {
+      const document = {
+        '@context': [
+          'https://ukiyoue.example.org/contexts/base.jsonld',
+          {
+            customField: 'https://example.com/vocab#customField',
+          },
+        ],
+        '@type': 'ProjectCharter',
+        id: 'pm-charter-001',
+        title: 'Test',
+        customField: 'custom value',
+      };
+
+      const documentLoader = createLocalDocumentLoader(contextBaseUrl, contextDir);
+      const result = await validateJsonLd(document, {
+        documentLoader,
+        validateExpansion: true,
+      });
+
+      expect(result.valid).toBe(true);
+      expect(result.expandedDocument).toBeDefined();
+    });
+
+    test('should handle multiple @type values', async () => {
+      const document = {
+        '@context': {
+          '@version': 1.1,
+          '@vocab': 'https://ukiyoue.example.org/vocab#',
+        },
+        '@type': ['ProjectCharter', 'Document'],
+        id: 'pm-charter-001',
+        title: 'Test',
+      };
+
+      const result = await validateJsonLd(document, {
+        validateExpansion: true,
+      });
+
+      expect(result.valid).toBe(true);
+      expect(result.expandedDocument).toBeDefined();
+    });
+
+    test('should validate @id and @type combination', async () => {
+      const document = {
+        '@context': {
+          '@version': 1.1,
+          '@vocab': 'https://ukiyoue.example.org/vocab#',
+        },
+        '@id': 'https://example.org/documents/charter-001',
+        '@type': 'ProjectCharter',
+        title: 'Test',
+      };
+
+      const result = await validateJsonLd(document, {
+        validateExpansion: true,
+      });
+
+      expect(result.valid).toBe(true);
+      expect(result.expandedDocument).toBeDefined();
+
+      // Verify expanded document has the correct @id
+      if (Array.isArray(result.expandedDocument) && result.expandedDocument.length > 0) {
+        const expanded = result.expandedDocument[0] as Record<string, unknown>;
+        expect(expanded?.['@id']).toBe('https://example.org/documents/charter-001');
+      }
+    });
+
+    test('should handle compacted JSON-LD', async () => {
+      const document = {
+        '@context': {
+          '@version': 1.1,
+          '@vocab': 'https://ukiyoue.example.org/vocab#',
+          name: 'https://schema.org/name',
+          description: 'https://schema.org/description',
+        },
+        '@type': 'Document',
+        name: 'Test Document',
+        description: 'This is a test',
+      };
+
+      const result = await validateJsonLd(document, {
+        validateExpansion: true,
+      });
+
+      expect(result.valid).toBe(true);
+      expect(result.expandedDocument).toBeDefined();
+    });
+
+    test('should validate nested objects with different contexts', async () => {
+      const document = {
+        '@context': {
+          '@version': 1.1,
+          '@vocab': 'https://ukiyoue.example.org/vocab#',
+          author: {
+            '@id': 'https://schema.org/author',
+            '@context': {
+              name: 'https://schema.org/name',
+              email: 'https://schema.org/email',
+            },
+          },
+        },
+        '@type': 'Document',
+        title: 'Test',
+        author: {
+          name: 'John Doe',
+          email: 'john@example.com',
+        },
+      };
+
+      const result = await validateJsonLd(document, {
+        validateExpansion: true,
+      });
+
+      expect(result.valid).toBe(true);
+    });
+
+    test('should handle @language in context', async () => {
+      const document = {
+        '@context': {
+          '@version': 1.1,
+          '@vocab': 'https://ukiyoue.example.org/vocab#',
+          '@language': 'ja',
+        },
+        '@type': 'Document',
+        title: 'テストドキュメント',
+      };
+
+      const result = await validateJsonLd(document, {
+        validateExpansion: true,
+      });
+
+      expect(result.valid).toBe(true);
+    });
+
+    test('should detect missing @context in nested objects', async () => {
+      const document = {
+        '@context': {
+          '@version': 1.1,
+          '@vocab': 'https://ukiyoue.example.org/vocab#',
+        },
+        '@type': 'Document',
+        // Missing context for embedded object
+        nested: {
+          '@type': 'SubDocument',
+          value: 'test',
+        },
+      };
+
+      const result = await validateJsonLd(document, {
+        validateExpansion: true,
+      });
+
+      // Should still be valid as parent context applies
+      expect(result.valid).toBe(true);
+    });
+  });
+
+  describe('context validation edge cases', () => {
+    test('should handle empty context object', () => {
+      const context = {};
+      const errors = validateJsonLd11Context(context);
+
+      expect(errors.length).toBeGreaterThan(0);
+      expect(errors[0]?.message).toContain('@version');
+    });
+
+    test('should validate context with @protected', () => {
+      const context = {
+        '@version': 1.1,
+        '@vocab': 'https://ukiyoue.example.org/vocab#',
+        '@protected': true,
+      };
+
+      const errors = validateJsonLd11Context(context);
+      expect(errors).toHaveLength(0);
+    });
+
+    test('should handle numeric @version', () => {
+      const context = {
+        '@version': 1.1,
+        '@vocab': 'https://ukiyoue.example.org/vocab#',
+      };
+
+      const errors = validateJsonLd11Context(context);
+      expect(errors).toHaveLength(0);
+    });
+
+    test('should reject string @version other than "1.1"', () => {
+      const context = {
+        '@version': '1.0',
+        '@vocab': 'https://ukiyoue.example.org/vocab#',
+      };
+
+      const errors = validateJsonLd11Context(context);
+      expect(errors.length).toBeGreaterThan(0);
+    });
+  });
+
+  describe('expansion validation', () => {
+    test('should validate expanded form', async () => {
+      const document = {
+        '@context': {
+          '@version': 1.1,
+          '@vocab': 'https://ukiyoue.example.org/vocab#',
+        },
+        '@type': 'Document',
+        title: 'Test',
+        items: [{ name: 'Item 1' }, { name: 'Item 2' }],
+      };
+
+      const result = await validateJsonLd(document, {
+        validateExpansion: true,
+      });
+
+      expect(result.valid).toBe(true);
+      expect(result.expandedDocument).toBeDefined();
+      expect(Array.isArray(result.expandedDocument)).toBe(true);
+    });
+
+    test('should handle expansion errors gracefully', async () => {
+      const document = {
+        '@context': {
+          '@version': 1.1,
+          // Invalid context definition
+          '@vocab': 123, // Should be string
+        },
+        '@type': 'Document',
+      };
+
+      const result = await validateJsonLd(document, {
+        validateExpansion: true,
+      });
+
+      expect(result.valid).toBe(false);
+      expect(result.errors.length).toBeGreaterThan(0);
+    });
+  });
 });

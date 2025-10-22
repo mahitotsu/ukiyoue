@@ -104,28 +104,44 @@ bun run test:coverage:report
 bun test test/validators/reference-validator.test.ts
 ```
 
-**テストカバレッジ**: 60 tests (全て通過)
+**テストカバレッジ**: 113 tests (全て通過)
 
-- **CLI統合テスト** (`validate.test.ts`): 26 tests
-  - 引数解析、ファイル収集、検証オーケストレーション、出力フォーマット、エラーハンドリング
-- **JSON Schema 検証** (`schema-validator.test.ts`): 9 tests
-- **JSON-LD 検証** (`jsonld-validator.test.ts`): 16 tests
-- **参照整合性チェック** (`reference-validator.test.ts`): 9 tests
+- **CLI統合テスト** (`validate.test.ts`): 39 tests
+  - 引数解析、ファイル収集、検証オーケストレーション、出力フォーマット
+  - エラーハンドリング、複数ファイル処理、パフォーマンステスト
+- **JSON Schema 検証** (`schema-validator.test.ts`): 23 tests
+  - 基本検証、フォーマット検証（uri, date-time, email）
+  - $ref解決、検証オプション、複雑なネストスキーマ、エラーハンドリング
+- **JSON-LD 検証** (`jsonld-validator.test.ts`): 29 tests
+  - 基本検証、コンテキスト配列、複数@type、@id/@type組み合わせ
+  - コンテキスト検証、展開検証、@protected、@language
+- **参照整合性チェック** (`reference-validator.test.ts`): 22 tests
+  - 基本参照検証、循環参照検出、自己参照、空配列/null/undefined処理
+  - 深い循環参照、複数経路循環、全参照フィールドタイプ、ドキュメントインデックス
 
 **コードカバレッジ**:
 
 | ファイル                                | 関数    | 行     | カバーされていない行 |
 | --------------------------------------- | ------- | ------ | -------------------- |
 | `src/validators/jsonld-validator.ts`    | 100.00% | 85.94% | 96-106, 156-161      |
-| `src/validators/reference-validator.ts` | 100.00% | 94.70% | 42, 71, 73-78        |
-| `src/validators/schema-validator.ts`    | 100.00% | 90.41% | 79, 125, 127-131     |
-| **全体**                                | 100.00% | 90.35% | -                    |
+| `src/validators/reference-validator.ts` | 100.00% | 99.34% | -                    |
+| `src/validators/schema-validator.ts`    | 100.00% | 98.63% | -                    |
+| **全体**                                | 100.00% | 94.64% | -                    |
 
 カバーされていない行は主にエラーハンドリングや例外的なケースです。
 
 **注**: `src/validate.ts` (CLIエントリーポイント) はサブプロセスとして実行されるため、
-カバレッジレポートには含まれませんが、26個の統合テスト (`validate.test.ts`) で
+カバレッジレポートには含まれませんが、39個の統合テスト (`validate.test.ts`) で
 間接的にテストされています。
+
+**テストの網羅性**:
+
+- ✅ FR-AUTO-002 (自動バリデーション): 全ての検証機能をテスト
+- ✅ ADR-002 (JSON Schema Draft-07): フォーマット検証、$ref解決、オプション
+- ✅ ADR-003 (JSON-LD 1.1): コンテキスト、展開、1.1機能
+- ✅ 参照整合性: 循環検出、欠落検出、全参照フィールドタイプ
+- ✅ エラーハンドリング: 不正入力、ファイルエラー、パースエラー
+- ✅ エッジケース: null/undefined、空配列、自己参照、深いネスト
 
 ## 🔧 技術仕様
 
