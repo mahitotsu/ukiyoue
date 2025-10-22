@@ -39,10 +39,9 @@
       "markdownlint-cli2 --fix",
       "prettier --write"
     ],
-    "tools/**/*.{ts,tsx}": [
-      "cd tools && bun run lint:fix",
-      "cd tools && bun run format"
-    ],
-    "*.{ts,tsx}": "prettier --write"
+    "tools/**/*.ts": [
+      "bash -c 'cd tools && bun run lint:fix'",
+      "prettier --write"
+    ]
   }
 }

@@ -154,7 +154,12 @@ async function validateDocument(
   let document: Record<string, unknown>;
   try {
     const content = readFileSync(filePath, 'utf8');
-    document = JSON.parse(content);
+    const parsed: unknown = JSON.parse(content);
+    if (typeof parsed !== 'object' || parsed === null) {
+      console.error(chalk.red('❌ Parsed JSON is not an object'));
+      return false;
+    }
+    document = parsed as Record<string, unknown>;
   } catch (error) {
     console.error(chalk.red(`❌ Failed to parse JSON: ${error}`));
     return false;
@@ -171,7 +176,8 @@ async function validateDocument(
       console.log(chalk.yellow('  ⚠️  Schema not found, skipping schema validation'));
     } else {
       try {
-        const schema = JSON.parse(readFileSync(schemaPath, 'utf8'));
+        const schemaText = readFileSync(schemaPath, 'utf8');
+        const schema = JSON.parse(schemaText) as object;
 
         // Use schema-validator
         const result = validateSchema(schema, document, schemaPath, {

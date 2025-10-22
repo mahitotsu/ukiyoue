@@ -81,7 +81,8 @@ function loadCommonSchema(ajv: Ajv, schemaPath: string, options: SchemaValidatio
 
   try {
     const commonPath = options.commonSchemaPath || resolve(dirname(schemaPath), '../_common.json');
-    const commonSchema = JSON.parse(readFileSync(commonPath, 'utf8'));
+    const commonSchemaText = readFileSync(commonPath, 'utf8');
+    const commonSchema = JSON.parse(commonSchemaText) as object;
     ajv.addSchema(commonSchema);
   } catch {
     // _common.json not found or not needed, continue without it
@@ -146,10 +147,12 @@ export function validateSchemaFromFiles(
 
   try {
     // Load schema
-    const schema = JSON.parse(readFileSync(schemaPath, 'utf8'));
+    const schemaText = readFileSync(schemaPath, 'utf8');
+    const schema = JSON.parse(schemaText) as object;
 
     // Load document
-    const document = JSON.parse(readFileSync(documentPath, 'utf8'));
+    const documentText = readFileSync(documentPath, 'utf8');
+    const document = JSON.parse(documentText) as object;
 
     // Validate
     return validateSchema(schema, document, schemaPath, options);

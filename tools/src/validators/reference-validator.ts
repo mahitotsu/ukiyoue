@@ -222,12 +222,19 @@ export async function buildDocumentIndex(filePaths: string[]): Promise<DocumentI
   for (const filePath of filePaths) {
     try {
       const content = await Bun.file(filePath).text();
-      const doc = JSON.parse(content);
+      const parsed: unknown = JSON.parse(content);
 
-      if (doc.id && typeof doc.id === 'string') {
+      // Type guard: ensure parsed is an object
+      if (typeof parsed !== 'object' || parsed === null) {
+        continue;
+      }
+
+      const doc = parsed as Record<string, unknown>;
+
+      if (typeof doc.id === 'string') {
         index[doc.id] = {
           filePath,
-          type: doc['@type'] || 'unknown',
+          type: typeof doc['@type'] === 'string' ? doc['@type'] : 'unknown',
         };
       }
     } catch {
