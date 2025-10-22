@@ -1,11 +1,10 @@
 {
   "name": "@ukiyoue/validator",
   "version": "0.1.0",
-  "description": "Minimal JSON Schema validator for Ukiyoue framework",
+  "description": "Validation tools for Ukiyoue framework",
   "type": "module",
   "scripts": {
     "validate": "bun src/validate.ts",
-    "validate:minimal": "bun src/validate-minimal.ts",
     "test": "bun test"
   },
   "dependencies": {

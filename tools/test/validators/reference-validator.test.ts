@@ -1,10 +1,10 @@
 import { describe, expect, test } from 'bun:test';
+import type { DocumentIndex } from '../../src/validators/reference-validator';
 import {
   buildDocumentIndex,
   validateReferences,
   validateReferencesAcrossDocuments,
 } from '../../src/validators/reference-validator';
-import type { DocumentIndex } from '../../src/validators/reference-validator';
 
 describe('reference-validator', () => {
   describe('validateReferences', () => {

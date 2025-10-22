@@ -33,21 +33,16 @@
  *   bun tools/src/validate.ts examples/ --skip-jsonld
  */
 
-import Ajv from 'ajv';
-import addFormats from 'ajv-formats';
 import chalk from 'chalk';
 import { existsSync, lstatSync, readdirSync, readFileSync } from 'fs';
 import { basename, dirname, extname, join, resolve } from 'path';
 import {
-  buildDocumentIndex,
-  validateReferences,
-  validateReferencesAcrossDocuments,
-} from './validators/reference-validator';
-import {
   createLocalDocumentLoader,
   validateJsonLd,
   validateJsonLd11Context,
-} from './validators/jsonld-validator';
+} from './validators/jsonld-validator.js';
+import { buildDocumentIndex, validateReferences } from './validators/reference-validator.js';
+import { validateSchema } from './validators/schema-validator.js';
 
 // Parse command line arguments
 interface CliOptions {
@@ -173,25 +168,21 @@ async function validateDocument(
     } else {
       try {
         const schema = JSON.parse(readFileSync(schemaPath, 'utf8'));
-        const ajv = new Ajv({ allErrors: true, strict: true, verbose: options.verbose });
-        addFormats(ajv);
 
-        // Load _common.json if exists
-        try {
-          const commonPath = resolve(dirname(schemaPath), '../_common.json');
-          const commonSchema = JSON.parse(readFileSync(commonPath, 'utf8'));
-          ajv.addSchema(commonSchema);
-        } catch {
-          // Common schema not found, continue
-        }
+        // Use schema-validator
+        const result = validateSchema(schema, document, schemaPath, {
+          allErrors: true,
+          strict: true,
+          verbose: options.verbose,
+          loadCommonSchema: true,
+        });
 
-        const validate = ajv.compile(schema);
-        if (validate(document)) {
+        if (result.valid) {
           console.log(chalk.green('  ✅ Schema validation passed'));
         } else {
           console.log(chalk.red('  ❌ Schema validation failed:'));
-          validate.errors?.forEach((error, index) => {
-            console.log(chalk.red(`     [${index + 1}] ${error.instancePath}: ${error.message}`));
+          result.errors.forEach((error, index) => {
+            console.log(chalk.red(`     [${index + 1}] ${error.path}: ${error.message}`));
             if (options.verbose && error.params) {
               console.log(chalk.gray(`         ${JSON.stringify(error.params)}`));
             }

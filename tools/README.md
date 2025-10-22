@@ -12,9 +12,9 @@ Ukiyoue JSON ドキュメントの包括的な検証ツールを提供します:
 
 ## 🛠️ ツール一覧
 
-### validate.ts（推奨）
+### validate.ts
 
-**包括的バリデーター** - 全ての検証機能を統合
+**包括的バリデーター** - 全ての検証機能を統合した CLI ツール
 
 **機能**:
 
@@ -34,8 +34,11 @@ bun tools/src/validate.ts examples/project-charter.json
 # ディレクトリ内の全ドキュメントを検証
 bun tools/src/validate.ts examples/
 
-# JSON Schema 検証のみ
+# JSON Schema 検証のみ（他をスキップ）
 bun tools/src/validate.ts examples/project-charter.json --skip-references --skip-jsonld
+
+# 明示的にスキーマを指定
+bun tools/src/validate.ts examples/project-charter.json --schema schemas/layer1/project-charter.json
 
 # JSON-LD 検証をスキップ
 bun tools/src/validate.ts examples/ --skip-jsonld
@@ -63,7 +66,7 @@ bun run validate examples/
 
 📁 Found 3 JSON file(s)
 
-� Building document index...
+🔨 Building document index...
 ✅ Indexed 3 document(s)
 
 📄 Validating: project-charter.json
@@ -76,28 +79,6 @@ bun run validate examples/
 
 ============================================================
 ✅ All 3 file(s) validated successfully
-```
-
-### validate-minimal.ts
-
-**最小限の JSON Schema バリデーター** - 単機能の軽量版
-
-**機能**:
-
-- JSON Schema Draft-07 による検証のみ
-- シンプルな CLI インターフェース
-
-**使用方法**:
-
-```bash
-bun tools/src/validate-minimal.ts \
-  schemas/layer1/project-charter.json \
-  examples/project-charter.json
-
-# npm scripts経由
-bun run validate:minimal \
-  schemas/layer1/project-charter.json \
-  examples/project-charter.json
 ```
 
 ## 📦 インストール
@@ -117,10 +98,10 @@ bun test
 bun test test/validators/reference-validator.test.ts
 ```
 
-**テストカバレッジ**: 31 tests (全て通過)
+**テストカバレッジ**: 34 tests (全て通過)
 
-- JSON Schema 検証: 7 tests
-- JSON-LD 検証: 15 tests
+- JSON Schema 検証: 9 tests
+- JSON-LD 検証: 16 tests
 - 参照整合性チェック: 9 tests
 
 ## 🔧 技術仕様
@@ -137,20 +118,21 @@ bun test test/validators/reference-validator.test.ts
 ```text
 tools/
 ├── src/
-│   ├── validate.ts              # 統合バリデーター（推奨）
-│   ├── validate-minimal.ts      # 最小限バリデーター
+│   ├── validate.ts              # 統合バリデーター CLI
 │   ├── validators/
+│   │   ├── schema-validator.ts     # JSON Schema 検証
 │   │   ├── reference-validator.ts  # 参照整合性チェック
 │   │   └── jsonld-validator.ts     # JSON-LD 検証
 │   └── types/
 │       └── jsonld.d.ts          # jsonld 型定義
 ├── test/
-│   ├── validate-minimal.test.ts
 │   ├── validators/
+│   │   ├── schema-validator.test.ts
 │   │   ├── reference-validator.test.ts
 │   │   └── jsonld-validator.test.ts
 │   └── fixtures/
-│       └── project-charter.json
+│       ├── project-charter.json
+│       └── invalid.json
 ├── package.json
 ├── tsconfig.json
 └── README.md

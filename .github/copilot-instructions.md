@@ -22,7 +22,8 @@
 - ✅ Phase 0 Complete: Concept, requirements, architecture, ADRs (001-004)
 - ✅ JSON Schema: 30 files (29 artifacts + \_common.json)
 - ✅ JSON-LD: 6 files (4 contexts + 1 vocabulary + README)
-- ✅ Tools: Minimal validator (validate-minimal.ts) with 7 unit tests
+- ✅ Tools: Comprehensive validator (validate.ts) with 34 unit tests
+  - Schema validator, JSON-LD validator, Reference validator
 - ✅ Tooling: Prettier, markdownlint-cli2, lint-staged, Husky, TypeScript strict mode
 - 📋 Next: Example documents and full validator implementation
 
