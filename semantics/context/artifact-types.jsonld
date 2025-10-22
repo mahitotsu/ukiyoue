@@ -6,7 +6,6 @@
     "ProjectCharter": {
       "@id": "ukiyoue:ProjectCharter",
       "@type": "@id",
-      "rdfs:comment": "プロジェクト憲章（PM-CHARTER）",
       "@context": {
         "background": "dc:description",
         "scope": "ukiyoue:scope",
@@ -19,7 +18,6 @@
     "Roadmap": {
       "@id": "ukiyoue:Roadmap",
       "@type": "@id",
-      "rdfs:comment": "ロードマップ（PM-ROADMAP）",
       "@context": {
         "phases": "ukiyoue:phases",
         "dependencies": "ukiyoue:dependencies",
@@ -29,7 +27,6 @@
     "BusinessRequirements": {
       "@id": "ukiyoue:BusinessRequirements",
       "@type": "@id",
-      "rdfs:comment": "ビジネス要件（REQ-BIZ）",
       "@context": {
         "businessGoals": "ukiyoue:businessGoals",
         "requirements": "ukiyoue:requirements",
@@ -40,7 +37,6 @@
     "FunctionalRequirements": {
       "@id": "ukiyoue:FunctionalRequirements",
       "@type": "@id",
-      "rdfs:comment": "機能要件（REQ-FUNC）",
       "@context": {
         "requirements": "ukiyoue:requirements",
         "useCases": "ukiyoue:useCases",
@@ -50,7 +46,6 @@
     "NonFunctionalRequirements": {
       "@id": "ukiyoue:NonFunctionalRequirements",
       "@type": "@id",
-      "rdfs:comment": "非機能要件（REQ-NONFUNC）",
       "@context": {
         "requirements": "ukiyoue:requirements",
         "categories": "ukiyoue:categories"
@@ -59,7 +54,6 @@
     "TestStrategy": {
       "@id": "ukiyoue:TestStrategy",
       "@type": "@id",
-      "rdfs:comment": "テスト戦略（REQ-TESTSTRATEGY）",
       "@context": {
         "scope": "ukiyoue:scope",
         "testLevels": "ukiyoue:testLevels",
@@ -70,7 +64,6 @@
     "ArchitectureDecisionRecord": {
       "@id": "ukiyoue:ArchitectureDecisionRecord",
       "@type": "@id",
-      "rdfs:comment": "アーキテクチャ決定記録（ARCH-ADR）",
       "@context": {
         "decision": "ukiyoue:decision",
         "context": "ukiyoue:decisionContext",
@@ -82,7 +75,6 @@
     "RuntimeArchitecture": {
       "@id": "ukiyoue:RuntimeArchitecture",
       "@type": "@id",
-      "rdfs:comment": "ランタイムアーキテクチャ（ARCH-RUNTIME）",
       "@context": {
         "overview": "dc:abstract",
         "components": "ukiyoue:components",
@@ -93,7 +85,6 @@
     "DataModel": {
       "@id": "ukiyoue:DataModel",
       "@type": "@id",
-      "rdfs:comment": "データモデル（ARCH-DATA）",
       "@context": {
         "entities": "ukiyoue:entities",
         "erDiagram": "ukiyoue:erDiagram",
@@ -104,7 +95,6 @@
     "UIUXSpecification": {
       "@id": "ukiyoue:UIUXSpecification",
       "@type": "@id",
-      "rdfs:comment": "UI/UX仕様（ARCH-UI）",
       "@context": {
         "screens": "ukiyoue:screens",
         "wireframes": "ukiyoue:wireframes",
@@ -115,7 +105,6 @@
     "APISpecification": {
       "@id": "ukiyoue:APISpecification",
       "@type": "@id",
-      "rdfs:comment": "API仕様（ARCH-API）",
       "@context": {
         "endpoints": "ukiyoue:endpoints",
         "authentication": "ukiyoue:authentication",
@@ -125,7 +114,6 @@
     "SecurityArchitecture": {
       "@id": "ukiyoue:SecurityArchitecture",
       "@type": "@id",
-      "rdfs:comment": "セキュリティアーキテクチャ（ARCH-SECURITY）",
       "@context": {
         "authenticationMethods": "ukiyoue:authenticationMethods",
         "authorizationMethods": "ukiyoue:authorizationMethods",
@@ -136,7 +124,6 @@
     "ReliabilityArchitecture": {
       "@id": "ukiyoue:ReliabilityArchitecture",
       "@type": "@id",
-      "rdfs:comment": "信頼性アーキテクチャ（ARCH-RELIABILITY）",
       "@context": {
         "sloDefinition": "ukiyoue:sloDefinition",
         "sliDefinition": "ukiyoue:sliDefinition",
@@ -147,7 +134,6 @@
     "InfrastructureArchitecture": {
       "@id": "ukiyoue:InfrastructureArchitecture",
       "@type": "@id",
-      "rdfs:comment": "インフラストラクチャアーキテクチャ（ARCH-INFRA）",
       "@context": {
         "networkConfiguration": "ukiyoue:networkConfiguration",
         "computeResources": "ukiyoue:computeResources",
@@ -157,7 +143,6 @@
     "ObservabilityArchitecture": {
       "@id": "ukiyoue:ObservabilityArchitecture",
       "@type": "@id",
-      "rdfs:comment": "可観測性アーキテクチャ（ARCH-OBSERVABILITY）",
       "@context": {
         "metricsDefinition": "ukiyoue:metricsDefinition",
         "loggingStrategy": "ukiyoue:loggingStrategy",
@@ -168,7 +153,6 @@
     "DevOpsArchitecture": {
       "@id": "ukiyoue:DevOpsArchitecture",
       "@type": "@id",
-      "rdfs:comment": "DevOpsアーキテクチャ（ARCH-DEVOPS）",
       "@context": {
         "branchStrategy": "ukiyoue:branchStrategy",
         "cicdPipeline": "ukiyoue:cicdPipeline",
@@ -178,7 +162,6 @@
     "DevelopmentEnvironmentArchitecture": {
       "@id": "ukiyoue:DevelopmentEnvironmentArchitecture",
       "@type": "@id",
-      "rdfs:comment": "開発環境アーキテクチャ（ARCH-DEVENV）",
       "@context": {
         "developmentTools": "ukiyoue:developmentTools",
         "localWorkflow": "ukiyoue:localWorkflow",
@@ -188,7 +171,6 @@
     "TestPlan": {
       "@id": "ukiyoue:TestPlan",
       "@type": "@id",
-      "rdfs:comment": "テスト計画（ARCH-TESTPLAN）",
       "@context": {
         "testStrategy": "ukiyoue:testStrategy",
         "testLevels": "ukiyoue:testLevels",
@@ -198,7 +180,6 @@
     "TestSpecification": {
       "@id": "ukiyoue:TestSpecification",
       "@type": "@id",
-      "rdfs:comment": "テスト仕様（ARCH-TESTSPEC）",
       "@context": {
         "testCases": "ukiyoue:testCases",
         "testItems": "ukiyoue:testItems",
@@ -208,7 +189,6 @@
     "DeploymentGuide": {
       "@id": "ukiyoue:DeploymentGuide",
       "@type": "@id",
-      "rdfs:comment": "デプロイガイド（OPS-DEPLOY）",
       "@context": {
         "environmentSetup": "ukiyoue:environmentSetup",
         "deploymentProcedure": "ukiyoue:deploymentProcedure",
@@ -219,7 +199,6 @@
     "OperationsManual": {
       "@id": "ukiyoue:OperationsManual",
       "@type": "@id",
-      "rdfs:comment": "運用マニュアル（OPS-MANUAL）",
       "@context": {
         "monitoringItems": "ukiyoue:monitoringItems",
         "dailyOperations": "ukiyoue:dailyOperations",
@@ -230,7 +209,6 @@
     "IncidentResponseGuide": {
       "@id": "ukiyoue:IncidentResponseGuide",
       "@type": "@id",
-      "rdfs:comment": "インシデント対応ガイド（OPS-INCIDENT）",
       "@context": {
         "incidentDefinition": "ukiyoue:incidentDefinition",
         "escalationFlow": "ukiyoue:escalationFlow",
@@ -241,7 +219,6 @@
     "TroubleshootingGuide": {
       "@id": "ukiyoue:TroubleshootingGuide",
       "@type": "@id",
-      "rdfs:comment": "トラブルシューティングガイド（OPS-TROUBLESHOOT）",
       "@context": {
         "commonIssues": "ukiyoue:commonIssues",
         "diagnosticProcedures": "ukiyoue:diagnosticProcedures",
@@ -251,7 +228,6 @@
     "SITPlan": {
       "@id": "ukiyoue:SITPlan",
       "@type": "@id",
-      "rdfs:comment": "システム統合テスト計画（VERIFY-SIT-PLAN）",
       "@context": {
         "testObjective": "ukiyoue:testObjective",
         "testScope": "ukiyoue:testScope",
@@ -262,7 +238,6 @@
     "SITSpecification": {
       "@id": "ukiyoue:SITSpecification",
       "@type": "@id",
-      "rdfs:comment": "システム統合テスト仕様（VERIFY-SIT-SPEC）",
       "@context": {
         "testCases": "ukiyoue:testCases",
         "testDataPreparation": "ukiyoue:testDataPreparation"
@@ -271,7 +246,6 @@
     "SITResult": {
       "@id": "ukiyoue:SITResult",
       "@type": "@id",
-      "rdfs:comment": "システム統合テスト結果（VERIFY-SIT-RESULT）",
       "@context": {
         "executionSummary": "ukiyoue:executionSummary",
         "testResults": "ukiyoue:testResults",
@@ -282,7 +256,6 @@
     "UATPlan": {
       "@id": "ukiyoue:UATPlan",
       "@type": "@id",
-      "rdfs:comment": "ユーザー受入テスト計画（VERIFY-UAT-PLAN）",
       "@context": {
         "testObjective": "ukiyoue:testObjective",
         "testScope": "ukiyoue:testScope",
@@ -293,7 +266,6 @@
     "UATSpecification": {
       "@id": "ukiyoue:UATSpecification",
       "@type": "@id",
-      "rdfs:comment": "ユーザー受入テスト仕様（VERIFY-UAT-SPEC）",
       "@context": {
         "testScenarios": "ukiyoue:testScenarios",
         "usabilityChecklist": "ukiyoue:usabilityChecklist"
@@ -302,7 +274,6 @@
     "UATResult": {
       "@id": "ukiyoue:UATResult",
       "@type": "@id",
-      "rdfs:comment": "ユーザー受入テスト結果（VERIFY-UAT-RESULT）",
       "@context": {
         "executionSummary": "ukiyoue:executionSummary",
         "scenarioResults": "ukiyoue:scenarioResults",

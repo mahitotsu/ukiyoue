@@ -175,6 +175,14 @@ try {
 
 ## ⚠️ 注意事項
 
+### JSON-LD 1.1 準拠
+
+- **重要**: Term definition 内で `rdfs:comment` は使用不可
+  - JSON-LD 1.1仕様では、term definition に含められるキーワードが厳密に定義されている
+  - `@id`, `@type`, `@container`, `@context`, `@language`, `@direction` 等のみ有効
+  - ドキュメント的な情報は別ファイル（README、vocabulary定義等）で管理
+- すべてのcontext定義からコメント的な `rdfs:comment` を削除済み（JSON-LD expansion時のエラー回避）
+
 ### @protected の使用
 
 - すべての基本 context で `@protected: true` を設定

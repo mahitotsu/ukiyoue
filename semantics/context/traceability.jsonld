@@ -5,44 +5,37 @@
     "@protected": true,
     "traceability": {
       "@id": "https://ukiyoue.example.org/vocab#traceability",
-      "@type": "@id",
-      "rdfs:comment": "成果物間のトレーサビリティ情報"
+      "@type": "@id"
     },
     "derivedFrom": {
       "@id": "https://ukiyoue.example.org/vocab#derivedFrom",
       "@type": "@id",
-      "@container": "@set",
-      "rdfs:comment": "この成果物の派生元となる成果物（downstream → upstream）"
+      "@container": "@set"
     },
     "satisfies": {
       "@id": "https://ukiyoue.example.org/vocab#satisfies",
       "@type": "@id",
-      "@container": "@set",
-      "rdfs:comment": "この成果物が満たす要件（implementation → requirement）"
+      "@container": "@set"
     },
     "implements": {
       "@id": "https://ukiyoue.example.org/vocab#implements",
       "@type": "@id",
-      "@container": "@set",
-      "rdfs:comment": "この成果物が実装する設計（implementation → design）"
+      "@container": "@set"
     },
     "testedBy": {
       "@id": "https://ukiyoue.example.org/vocab#testedBy",
       "@type": "@id",
-      "@container": "@set",
-      "rdfs:comment": "この成果物をテストするテストケース（artifact → test）"
+      "@container": "@set"
     },
     "relatedTo": {
       "@id": "https://ukiyoue.example.org/vocab#relatedTo",
       "@type": "@id",
-      "@container": "@set",
-      "rdfs:comment": "関連する成果物（汎用的な関連性）"
+      "@container": "@set"
     },
     "dependsOn": {
       "@id": "https://ukiyoue.example.org/vocab#dependsOn",
       "@type": "@id",
-      "@container": "@set",
-      "rdfs:comment": "この成果物が依存する成果物（技術的依存関係）"
+      "@container": "@set"
     }
   }
 }

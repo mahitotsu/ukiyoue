@@ -6,38 +6,31 @@
     "type": "@type",
     "title": {
       "@id": "http://purl.org/dc/terms/title",
-      "@type": "http://www.w3.org/2001/XMLSchema#string",
-      "rdfs:comment": "成果物のタイトル"
+      "@type": "http://www.w3.org/2001/XMLSchema#string"
     },
     "description": {
       "@id": "http://purl.org/dc/terms/description",
-      "@type": "http://www.w3.org/2001/XMLSchema#string",
-      "rdfs:comment": "成果物の説明"
+      "@type": "http://www.w3.org/2001/XMLSchema#string"
     },
     "created": {
       "@id": "http://purl.org/dc/terms/created",
-      "@type": "http://www.w3.org/2001/XMLSchema#dateTime",
-      "rdfs:comment": "作成日時（Git管理対象外、オプション）"
+      "@type": "http://www.w3.org/2001/XMLSchema#dateTime"
     },
     "modified": {
       "@id": "http://purl.org/dc/terms/modified",
-      "@type": "http://www.w3.org/2001/XMLSchema#dateTime",
-      "rdfs:comment": "最終更新日時（Git管理対象外、オプション）"
+      "@type": "http://www.w3.org/2001/XMLSchema#dateTime"
     },
     "status": {
       "@id": "https://ukiyoue.example.org/vocab#status",
-      "@type": "http://www.w3.org/2001/XMLSchema#string",
-      "rdfs:comment": "成果物のステータス（draft, in-review, approved, deprecated）"
+      "@type": "http://www.w3.org/2001/XMLSchema#string"
     },
     "start": {
       "@id": "https://schema.org/startDate",
-      "@type": "http://www.w3.org/2001/XMLSchema#date",
-      "rdfs:comment": "開始日（dateRange用）"
+      "@type": "http://www.w3.org/2001/XMLSchema#date"
     },
     "end": {
       "@id": "https://schema.org/endDate",
-      "@type": "http://www.w3.org/2001/XMLSchema#date",
-      "rdfs:comment": "終了日（dateRange用）"
+      "@type": "http://www.w3.org/2001/XMLSchema#date"
     }
   }
 }
