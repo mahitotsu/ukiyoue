@@ -22,3 +22,6 @@ Thumbs.db
 
 # Logs
 *.log
+
+# Test fixtures (intentionally malformed)
+**/test/fixtures/malformed.json
