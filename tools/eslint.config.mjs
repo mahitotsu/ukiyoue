@@ -32,7 +32,7 @@ export default tseslint.config(
       '@typescript-eslint/no-unsafe-argument': 'error',
       '@typescript-eslint/no-unsafe-call': 'error',
       '@typescript-eslint/no-unsafe-return': 'error',
-      
+
       // Keep some rules as warnings for gradual improvement
       '@typescript-eslint/restrict-template-expressions': 'warn',
       '@typescript-eslint/no-base-to-string': 'warn',
