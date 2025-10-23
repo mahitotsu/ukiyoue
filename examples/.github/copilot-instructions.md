@@ -175,8 +175,13 @@ Track progress in this README section (update as we go):
 - ✅ Project structure created
 - ✅ README.md created
 - ✅ Project-specific instructions created
-- 📋 Layer 1: Business context (next)
-- 📋 Layer 2: Requirements
+- ✅ Layer 1: Business context (11 artifacts completed)
+  - ✅ Project Charter (pc-tos-001-table-order-system.json)
+  - ✅ Roadmap (roadmap-tos-001-development.json) - 4 phases
+  - ✅ Risk Register (risk-register-tos-001.json) - 5 risks, 3 assumptions
+  - ✅ Business Goals (3 files: bg-tos-001, 002, 003)
+  - ✅ User Stories (5 files: us-tos-001 through 005) with Given-When-Then acceptance criteria
+- 📋 Layer 2: Requirements (next)
 - 📋 Layer 3: Architecture
 - 📋 Layer 4: Implementation
 - 📋 Traceability matrix generation

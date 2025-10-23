@@ -1,0 +1,66 @@
+{
+  "$schema": "https://ukiyoue.example.org/schemas/layer1/user-story.json",
+  "type": "user-story",
+  "@type": "UserStory",
+  "@context": "https://ukiyoue.example.org/context/layer1.jsonld",
+  "id": "us-tos-002",
+  "version": "0.1.0",
+  "status": "draft",
+  "title": "顧客が料理をカートに追加する",
+  "asA": "顧客",
+  "iWant": "気に入った料理をカートに追加したい",
+  "soThat": "複数の料理をまとめて注文できる",
+  "description": "顧客がメニューから料理を選択し、数量を指定してカートに追加する。カート内の料理一覧と合計金額を確認でき、削除や数量変更も可能。",
+  "acceptanceCriteria": [
+    {
+      "given": "料理詳細画面を表示している",
+      "when": "「カートに追加」ボタンをタップする",
+      "then": "料理がカートに追加され、確認メッセージが表示される"
+    },
+    {
+      "given": "料理をカートに追加する",
+      "when": "数量を指定する",
+      "then": "指定した数量がカートに反映される"
+    },
+    {
+      "given": "カート画面を表示している",
+      "when": "カート内の料理を確認する",
+      "then": "料理名、数量、価格、合計金額が表示される"
+    },
+    {
+      "given": "カート画面を表示している",
+      "when": "料理を削除する",
+      "then": "カートから削除され、合計金額が更新される"
+    },
+    {
+      "given": "カート画面を表示している",
+      "when": "数量を変更する",
+      "then": "合計金額が即座に更新される"
+    }
+  ],
+  "priority": "must",
+  "estimation": {
+    "storyPoints": 3,
+    "timeEstimate": "2-3日"
+  },
+  "persona": {
+    "name": "田中花子",
+    "role": "30代女性、会社員",
+    "goals": ["複数の料理をまとめて注文したい", "注文前に合計金額を確認したい"],
+    "painPoints": ["一度に全部決められない", "合計金額が分からないと不安"]
+  },
+  "relatedBusinessGoals": ["bg-tos-003", "bg-tos-001"],
+  "dependencies": ["us-tos-001"],
+  "epic": "顧客向け注文機能",
+  "labels": ["frontend", "cart", "mobile"],
+  "traceability": {
+    "derivedFrom": ["pc-tos-001", "bg-tos-003"]
+  },
+  "metadata": {
+    "created": "2025-10-24",
+    "lastModified": "2025-10-24",
+    "authors": ["開発チーム"],
+    "reviewers": [],
+    "tags": ["customer", "cart", "order"]
+  }
+}

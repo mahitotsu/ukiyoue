@@ -1,0 +1,17 @@
+{
+  "name": "table-order-system-example",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Table Order System example for Ukiyoue framework",
+  "type": "module",
+  "scripts": {
+    "validate": "bun ../../tools/src/validate.ts",
+    "validate:all": "bun ../../tools/src/validate.ts layer1-business/ layer2-requirements/ layer3-architecture/ --skip-jsonld",
+    "validate:layer1": "bun ../../tools/src/validate.ts layer1-business/ --skip-jsonld",
+    "validate:layer2": "bun ../../tools/src/validate.ts layer2-requirements/ --skip-jsonld",
+    "validate:layer3": "bun ../../tools/src/validate.ts layer3-architecture/ --skip-jsonld"
+  },
+  "dependencies": {
+    "@ukiyoue/validator": "file:../../tools"
+  }
+}

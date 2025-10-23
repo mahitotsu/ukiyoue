@@ -5,7 +5,7 @@
   "description": "ビジネス要求仕様（BIZ-REQ）: ビジネス視点の要求事項",
   "allOf": [{ "$ref": "../_common.json#/definitions/baseArtifact" }],
   "type": "object",
-  "required": ["title", "businessGoals", "requirements"],
+  "required": ["title", "requirements"],
   "properties": {
     "@type": {
       "const": "BusinessRequirements"
@@ -15,42 +15,12 @@
       "description": "ビジネス要求仕様のタイトル",
       "minLength": 1
     },
-    "businessGoals": {
-      "type": "array",
-      "description": "ビジネスゴール",
-      "items": {
-        "type": "object",
-        "required": ["id", "description"],
-        "properties": {
-          "id": {
-            "type": "string",
-            "pattern": "^BG-[0-9]{3}$",
-            "description": "ビジネスゴールID（例: BG-001）"
-          },
-          "description": {
-            "type": "string",
-            "description": "ゴールの説明"
-          },
-          "priority": {
-            "type": "string",
-            "enum": ["high", "medium", "low"],
-            "description": "優先度"
-          },
-          "successCriteria": {
-            "type": "array",
-            "items": { "type": "string" },
-            "description": "成功基準"
-          }
-        }
-      },
-      "minItems": 1
-    },
     "requirements": {
       "type": "array",
       "description": "ビジネス要求",
       "items": {
         "type": "object",
-        "required": ["id", "description", "businessGoals"],
+        "required": ["id", "description"],
         "properties": {
           "id": {
             "type": "string",
@@ -61,14 +31,10 @@
             "type": "string",
             "description": "要求の説明"
           },
-          "businessGoals": {
+          "relatedBusinessGoals": {
             "type": "array",
-            "items": {
-              "type": "string",
-              "pattern": "^BG-[0-9]{3}$"
-            },
-            "description": "関連するビジネスゴールID",
-            "minItems": 1
+            "items": { "type": "string" },
+            "description": "関連するビジネス目標ID（Layer 1のbusiness-goalへの参照）"
           },
           "priority": {
             "type": "string",

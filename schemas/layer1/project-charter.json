@@ -140,34 +140,6 @@
           "description": "プロジェクト期間"
         }
       }
-    },
-    "risks": {
-      "type": "array",
-      "description": "主要なリスクと前提条件",
-      "items": {
-        "type": "object",
-        "required": ["description", "type"],
-        "properties": {
-          "description": {
-            "type": "string",
-            "description": "リスクまたは前提条件の説明"
-          },
-          "type": {
-            "type": "string",
-            "enum": ["risk", "assumption"],
-            "description": "タイプ"
-          },
-          "impact": {
-            "type": "string",
-            "enum": ["high", "medium", "low"],
-            "description": "影響度"
-          },
-          "mitigation": {
-            "type": "string",
-            "description": "軽減策"
-          }
-        }
-      }
     }
   }
 }

@@ -1,0 +1,60 @@
+{
+  "$schema": "https://ukiyoue.example.org/schemas/layer1/business-goal.json",
+  "type": "business-goal",
+  "@type": "BusinessGoal",
+  "@context": "https://ukiyoue.example.org/context/layer1.jsonld",
+  "id": "bg-tos-002",
+  "version": "0.1.0",
+  "status": "draft",
+  "title": "スタッフの業務負荷削減",
+  "description": "デジタルオーダーシステムにより注文受付業務を自動化し、スタッフの業務負荷を軽減する",
+  "priority": "high",
+  "category": "efficiency",
+  "owner": "レストランオーナー（山田太郎）",
+  "rationale": "ピーク時にはスタッフが注文受付に追われ、他のサービス（料理提供、片付け、接客）が疎かになる。人手不足の中で効率化が急務。",
+  "successCriteria": [
+    "注文受付にかかるスタッフの時間が削減される",
+    "スタッフがより付加価値の高いサービスに集中できる",
+    "ピーク時の混雑が緩和される"
+  ],
+  "kpis": [
+    {
+      "metric": "注文受付時間",
+      "baseline": "平均5分/テーブル",
+      "target": "1分未満（QRコードスキャン～注文完了）",
+      "unit": "分",
+      "measurementMethod": "システムログから注文完了までの時間を計測"
+    },
+    {
+      "metric": "スタッフの注文関連作業時間",
+      "baseline": "シフト全体の40%",
+      "target": "15%以下",
+      "unit": "%",
+      "measurementMethod": "タイムスタディによる作業分析"
+    }
+  ],
+  "targetDate": "2026-03-31",
+  "stakeholders": [
+    {
+      "name": "店舗スタッフ",
+      "role": "ホール・キッチン担当",
+      "interest": "業務負荷の軽減と働きやすさの向上"
+    },
+    {
+      "name": "レストランオーナー",
+      "role": "経営者",
+      "interest": "少ない人員で効率的な運営"
+    }
+  ],
+  "traceability": {
+    "derivedFrom": ["pc-tos-001"]
+  },
+  "risks": ["RISK-TOS-001"],
+  "metadata": {
+    "created": "2025-10-24",
+    "lastModified": "2025-10-24",
+    "authors": ["開発チーム"],
+    "reviewers": [],
+    "tags": ["efficiency", "operational", "staff-satisfaction"]
+  }
+}

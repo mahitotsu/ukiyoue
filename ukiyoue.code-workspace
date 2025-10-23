@@ -2,16 +2,24 @@
   "folders": [
     {
       "name": "🎨 Ukiyoue Framework",
-      "path": "."
+      "path": ".",
     },
     {
-      "name": "🔧 Tools (CLI & Validator)",
-      "path": "tools"
+      "name": "� JSON Schemas",
+      "path": "schemas",
+    },
+    {
+      "name": "🔗 JSON-LD Semantics",
+      "path": "semantics",
+    },
+    {
+      "name": "�🔧 Tools (CLI & Validator)",
+      "path": "tools",
     },
     {
       "name": "📘 Examples & Templates",
-      "path": "examples"
-    }
+      "path": "examples",
+    },
   ],
   "settings": {
     "files.exclude": {
@@ -20,21 +28,23 @@
       "**/.DS_Store": true,
       "**/*.pyc": true,
       "**/__pycache__": true,
+      "schemas": true,
+      "semantics": true,
       "tools": true,
-      "examples": true
+      "examples": true,
     },
     "editor.formatOnSave": true,
     "editor.codeActionsOnSave": {
-      "source.fixAll": "explicit"
+      "source.fixAll": "explicit",
     },
     "[typescript]": {
-      "editor.defaultFormatter": "esbenp.prettier-vscode"
+      "editor.defaultFormatter": "esbenp.prettier-vscode",
     },
     "[json]": {
-      "editor.defaultFormatter": "esbenp.prettier-vscode"
+      "editor.defaultFormatter": "esbenp.prettier-vscode",
     },
     "[jsonc]": {
-      "editor.defaultFormatter": "esbenp.prettier-vscode"
-    }
-  }
+      "editor.defaultFormatter": "esbenp.prettier-vscode",
+    },
+  },
 }

@@ -14,9 +14,12 @@
 
 ```mermaid
 graph LR
-    %% Layer 1: Project Management
+    %% Layer 1: Business
     Charter[Project Charter]
     Roadmap[Roadmap]
+    RiskReg[Risk Register]
+    BizGoal[Business Goal]
+    UserStory[User Story]
 
     %% Layer 2: Requirements
     BizReq[Business Requirements]
@@ -67,12 +70,23 @@ graph LR
     UATSpec[UAT Specification]
     UATResult[UAT Results]
 
-    %% Project Management Flow
+    %% Layer 1: Business Layer Flow
+    %% Note: Risk Register is created continuously throughout the project lifecycle (not a blocking dependency)
     Charter --> Roadmap
+    Charter --> BizGoal
+    BizGoal --> UserStory
+
+    %% Layer 1 to Layer 2: Business to Requirements
     Charter --> BizReq
+    BizGoal --> BizReq
+    UserStory --> FuncReq
 
     %% Charter: プロジェクト承認・正当化（Why this project? 投資判断）
+    %% BizGoal: 測定可能なビジネス目標（KPI、成功基準）
+    %% UserStory: ユーザー視点の機能要求（As a, I want, So that）
+    %% RiskReg: プロジェクト全期間を通じて継続的に作成・更新（ADRと同様）
     %% BizReq: 課題詳細化・要件定義（What to solve? 開発方針）
+    %% FuncReq: 機能仕様詳細（How to implement? 実装可能な仕様）
 
     %% Requirements Decomposition
     BizReq --> FuncReq
@@ -276,17 +290,31 @@ Project Charter（起点: プロジェクト承認・正当化）
 
 同一レイヤー内または隣接レイヤー間で詳細化が進む主要なチェーン：
 
-##### 要件分解チェーン（Layer 1→2）
+##### ビジネス層詳細化チェーン（Layer 1内）
 
 ```mermaid
 graph LR
     Charter[Project Charter] --> Roadmap[Roadmap]
-    Charter --> BizReq[Business Requirements]
+    Charter --> BizGoal[Business Goal]
+    BizGoal --> UserStory[User Story]
+```
+
+**フロー**: プロジェクト承認 → ビジネス目標設定 → ユーザーストーリー作成 → スケジュール計画
+
+**Note**: Risk Register (リスク登録簿) は、ADRと同様にプロジェクトライフサイクル全体を通じて継続的に作成・更新されるため、特定の依存関係チェーンには含まれません。プロジェクト開始時にProject Charterの初期リスクから始まり、各フェーズで新規リスクが識別・追加されます。
+
+##### 要件分解チェーン（Layer 1→2）
+
+```mermaid
+graph LR
+    Charter[Project Charter] --> BizReq[Business Requirements]
+    BizGoal[Business Goal] --> BizReq
     BizReq --> FuncReq[Functional Requirements]
+    UserStory[User Story] --> FuncReq
     BizReq --> NonFuncReq[Non-Functional Requirements]
 ```
 
-**フロー**: プロジェクト承認 → スケジュール計画 + ビジネス課題詳細化 → システム要件
+**フロー**: プロジェクト承認 + ビジネス目標 → ビジネス要件詳細化 → 機能要件・非機能要件への分解（ユーザーストーリーは機能要件に直接影響）
 
 ##### テスト戦略チェーン（Layer 2→4→6）
 
@@ -678,18 +706,60 @@ Ukiyoue フレームワークでは、成果物間のトレーサビリティを
 | `relatedTo`   | 任意 → 任意        | 一般的な関連       |
 | `dependsOn`   | 任意 → 任意        | 技術的依存関係     |
 
+### 例：User Story のトレース情報
+
+```json
+{
+  "@context": "https://ukiyoue.dev/contexts/user-story.jsonld",
+  "@type": "UserStory",
+  "@id": "US-TOS-001",
+  "title": "Browse menu by category",
+  "asA": "Customer",
+  "iWant": "to browse menu items by category",
+  "soThat": "I can easily find dishes I want to order",
+  "traceability": {
+    "derivedFrom": ["BG-TOS-001", "BG-TOS-003"],
+    "satisfiedBy": ["FR-TOS-001"]
+  },
+  "acceptanceCriteria": [
+    {
+      "given": "I am on the table order screen",
+      "when": "I select 'Appetizers' category",
+      "then": "I see all appetizer items with names and prices"
+    }
+  ]
+}
+```
+
 ### 例：Functional Requirement のトレース情報
 
 ```json
 {
   "@context": "https://ukiyoue.dev/contexts/functional-requirement.jsonld",
   "@type": "FunctionalRequirement",
-  "@id": "FR-AUTH-001",
-  "title": "Multi-factor authentication support",
+  "@id": "FR-TOS-001",
+  "title": "Display menu items by category",
   "traceability": {
-    "derivedFrom": ["BIZ-REQ-001"],
-    "satisfiedBy": ["ARCH-SEC-001"],
-    "testedBy": ["TEST-SEC-003"]
+    "derivedFrom": ["BIZ-REQ-TOS-001"],
+    "relatedUserStories": ["US-TOS-001"],
+    "satisfiedBy": ["ARCH-UI-001"],
+    "testedBy": ["TEST-FUNC-001"]
+  }
+}
+```
+
+### 例：Business Requirements のトレース情報
+
+```json
+{
+  "@context": "https://ukiyoue.dev/contexts/business-requirements.jsonld",
+  "@type": "BusinessRequirements",
+  "@id": "BIZ-REQ-TOS-001",
+  "title": "Table Order System Business Requirements",
+  "traceability": {
+    "derivedFrom": ["PC-TOS-001"],
+    "relatedBusinessGoals": ["BG-TOS-001", "BG-TOS-002", "BG-TOS-003"],
+    "satisfiedBy": ["FR-TOS-001", "FR-TOS-002"]
   }
 }
 ```

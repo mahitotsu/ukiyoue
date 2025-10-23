@@ -1,0 +1,61 @@
+{
+  "$schema": "https://ukiyoue.example.org/schemas/layer1/user-story.json",
+  "type": "user-story",
+  "@type": "UserStory",
+  "@context": "https://ukiyoue.example.org/context/layer1.jsonld",
+  "id": "us-tos-004",
+  "version": "0.1.0",
+  "status": "draft",
+  "title": "顧客が注文状況を確認する",
+  "asA": "顧客",
+  "iWant": "注文した料理の状況をリアルタイムで確認したい",
+  "soThat": "どのくらいで料理が届くか分かる",
+  "description": "顧客が注文後、注文状況画面で各料理のステータス（受付済み、調理中、配膳準備完了）を確認できる。ステータスが更新されると自動的に画面に反映される。",
+  "acceptanceCriteria": [
+    {
+      "given": "注文が完了している",
+      "when": "注文状況画面を開く",
+      "then": "注文した料理一覧とそれぞれのステータスが表示される"
+    },
+    {
+      "given": "注文状況画面を表示している",
+      "when": "キッチンでステータスが更新される",
+      "then": "画面が自動的に更新される（ポーリングまたはWebSocket）"
+    },
+    {
+      "given": "注文状況画面を表示している",
+      "when": "全ての料理が「配膳準備完了」になる",
+      "then": "完了通知が表示される"
+    },
+    {
+      "given": "注文状況画面を表示している",
+      "when": "注文番号を確認する",
+      "then": "注文番号とテーブル番号が表示される"
+    }
+  ],
+  "priority": "should",
+  "estimation": {
+    "storyPoints": 8,
+    "timeEstimate": "4-5日"
+  },
+  "persona": {
+    "name": "田中花子",
+    "role": "30代女性、会社員",
+    "goals": ["待ち時間を把握したい", "料理が忘れられていないか確認したい"],
+    "painPoints": ["いつ料理が来るか分からず不安", "長く待たされているように感じる"]
+  },
+  "relatedBusinessGoals": ["bg-tos-003"],
+  "dependencies": ["us-tos-003"],
+  "epic": "顧客向け注文機能",
+  "labels": ["frontend", "backend", "real-time", "WebSocket"],
+  "traceability": {
+    "derivedFrom": ["pc-tos-001", "bg-tos-003"]
+  },
+  "metadata": {
+    "created": "2025-10-24",
+    "lastModified": "2025-10-24",
+    "authors": ["開発チーム"],
+    "reviewers": [],
+    "tags": ["customer", "order-status", "real-time"]
+  }
+}

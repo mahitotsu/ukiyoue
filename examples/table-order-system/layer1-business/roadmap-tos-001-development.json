@@ -1,0 +1,202 @@
+{
+  "$schema": "https://ukiyoue.example.org/schemas/layer1/roadmap.json",
+  "type": "roadmap",
+  "@type": "Roadmap",
+  "@context": "https://ukiyoue.example.org/context/layer1.jsonld",
+  "id": "roadmap-tos-001",
+  "version": "0.1.0",
+  "status": "draft",
+  "title": "テーブルオーダーシステム開発ロードマップ",
+  "overview": "飲食店向けテーブルオーダーシステムを5ヶ月で開発し、パイロット運用まで到達するロードマップ。要件定義から設計、開発、テスト、デプロイまでの4フェーズで構成。",
+  "traceability": {
+    "derivedFrom": ["pc-tos-001"]
+  },
+  "phases": [
+    {
+      "id": "phase-tos-001",
+      "name": "Phase 1: 要件定義",
+      "objectives": [
+        "ビジネス要件とユーザーストーリーの明確化",
+        "機能要件・非機能要件の定義",
+        "システムスコープの確定"
+      ],
+      "timeline": {
+        "start": "2025-11-01",
+        "end": "2025-11-30"
+      },
+      "deliverables": ["ユーザーストーリー集", "機能要件書", "非機能要件書", "ビジネス要件書"],
+      "milestones": [
+        {
+          "name": "キックオフミーティング",
+          "date": "2025-11-01",
+          "description": "プロジェクトチーム結成とビジョン共有"
+        },
+        {
+          "name": "ユーザーストーリー策定完了",
+          "date": "2025-11-15",
+          "description": "主要ユーザーストーリーの作成と優先順位付け"
+        },
+        {
+          "name": "要件定義完了",
+          "date": "2025-11-30",
+          "description": "全要件のレビューと承認"
+        }
+      ],
+      "status": "draft"
+    },
+    {
+      "id": "phase-tos-002",
+      "name": "Phase 2: 設計",
+      "objectives": [
+        "システムアーキテクチャの設計",
+        "データベース設計",
+        "UI/UX設計",
+        "技術スタックの選定"
+      ],
+      "timeline": {
+        "start": "2025-12-01",
+        "end": "2025-12-31"
+      },
+      "deliverables": [
+        "アーキテクチャ設計書",
+        "データベース設計書（ER図含む）",
+        "API設計書",
+        "UI/UXデザイン（ワイヤーフレーム・モックアップ）",
+        "技術選定ADR（Architecture Decision Records）"
+      ],
+      "milestones": [
+        {
+          "name": "アーキテクチャ設計レビュー",
+          "date": "2025-12-10",
+          "description": "システム全体構成の承認"
+        },
+        {
+          "name": "UI/UXデザイン承認",
+          "date": "2025-12-20",
+          "description": "画面設計のステークホルダー承認"
+        },
+        {
+          "name": "設計完了",
+          "date": "2025-12-31",
+          "description": "全設計ドキュメントのレビューと承認"
+        }
+      ],
+      "status": "draft"
+    },
+    {
+      "id": "phase-tos-003",
+      "name": "Phase 3: 開発・テスト",
+      "objectives": [
+        "MVP（Minimum Viable Product）の実装",
+        "ユニットテスト・統合テストの実施",
+        "システムテスト実施",
+        "ユーザー受入テスト（UAT）準備"
+      ],
+      "timeline": {
+        "start": "2026-01-01",
+        "end": "2026-02-28"
+      },
+      "deliverables": [
+        "動作するシステム（MVP）",
+        "テストコード",
+        "テストレポート",
+        "運用マニュアル（ドラフト）",
+        "ユーザーマニュアル（ドラフト）"
+      ],
+      "milestones": [
+        {
+          "name": "スプリント1完了",
+          "date": "2026-01-15",
+          "description": "メニュー表示機能実装完了"
+        },
+        {
+          "name": "スプリント2完了",
+          "date": "2026-01-31",
+          "description": "注文機能実装完了"
+        },
+        {
+          "name": "スプリント3完了",
+          "date": "2026-02-15",
+          "description": "キッチン通知・ステータス追跡実装完了"
+        },
+        {
+          "name": "開発完了・UAT開始",
+          "date": "2026-02-28",
+          "description": "全機能統合完了、ユーザー受入テスト開始"
+        }
+      ],
+      "status": "draft"
+    },
+    {
+      "id": "phase-tos-004",
+      "name": "Phase 4: デプロイ・パイロット運用",
+      "objectives": [
+        "本番環境へのデプロイ",
+        "スタッフトレーニング実施",
+        "パイロット運用開始",
+        "フィードバック収集と改善"
+      ],
+      "timeline": {
+        "start": "2026-03-01",
+        "end": "2026-03-31"
+      },
+      "deliverables": [
+        "本番環境構築完了",
+        "スタッフトレーニング資料",
+        "運用マニュアル（確定版）",
+        "パイロット運用レポート",
+        "改善提案リスト"
+      ],
+      "milestones": [
+        {
+          "name": "本番環境デプロイ",
+          "date": "2026-03-05",
+          "description": "本番環境へのシステム配置完了"
+        },
+        {
+          "name": "スタッフトレーニング完了",
+          "date": "2026-03-12",
+          "description": "全スタッフへの操作トレーニング実施"
+        },
+        {
+          "name": "パイロット運用開始",
+          "date": "2026-03-15",
+          "description": "実店舗での運用開始"
+        },
+        {
+          "name": "Phase 1完了レビュー",
+          "date": "2026-03-31",
+          "description": "パイロット運用の評価とフィードバック収集"
+        }
+      ],
+      "status": "draft"
+    }
+  ],
+  "dependencies": [
+    {
+      "from": "Phase 1: 要件定義",
+      "to": "Phase 2: 設計",
+      "type": "finish-to-start",
+      "description": "要件が確定しないと設計を開始できない"
+    },
+    {
+      "from": "Phase 2: 設計",
+      "to": "Phase 3: 開発・テスト",
+      "type": "finish-to-start",
+      "description": "設計が完了しないと開発を開始できない"
+    },
+    {
+      "from": "Phase 3: 開発・テスト",
+      "to": "Phase 4: デプロイ・パイロット運用",
+      "type": "finish-to-start",
+      "description": "開発とテストが完了しないとデプロイできない"
+    }
+  ],
+  "metadata": {
+    "created": "2025-10-23",
+    "lastModified": "2025-10-23",
+    "authors": ["開発チーム"],
+    "reviewers": [],
+    "tags": ["roadmap", "timeline", "milestones", "phases"]
+  }
+}

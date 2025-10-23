@@ -1,0 +1,66 @@
+{
+  "$schema": "https://ukiyoue.example.org/schemas/layer1/user-story.json",
+  "type": "user-story",
+  "@type": "UserStory",
+  "@context": "https://ukiyoue.example.org/context/layer1.jsonld",
+  "id": "us-tos-003",
+  "version": "0.1.0",
+  "status": "draft",
+  "title": "顧客が注文を送信する",
+  "asA": "顧客",
+  "iWant": "カート内の料理をキッチンに注文したい",
+  "soThat": "待たずに料理が届く",
+  "description": "顧客がカート内容を確認し、注文確定ボタンをタップすると、注文がキッチンに送信される。注文番号が発行され、注文状況を追跡できる。",
+  "acceptanceCriteria": [
+    {
+      "given": "カートに料理が入っている",
+      "when": "「注文する」ボタンをタップする",
+      "then": "注文確認画面が表示される"
+    },
+    {
+      "given": "注文確認画面を表示している",
+      "when": "「確定」ボタンをタップする",
+      "then": "注文がキッチンに送信され、注文番号が表示される"
+    },
+    {
+      "given": "注文が送信された",
+      "when": "注文完了画面を表示する",
+      "then": "注文番号、注文内容、合計金額、テーブル番号が表示される"
+    },
+    {
+      "given": "注文が送信された",
+      "when": "キッチンで確認する",
+      "then": "キッチンディスプレイに注文が表示される"
+    },
+    {
+      "given": "カートが空",
+      "when": "「注文する」ボタンを確認する",
+      "then": "ボタンが無効化されている"
+    }
+  ],
+  "priority": "must",
+  "estimation": {
+    "storyPoints": 5,
+    "timeEstimate": "3-4日"
+  },
+  "persona": {
+    "name": "田中花子",
+    "role": "30代女性、会社員",
+    "goals": ["簡単に注文を完了させたい", "注文が届いたか確認したい"],
+    "painPoints": ["スタッフを呼んで注文するのが面倒", "注文が通ったか不安"]
+  },
+  "relatedBusinessGoals": ["bg-tos-001", "bg-tos-002", "bg-tos-003"],
+  "dependencies": ["us-tos-002"],
+  "epic": "顧客向け注文機能",
+  "labels": ["frontend", "backend", "order-processing"],
+  "traceability": {
+    "derivedFrom": ["pc-tos-001", "bg-tos-001", "bg-tos-002"]
+  },
+  "metadata": {
+    "created": "2025-10-24",
+    "lastModified": "2025-10-24",
+    "authors": ["開発チーム"],
+    "reviewers": [],
+    "tags": ["customer", "order", "submission"]
+  }
+}

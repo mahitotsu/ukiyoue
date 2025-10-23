@@ -24,8 +24,13 @@
       "description": "プロジェクトフェーズ",
       "items": {
         "type": "object",
-        "required": ["name", "objectives", "timeline"],
+        "required": ["id", "name", "objectives", "timeline"],
         "properties": {
+          "id": {
+            "type": "string",
+            "description": "フェーズの一意識別子（例: phase-tos-001）",
+            "pattern": "^[a-z0-9-]+$"
+          },
           "name": {
             "type": "string",
             "description": "フェーズ名（例: Phase 0, Phase 1）"
@@ -90,27 +95,6 @@
             "type": "string",
             "description": "依存関係の説明"
           }
-        }
-      }
-    },
-    "risks": {
-      "type": "array",
-      "description": "ロードマップレベルの主要リスク",
-      "items": {
-        "type": "object",
-        "required": ["description", "impact"],
-        "properties": {
-          "description": { "type": "string" },
-          "impact": {
-            "type": "string",
-            "enum": ["high", "medium", "low"]
-          },
-          "affectedPhases": {
-            "type": "array",
-            "items": { "type": "string" },
-            "description": "影響を受けるフェーズ名"
-          },
-          "mitigation": { "type": "string" }
         }
       }
     }

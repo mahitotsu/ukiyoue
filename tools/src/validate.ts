@@ -33,9 +33,10 @@
  *   bun tools/src/validate.ts examples/ --skip-jsonld
  */
 
+import { getSchemasDir } from '@ukiyoue/schemas';
 import chalk from 'chalk';
 import { existsSync, lstatSync, readdirSync, readFileSync } from 'fs';
-import { basename, dirname, extname, join, resolve } from 'path';
+import { basename, extname, join, resolve } from 'path';
 import {
   createLocalDocumentLoader,
   validateJsonLd,
@@ -129,8 +130,8 @@ function inferSchemaPath(document: Record<string, unknown>): string | null {
     .toLowerCase()
     .slice(1);
 
-  // Search in schemas/layer* directories
-  const schemaBase = resolve(dirname(process.argv[1] || ''), '../../schemas');
+  // Use @ukiyoue/schemas package to get schemas directory
+  const schemaBase = getSchemasDir();
   const layers = ['layer1', 'layer2', 'layer3', 'layer4', 'layer5', 'layer6'];
 
   for (const layer of layers) {
@@ -175,6 +176,10 @@ async function validateDocument(
     if (!schemaPath) {
       console.log(chalk.yellow('  ⚠️  Schema not found, skipping schema validation'));
     } else {
+      if (options.verbose) {
+        console.log(chalk.gray(`     Schema: ${schemaPath}`));
+      }
+
       try {
         const schemaText = readFileSync(schemaPath, 'utf8');
         const schema = JSON.parse(schemaText) as object;
@@ -191,12 +196,22 @@ async function validateDocument(
           console.log(chalk.green('  ✅ Schema validation passed'));
         } else {
           console.log(chalk.red('  ❌ Schema validation failed:'));
+          // Show schema location relative to package if in node_modules
+          const displayPath = schemaPath.includes('node_modules')
+            ? schemaPath.substring(schemaPath.indexOf('node_modules'))
+            : schemaPath;
+          console.log(chalk.gray(`     Schema: ${displayPath}`));
           result.errors.forEach((error, index) => {
             console.log(chalk.red(`     [${index + 1}] ${error.path}: ${error.message}`));
             if (options.verbose && error.params) {
-              console.log(chalk.gray(`         ${JSON.stringify(error.params)}`));
+              console.log(chalk.gray(`         Details: ${JSON.stringify(error.params)}`));
             }
           });
+          console.log(
+            chalk.yellow(
+              `     💡 Tip: Check schema in @ukiyoue/schemas package or use --verbose for details`
+            )
+          );
           hasErrors = true;
         }
       } catch (error) {
@@ -232,12 +247,10 @@ async function validateDocument(
     console.log(chalk.blue('  🌐 JSON-LD validation...'));
 
     try {
-      const documentLoader = options.allowRemote
-        ? undefined
-        : createLocalDocumentLoader(
-            'https://ukiyoue.example.org/contexts/',
-            resolve(dirname(process.argv[1] || ''), '../../semantics/context/')
-          );
+      const documentLoader = createLocalDocumentLoader(
+        'https://ukiyoue.example.org/',
+        options.allowRemote
+      );
 
       const result = await validateJsonLd(document, {
         allowRemoteContexts: options.allowRemote,
@@ -289,9 +302,20 @@ async function main() {
     console.log(chalk.cyan('  --skip-schema        Skip JSON Schema validation'));
     console.log(chalk.cyan('  --skip-references    Skip reference integrity checks'));
     console.log(chalk.cyan('  --skip-jsonld        Skip JSON-LD validation'));
-    console.log(chalk.cyan('  --allow-remote       Allow remote @context loading'));
+    console.log(chalk.cyan('  --allow-remote       Allow remote @context loading (security risk)'));
     console.log(chalk.cyan('  --schema <path>      Explicit schema file path'));
-    console.log(chalk.cyan('  --verbose            Show detailed validation output'));
+    console.log(
+      chalk.cyan('  --verbose            Show detailed output (schema paths, error details)')
+    );
+    console.log(chalk.yellow('\nExamples:'));
+    console.log(chalk.gray('  # Validate a single file'));
+    console.log(chalk.cyan('  bun tools/src/validate.ts document.json'));
+    console.log(chalk.gray('\n  # Validate a directory'));
+    console.log(chalk.cyan('  bun tools/src/validate.ts layer1-business/'));
+    console.log(chalk.gray('\n  # Skip JSON-LD validation (faster)'));
+    console.log(chalk.cyan('  bun tools/src/validate.ts layer1-business/ --skip-jsonld'));
+    console.log(chalk.gray('\n  # Verbose mode with detailed errors'));
+    console.log(chalk.cyan('  bun tools/src/validate.ts document.json --verbose'));
     process.exit(1);
   }
 

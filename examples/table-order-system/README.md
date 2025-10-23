@@ -33,11 +33,22 @@ The following features are explicitly excluded from this example to maintain foc
 
 ```text
 table-order-system/
-├── layer1-business/          # Business context and user stories
-│   ├── user-stories/         # User story definitions (JSON)
-│   └── business-goals/       # Business objectives (JSON)
+├── layer1-business/          # Business context (11 files ✅)
+│   ├── pc-tos-001-table-order-system.json  # Project Charter
+│   ├── roadmap-tos-001-development.json    # Roadmap
+│   ├── risk-register-tos-001.json          # Risk Register
+│   ├── business-goals/       # Business objectives (3 files)
+│   │   ├── bg-tos-001-order-accuracy.json
+│   │   ├── bg-tos-002-staff-efficiency.json
+│   │   └── bg-tos-003-customer-satisfaction.json
+│   └── user-stories/         # User stories (5 files)
+│       ├── us-tos-001-browse-menu.json
+│       ├── us-tos-002-add-to-cart.json
+│       ├── us-tos-003-place-order.json
+│       ├── us-tos-004-view-order-status.json
+│       └── us-tos-005-kitchen-receive-order.json
 │
-├── layer2-requirements/      # System requirements
+├── layer2-requirements/      # System requirements (🚧 planned)
 │   ├── functional/           # Functional requirements (JSON)
 │   └── nonfunctional/        # Non-functional requirements (JSON)
 │
@@ -98,5 +109,12 @@ This is a reference example. To explore:
 ## Development Status
 
 - ✅ Project structure created
-- 🚧 Documentation in progress (Layer 1 → Layer 4)
-- 📋 Implementation planned (Step by step)
+- ✅ Layer 1 (Business): 11 artifacts completed and validated
+  - ✅ Project Charter
+  - ✅ Roadmap (4 phases)
+  - ✅ Risk Register (5 risks, 3 assumptions)
+  - ✅ Business Goals (3 goals with KPIs)
+  - ✅ User Stories (5 stories with Given-When-Then acceptance criteria)
+- 🚧 Layer 2 (Requirements): Planned (next step)
+- 📋 Layer 3 (Architecture): Planned
+- 📋 Layer 4 (Implementation): Planned

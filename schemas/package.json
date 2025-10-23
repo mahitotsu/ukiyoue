@@ -1,0 +1,35 @@
+{
+  "name": "@ukiyoue/schemas",
+  "version": "0.1.0",
+  "description": "JSON Schema definitions for Ukiyoue framework",
+  "type": "module",
+  "main": "index.js",
+  "exports": {
+    ".": "./index.js",
+    "./_common.json": "./_common.json",
+    "./layer1/*": "./layer1/*",
+    "./layer2/*": "./layer2/*",
+    "./layer3/*": "./layer3/*",
+    "./layer4/*": "./layer4/*",
+    "./layer5/*": "./layer5/*",
+    "./layer6/*": "./layer6/*"
+  },
+  "files": [
+    "_common.json",
+    "layer1/",
+    "layer2/",
+    "layer3/",
+    "layer4/",
+    "layer5/",
+    "layer6/",
+    "index.js",
+    "README.md"
+  ],
+  "keywords": [
+    "ukiyoue",
+    "json-schema",
+    "documentation",
+    "validation"
+  ],
+  "license": "MIT"
+}

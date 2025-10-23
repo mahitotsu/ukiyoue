@@ -10,11 +10,11 @@
  * Satisfies: ADR-002 (JSON Schema Draft-07), FR-AUTO-002 (schema-validator component)
  */
 
+import { getCommonSchemaPath } from '@ukiyoue/schemas';
 import type { ErrorObject } from 'ajv';
 import Ajv from 'ajv';
 import addFormats from 'ajv-formats';
 import { readFileSync } from 'fs';
-import { dirname, resolve } from 'path';
 
 export interface SchemaValidationError {
   type: 'schema-error' | 'validation-error' | 'file-error';
@@ -43,13 +43,33 @@ export interface SchemaValidationOptions {
 }
 
 /**
- * Convert Ajv ErrorObject to SchemaValidationError
+ * Convert Ajv ErrorObject to SchemaValidationError with enhanced messages
  */
 function convertAjvError(error: ErrorObject): SchemaValidationError {
+  let message = error.message || 'Unknown validation error';
+
+  // Enhance enum errors with allowed values
+  if (error.keyword === 'enum' && error.params && 'allowedValues' in error.params) {
+    const allowedValues = error.params.allowedValues as unknown[];
+    message = `must be one of: ${allowedValues.map((v) => JSON.stringify(v)).join(', ')}`;
+  }
+
+  // Enhance pattern errors with the pattern
+  if (error.keyword === 'pattern' && error.params && 'pattern' in error.params) {
+    const pattern = error.params.pattern as string;
+    message = `must match pattern "${pattern}" (${message})`;
+  }
+
+  // Enhance required errors
+  if (error.keyword === 'required' && error.params && 'missingProperty' in error.params) {
+    const missing = error.params.missingProperty as string;
+    message = `missing required property "${missing}"`;
+  }
+
   return {
     type: 'validation-error',
     path: error.instancePath || '/',
-    message: error.message || 'Unknown validation error',
+    message,
     keyword: error.keyword,
     params: error.params as Record<string, unknown>,
   };
@@ -80,7 +100,8 @@ function loadCommonSchema(ajv: Ajv, schemaPath: string, options: SchemaValidatio
   }
 
   try {
-    const commonPath = options.commonSchemaPath || resolve(dirname(schemaPath), '../_common.json');
+    // Use @ukiyoue/schemas package to get common schema path
+    const commonPath = options.commonSchemaPath || getCommonSchemaPath();
     const commonSchemaText = readFileSync(commonPath, 'utf8');
     const commonSchema = JSON.parse(commonSchemaText) as object;
     ajv.addSchema(commonSchema);

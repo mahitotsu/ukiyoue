@@ -1,0 +1,59 @@
+{
+  "$schema": "https://ukiyoue.example.org/schemas/layer1/business-goal.json",
+  "type": "business-goal",
+  "@type": "BusinessGoal",
+  "@context": "https://ukiyoue.example.org/context/layer1.jsonld",
+  "id": "bg-tos-001",
+  "version": "0.1.0",
+  "status": "draft",
+  "title": "注文精度の向上",
+  "description": "デジタルオーダーシステムを導入することで、口頭注文による聞き間違いや記入ミスを削減し、注文精度を向上させる",
+  "priority": "critical",
+  "category": "quality",
+  "owner": "レストランオーナー（山田太郎）",
+  "rationale": "従来の紙メニューと口頭注文では注文ミスが頻発し、顧客不満の原因となっている。特にピーク時の混雑時にミスが増加する傾向がある。",
+  "successCriteria": [
+    "注文ミスによるクレームが減少する",
+    "注文内容の確認作業が不要になる",
+    "顧客が自分で注文内容を確認できる"
+  ],
+  "kpis": [
+    {
+      "metric": "注文ミス率",
+      "baseline": "5%（週20件中1件程度）",
+      "target": "1%未満",
+      "unit": "%",
+      "measurementMethod": "誤注文の件数 ÷ 総注文件数 × 100"
+    },
+    {
+      "metric": "注文確認時間",
+      "baseline": "平均3分/回",
+      "target": "0分（確認不要）",
+      "unit": "分",
+      "measurementMethod": "スタッフの確認作業時間を計測"
+    }
+  ],
+  "targetDate": "2026-03-31",
+  "stakeholders": [
+    {
+      "name": "店舗スタッフ",
+      "role": "ホール担当",
+      "interest": "注文ミスによる再対応の削減"
+    },
+    {
+      "name": "顧客",
+      "role": "エンドユーザー",
+      "interest": "正確な注文と待ち時間の短縮"
+    }
+  ],
+  "traceability": {
+    "derivedFrom": ["pc-tos-001"]
+  },
+  "metadata": {
+    "created": "2025-10-24",
+    "lastModified": "2025-10-24",
+    "authors": ["開発チーム"],
+    "reviewers": [],
+    "tags": ["quality", "customer-satisfaction", "efficiency"]
+  }
+}

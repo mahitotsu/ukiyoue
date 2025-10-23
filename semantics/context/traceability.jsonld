@@ -36,6 +36,16 @@
       "@id": "https://ukiyoue.example.org/vocab#dependsOn",
       "@type": "@id",
       "@container": "@set"
+    },
+    "relatedBusinessGoals": {
+      "@id": "https://ukiyoue.example.org/vocab#relatedBusinessGoals",
+      "@type": "@id",
+      "@container": "@set"
+    },
+    "relatedUserStories": {
+      "@id": "https://ukiyoue.example.org/vocab#relatedUserStories",
+      "@type": "@id",
+      "@container": "@set"
     }
   }
 }

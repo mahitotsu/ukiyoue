@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "description": "Validation tools for Ukiyoue framework",
   "type": "module",
+  "bin": {
+    "ukiyoue-validate": "./src/validate.ts"
+  },
   "scripts": {
     "validate": "bun src/validate.ts",
     "test": "bun test",
@@ -16,6 +19,8 @@
     "check": "bun run typecheck && bun run lint && bun run format:check && bun run test"
   },
   "dependencies": {
+    "@ukiyoue/schemas": "file:../schemas",
+    "@ukiyoue/semantics": "file:../semantics",
     "ajv": "^8.17.1",
     "ajv-formats": "^3.0.1",
     "chalk": "^5.3.0",

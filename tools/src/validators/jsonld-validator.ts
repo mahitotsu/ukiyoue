@@ -10,6 +10,7 @@
  * Satisfies: ADR-003 (JSON-LD 1.1), FR-AUTO-002 (metadata-validator component)
  */
 
+import { getSemanticsDir } from '@ukiyoue/semantics';
 import * as jsonld from 'jsonld';
 
 export interface JsonLdValidationError {
@@ -54,16 +55,19 @@ const secureDocumentLoader: jsonld.DocumentLoader = async (url: string) => {
 
 /**
  * Create a document loader that resolves local contexts
+ * Uses @ukiyoue/semantics package to locate context files
  */
 export function createLocalDocumentLoader(
   contextBaseUrl: string,
-  contextDir: string
+  allowRemote = false
 ): jsonld.DocumentLoader {
+  const semanticsDir = getSemanticsDir();
+
   return async (url: string) => {
     // If it's a local Ukiyoue context, load from file system
     if (url.startsWith(contextBaseUrl)) {
       const fileName = url.replace(contextBaseUrl, '');
-      const filePath = `${contextDir}/${fileName}`;
+      const filePath = `${semanticsDir}/${fileName}`;
 
       try {
         const content = await Bun.file(filePath).text();
@@ -77,7 +81,21 @@ export function createLocalDocumentLoader(
       }
     }
 
-    // For other URLs, throw error (security: no remote loading)
+    // For other URLs, either allow remote or throw error
+    if (allowRemote) {
+      // Fetch remote URL
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error(`Failed to fetch remote context: ${url}`);
+      }
+      const document = await response.json();
+      return {
+        contextUrl: undefined,
+        document,
+        documentUrl: url,
+      };
+    }
+
     throw new Error(`Context URL not in allowed local base: ${url}`);
   };
 }

@@ -50,14 +50,10 @@
             "description": "受入基準",
             "minItems": 1
           },
-          "userStory": {
-            "type": "object",
-            "description": "ユーザーストーリー形式の記述",
-            "properties": {
-              "asA": { "type": "string", "description": "ユーザーロール" },
-              "iWant": { "type": "string", "description": "やりたいこと" },
-              "soThat": { "type": "string", "description": "目的・理由" }
-            }
+          "relatedUserStories": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "関連するユーザーストーリーID（Layer 1のuser-storyへの参照）"
           },
           "functionalDetails": {
             "type": "object",

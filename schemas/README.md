@@ -19,9 +19,12 @@ JSON Schema Draft-07 を使用して、成果物の構造（structure）と制�
 schemas/
 ├── README.md                 # このファイル
 ├── _common.json             # 共通定義（baseArtifact, traceability, dateRange, status）
-├── layer1/                  # Layer 1: プロジェクト管理（2スキーマ）
+├── layer1/                  # Layer 1: ビジネス層（5スキーマ）
 │   ├── project-charter.json # PM-CHARTER
-│   └── roadmap.json         # PM-ROADMAP
+│   ├── roadmap.json         # PM-ROADMAP
+│   ├── risk-register.json   # PM-RISK
+│   ├── business-goal.json   # BIZ-GOAL
+│   └── user-story.json      # BIZ-STORY
 ├── layer2/                  # Layer 2: 要件定義（4スキーマ）
 │   ├── business-requirements.json       # REQ-BIZ
 │   ├── functional-requirements.json     # REQ-FUNC

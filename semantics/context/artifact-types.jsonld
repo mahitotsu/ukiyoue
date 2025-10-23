@@ -24,11 +24,61 @@
         "resourcePlan": "ukiyoue:resourcePlan"
       }
     },
+    "RiskRegister": {
+      "@id": "ukiyoue:RiskRegister",
+      "@type": "@id",
+      "@context": {
+        "risks": "ukiyoue:risks",
+        "assumptions": "ukiyoue:assumptions",
+        "riskId": "dc:identifier",
+        "category": "ukiyoue:category",
+        "impact": "ukiyoue:impact",
+        "probability": "ukiyoue:probability",
+        "mitigation": "ukiyoue:mitigation",
+        "affectedArtifacts": "ukiyoue:affectedArtifacts",
+        "relatedRisks": "ukiyoue:relatedRisks"
+      }
+    },
+    "BusinessGoal": {
+      "@id": "ukiyoue:BusinessGoal",
+      "@type": "@id",
+      "@context": {
+        "goal": "ukiyoue:goal",
+        "kpis": "ukiyoue:kpis",
+        "successCriteria": "ukiyoue:successCriteria",
+        "priority": "ukiyoue:priority",
+        "category": "ukiyoue:category",
+        "stakeholders": "ukiyoue:stakeholders",
+        "metric": "ukiyoue:metric",
+        "baseline": "ukiyoue:baseline",
+        "target": "ukiyoue:target",
+        "measurementMethod": "ukiyoue:measurementMethod"
+      }
+    },
+    "UserStory": {
+      "@id": "ukiyoue:UserStory",
+      "@type": "@id",
+      "@context": {
+        "asA": "ukiyoue:asA",
+        "iWant": "ukiyoue:iWant",
+        "soThat": "ukiyoue:soThat",
+        "acceptanceCriteria": "ukiyoue:acceptanceCriteria",
+        "given": "ukiyoue:given",
+        "when": "ukiyoue:when",
+        "then": "ukiyoue:then",
+        "estimation": "ukiyoue:estimation",
+        "storyPoints": "ukiyoue:storyPoints",
+        "persona": "ukiyoue:persona",
+        "epic": "ukiyoue:epic",
+        "sprint": "ukiyoue:sprint",
+        "relatedBusinessGoals": "ukiyoue:relatedBusinessGoals"
+      }
+    },
     "BusinessRequirements": {
       "@id": "ukiyoue:BusinessRequirements",
       "@type": "@id",
       "@context": {
-        "businessGoals": "ukiyoue:businessGoals",
+        "relatedBusinessGoals": "ukiyoue:relatedBusinessGoals",
         "requirements": "ukiyoue:requirements",
         "stakeholderNeeds": "ukiyoue:stakeholderNeeds",
         "successCriteria": "ukiyoue:successCriteria"
@@ -39,6 +89,7 @@
       "@type": "@id",
       "@context": {
         "requirements": "ukiyoue:requirements",
+        "relatedUserStories": "ukiyoue:relatedUserStories",
         "useCases": "ukiyoue:useCases",
         "acceptanceCriteria": "ukiyoue:acceptanceCriteria"
       }
