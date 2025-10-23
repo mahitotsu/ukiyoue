@@ -19,13 +19,14 @@
 
 **Current Status**: Phase 1 (Implementation) - 🚧 In Progress
 
-- ✅ Phase 0 Complete: Concept, requirements, architecture, ADRs (001-004)
+- ✅ Phase 0 Complete: Concept, requirements, architecture, ADRs (001-007)
 - ✅ JSON Schema: 30 files (29 artifacts + \_common.json)
+  - Layer 3 reflects ADR-006: Reliability → Infrastructure → Observability separation
 - ✅ JSON-LD: 6 files (4 contexts + 1 vocabulary + README)
 - ✅ Tools: Comprehensive validator (validate.ts) with 34 unit tests
   - Schema validator, JSON-LD validator, Reference validator
 - ✅ Tooling: Prettier, markdownlint-cli2, lint-staged, Husky, TypeScript strict mode
-- 📋 Next: Example documents and full validator implementation
+- 📋 Next: Example documents, traceability matrix implementation, full validator
 
 ### 3. Critical Design Decisions (ADRs)
 
@@ -33,6 +34,9 @@
 - **ADR-002**: JSON Schema Draft-07 for maximum tool support
 - **ADR-003**: JSON-LD 1.1 for semantic capabilities
 - **ADR-004**: TypeScript + Bun for implementation
+- **ADR-005**: Layer 4 executable code stays in native language (not JSON), traceability via external matrix
+- **ADR-006**: Layer 3 architecture split into Reliability → Infrastructure → Observability
+- **ADR-007**: JSON artifacts use hybrid traceability (embedded refs + auto-generated matrix)
 
 ### 4. Documentation Policy
 
@@ -216,6 +220,9 @@ If you encounter:
 - **Data format question**: Refer to ADR-001 (JSON, not Markdown)
 - **Schema version question**: Refer to ADR-002 (Draft-07)
 - **Semantic question**: Refer to ADR-003 (JSON-LD 1.1)
+- **Layer 4 code representation**: Refer to ADR-005 (native language, not JSON)
+- **Layer 3 architecture structure**: Refer to ADR-006 (Reliability → Infrastructure → Observability)
+- **Traceability implementation**: Refer to ADR-007 (embedded + auto-generated matrix)
 
 ## Version Control
 
