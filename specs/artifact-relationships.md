@@ -31,7 +31,7 @@ graph LR
     %% Note: ADR is created continuously throughout architecture design (not a blocking dependency)
     ADR[Architecture Decision Record]
     RuntimeArch[Runtime Architecture]
-    DataModel[Data Model]
+    DataModel[Logical Data Model]
     UIUX[UI/UX Specification]
     API[API Specification]
     SecArch[Security Architecture]
@@ -355,7 +355,7 @@ graph LR
     NonFuncReq --> SecArch[Security Architecture]
     NonFuncReq --> ReliArch[Reliability Architecture]
 
-    RuntimeArch --> DataModel[Data Model]
+    RuntimeArch --> DataModel[Logical Data Model]
     RuntimeArch --> API[API Specification]
     RuntimeArch --> DevOpsArch[DevOps Architecture]
     RuntimeArch --> ObservArch[Observability Architecture]
@@ -377,7 +377,7 @@ graph LR
     DataDict[Data Dictionary] --> ConceptModel[Conceptual Data Model]
     UseCase[Use Case] --> ConceptModel
 
-    ConceptModel --> DataModel[Data Model]
+    ConceptModel --> DataModel[Logical Data Model]
     DataDict --> DataModel
     FuncReq[Functional Requirements] --> DataModel
     RuntimeArch[Runtime Architecture] --> DataModel
@@ -391,7 +391,7 @@ graph LR
 **フロー**:
 
 - Layer 2: 用語定義（Data Dictionary）→ 概念構造（Conceptual Data Model）
-- Layer 3: 論理データモデル（Data Model、データストア非依存）
+- Layer 3: 論理データモデル（Logical Data Model、データストア非依存）
 - Layer 4: 物理実装（Physical Data Model、データストア固有）
 
 ##### セキュリティチェーン（Layer 2→3→4→5）
@@ -555,15 +555,15 @@ graph LR
 
 **注**: フィードバックループ（点線の依存関係）はカウントから除外
 
-| 成果物                          | 下流影響 | 主な下流成果物                                                                                              | プロジェクト管理上の重要性                                                   |
-| ------------------------------- | -------- | ----------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
-| **Runtime Architecture**        | 10+      | Data Model, API, Security Arch, Infrastructure Arch, DevOps Arch, Dev Env Arch, 他多数                      | **最重要**: システム全体の基盤設計、早期確定必須、アーキテクトの重点作業領域 |
-| **Functional Requirements**     | 9        | Data Model, UI/UX, Test Strategy, Test Plan, Test Spec, Source Code, SIT Plan, SIT Spec, UAT Plan, UAT Spec | **重要**: 機能仕様の明確化遅延が全実装に波及、UAT/E2E検証まで継続参照        |
-| **Business Goal**               | 6        | Func Req, Non-Func Req, Test Strategy, UAT Plan, UAT Spec                                                   | **重要**: ビジネス目標の曖昧さがプロジェクト全体の方向性を見失わせる         |
-| **Non-Functional Requirements** | 6        | ADR, Runtime Arch, Security Arch, Reliability Arch, Test Strategy, Test Plan                                | **重要**: 性能・セキュリティ要件の曖昧さが設計やり直しを招く                 |
-| **Data Model**                  | 4        | UI/UX, API, Physical Data Model, Source Code                                                                | **重要**: データ構造変更のコストが高い、早期レビュー必須                     |
-| **DevOps Architecture**         | 4        | Dev Env Arch, Impl Guide, Pipeline Def, Repository Config                                                   | 開発プロセスの基盤、プロジェクト初期に確定                                   |
-| **Test Strategy**               | 3        | Test Plan, SIT Plan, UAT Plan                                                                               | **重要**: 全体テスト方針、品質ゲート定義、リリース基準の統括                 |
+| 成果物                          | 下流影響 | 主な下流成果物                                                                                                      | プロジェクト管理上の重要性                                                   |
+| ------------------------------- | -------- | ------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| **Runtime Architecture**        | 10+      | Logical Data Model, API, Security Arch, Infrastructure Arch, DevOps Arch, Dev Env Arch, 他多数                      | **最重要**: システム全体の基盤設計、早期確定必須、アーキテクトの重点作業領域 |
+| **Functional Requirements**     | 9        | Logical Data Model, UI/UX, Test Strategy, Test Plan, Test Spec, Source Code, SIT Plan, SIT Spec, UAT Plan, UAT Spec | **重要**: 機能仕様の明確化遅延が全実装に波及、UAT/E2E検証まで継続参照        |
+| **Business Goal**               | 6        | Func Req, Non-Func Req, Test Strategy, UAT Plan, UAT Spec                                                           | **重要**: ビジネス目標の曖昧さがプロジェクト全体の方向性を見失わせる         |
+| **Non-Functional Requirements** | 6        | ADR, Runtime Arch, Security Arch, Reliability Arch, Test Strategy, Test Plan                                        | **重要**: 性能・セキュリティ要件の曖昧さが設計やり直しを招く                 |
+| **Logical Data Model**          | 4        | UI/UX, API, Physical Data Model, Source Code                                                                        | **重要**: データ構造変更のコストが高い、早期レビュー必須                     |
+| **DevOps Architecture**         | 4        | Dev Env Arch, Impl Guide, Pipeline Def, Repository Config                                                           | 開発プロセスの基盤、プロジェクト初期に確定                                   |
+| **Test Strategy**               | 3        | Test Plan, SIT Plan, UAT Plan                                                                                       | **重要**: 全体テスト方針、品質ゲート定義、リリース基準の統括                 |
 
 ##### 統合ハブ（多数の成果物からの入力が必要）
 
@@ -623,7 +623,7 @@ gantt
 
     section Layer 3: 設計
     Runtime Architecture          :crit, runtime, after nonfunc, 15d
-    Data Model                    :crit, datamodel, after func runtime, 10d
+    Logical Data Model            :crit, datamodel, after func runtime, 10d
     UI/UX Specification           :ui, after func datamodel, 8d
     API Specification             :api, after runtime datamodel, 8d
     Security Architecture         :security, after nonfunc runtime, 8d
