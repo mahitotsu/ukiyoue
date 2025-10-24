@@ -22,7 +22,7 @@ semantics/
 │   ├── base.jsonld          # 基本vocabulary定義
 │   ├── properties.jsonld    # 共通プロパティ定義
 │   ├── traceability.jsonld  # トレーサビリティ関係定義
-│   └── artifact-types.jsonld # 成果物タイプ定義（43種類）
+│   └── artifact-types.jsonld # 成果物タイプ定義（42種類）
 └── vocabularies/             # 統合vocabulary
     └── ukiyoue.jsonld       # Ukiyoue vocabulary統合エントリポイント
 ```
@@ -68,9 +68,9 @@ semantics/
     "https://ukiyoue.example.org/context/base.jsonld",
     "https://ukiyoue.example.org/context/traceability.jsonld"
   ],
-  "@type": "BusinessRequirements",
-  "id": "req-biz-001",
-  "title": "ビジネス要件定義"
+  "@type": "FunctionalRequirements",
+  "id": "req-func-001",
+  "title": "機能要件定義"
 }
 ```
 
@@ -96,9 +96,9 @@ semantics/
 
 ### artifact-types.jsonld
 
-- 43 種類の成果物タイプのセマンティック定義
+- 42 種類の成果物タイプのセマンティック定義
   - **Layer 1 (Business)**: ProjectCharter, Roadmap, RiskRegister, BusinessGoal, UserStory
-  - **Layer 2 (Requirements)**: BusinessRequirements, FunctionalRequirements, NonFunctionalRequirements, TestStrategy
+  - **Layer 2 (Requirements)**: FunctionalRequirements, NonFunctionalRequirements, TestStrategy
   - **Layer 3-6**: (その他の設計・実装・運用・検証成果物)
 - 各タイプごとの nested context
 - プロパティの標準 vocabulary へのマッピング

@@ -12,15 +12,15 @@ ADR-005により、Layer 4の実行可能コード（Source Code/Test Code等）
 
 しかし、**Layer 1-3, 5, 6の成果物**はすべて**JSON形式**（ADR-001）で表現されるため、異なるアプローチが考えられる：
 
-- Project Charter, Roadmap（Layer 1）
-- Business/Functional/Non-Functional Requirements, Test Strategy（Layer 2）
+- Project Charter, Roadmap, Business Goal, User Story（Layer 1）
+- Functional/Non-Functional Requirements, Test Strategy（Layer 2）
 - 各種Architecture, ADR, Data Model, UI/UX Spec, API Spec等（Layer 3）
 - Deployment/Operations/Incident/Troubleshooting Guides（Layer 5）
 - SIT/UAT Plans/Specs/Results（Layer 6）
 
 これらの成果物間には以下のようなトレーサビリティ関係が存在する：
 
-- **上流→下流**: Business Requirements → Functional Requirements → Architecture → Implementation
+- **上流→下流**: Business Goal → Functional Requirements → Architecture → Implementation
 - **検証関係**: Requirements → Test Specification → Test Results
 - **文書間参照**: Architecture → ADR, Data Model → Database Schema
 

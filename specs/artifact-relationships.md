@@ -22,7 +22,6 @@ graph LR
     UserStory[User Story]
 
     %% Layer 2: Requirements
-    BizReq[Business Requirements]
     FuncReq[Functional Requirements]
     NonFuncReq[Non-Functional Requirements]
     TestStrategy[Test Strategy]
@@ -77,23 +76,21 @@ graph LR
     BizGoal --> UserStory
 
     %% Layer 1 to Layer 2: Business to Requirements
-    Charter --> BizReq
-    BizGoal --> BizReq
+    BizGoal --> FuncReq
+    BizGoal --> NonFuncReq
     UserStory --> FuncReq
 
     %% Charter: プロジェクト承認・正当化（Why this project? 投資判断）
     %% BizGoal: 測定可能なビジネス目標（KPI、成功基準）
     %% UserStory: ユーザー視点の機能要求（As a, I want, So that）
     %% RiskReg: プロジェクト全期間を通じて継続的に作成・更新（ADRと同様）
-    %% BizReq: 課題詳細化・要件定義（What to solve? 開発方針）
     %% FuncReq: 機能仕様詳細（How to implement? 実装可能な仕様）
 
     %% Requirements Decomposition
-    BizReq --> FuncReq
-    BizReq --> NonFuncReq
+    UserStory --> FuncReq
+    BizGoal --> NonFuncReq
 
     %% Test Strategy (Overall Test Policy)
-    BizReq --> TestStrategy
     FuncReq --> TestStrategy
     NonFuncReq --> TestStrategy
     TestStrategy --> TestPlan
@@ -232,15 +229,16 @@ graph LR
 ```text
 Project Charter（起点: プロジェクト承認・正当化）
   → Roadmap（スケジュールとマイルストーン）
-  → Business Requirements（ビジネス課題の詳細化・KPI定義）
-    → Functional Requirements & Non-Functional Requirements（システム要件）
-      → Test Strategy（全体テスト戦略・品質ゲート定義）
-        → 設計（Layer 3: 11種類）
-          → 実装・テスト（Layer 4: 13種類）
-            → 運用（Layer 5: 4種類）
-              → 検証（Layer 6: 6種類）
-                - SIT（技術統合検証）
-                - UAT（ビジネス受入検証）
+  → Business Goal（ビジネス目標・KPI定義）
+    → User Story（ユーザー視点の要求）
+      → Functional Requirements & Non-Functional Requirements（システム要件）
+        → Test Strategy（全体テスト戦略・品質ゲート定義）
+          → 設計（Layer 3: 13種類）
+            → 実装・テスト（Layer 4: 11種類）
+              → 運用（Layer 5: 4種類）
+                → 検証（Layer 6: 6種類）
+                  - SIT（技術統合検証）
+                  - UAT（ビジネス受入検証）
 ```
 
 #### 横断的な依存関係（フィードバックループ）
@@ -253,8 +251,8 @@ Project Charter（起点: プロジェクト承認・正当化）
   - テスト合格率が低い → リリース延期
   - 重大な不具合発見 → 修正フェーズをロードマップに追加
   - カバレッジ不足 → テスト強化期間を設定
-- **Test Results** → **Business Requirements**（品質評価による要件の再検討）
-  - 実装困難な要件の発見 → 要件の見直し
+- **Test Results** → **Functional Requirements**（実装困難な要件の見直し）
+  - 実装困難な要件の発見 → 要件の再検討
   - パフォーマンス問題 → 非機能要件の調整
 
 ##### システム統合テスト結果のフィードバック
@@ -270,7 +268,7 @@ Project Charter（起点: プロジェクト承認・正当化）
 
 ##### ビジネス受入テスト結果のフィードバック
 
-- **UAT Results** → **Business Requirements**（ビジネス目標達成度による要件の調整）
+- **UAT Results** → **Business Goal**（ビジネス目標達成度による調整）
   - ビジネス目標未達 → KPI目標値の見直し
   - ROI未達成 → スコープ調整、投資判断の再検討
 - **UAT Results** → **Functional Requirements**（ユーザー受入による機能要件の調整）
@@ -307,21 +305,19 @@ graph LR
 
 ```mermaid
 graph LR
-    Charter[Project Charter] --> BizReq[Business Requirements]
-    BizGoal[Business Goal] --> BizReq
-    BizReq --> FuncReq[Functional Requirements]
+    BizGoal[Business Goal] --> FuncReq[Functional Requirements]
     UserStory[User Story] --> FuncReq
-    BizReq --> NonFuncReq[Non-Functional Requirements]
+    BizGoal --> NonFuncReq[Non-Functional Requirements]
+    UserStory --> NonFuncReq
 ```
 
-**フロー**: プロジェクト承認 + ビジネス目標 → ビジネス要件詳細化 → 機能要件・非機能要件への分解（ユーザーストーリーは機能要件に直接影響）
+**フロー**: ビジネスゴールとユーザーストーリー → 機能要件・非機能要件への分解
 
 ##### テスト戦略チェーン（Layer 2→4→6）
 
 ```mermaid
 graph LR
-    BizReq[Business Requirements] --> TestStrat[Test Strategy]
-    FuncReq[Functional Requirements] --> TestStrat
+    FuncReq[Functional Requirements] --> TestStrat[Test Strategy]
     NonFuncReq[Non-Functional Requirements] --> TestStrat
 
     TestStrat --> TestPlan[Test Plan]
@@ -520,12 +516,12 @@ graph LR
 ```mermaid
 graph LR
     TestStrat[Test Strategy] --> UATPlan[UAT Plan]
-    BizReq[Business Requirements] --> UATPlan
+    BizGoal[Business Goal] --> UATPlan
     FuncReq[Functional Requirements] --> UATPlan
     SITResults[SIT Results] --> UATPlan
 
     UATPlan --> UATSpec[UAT Specification]
-    BizReq --> UATSpec
+    BizGoal --> UATSpec
     FuncReq --> UATSpec
 
     UATSpec --> UATResults[UAT Results]
@@ -548,7 +544,7 @@ graph LR
 | ------------------------------- | -------- | ----------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
 | **Runtime Architecture**        | 10+      | Data Model, API, Security Arch, Infrastructure Arch, DevOps Arch, Dev Env Arch, 他多数                      | **最重要**: システム全体の基盤設計、早期確定必須、アーキテクトの重点作業領域 |
 | **Functional Requirements**     | 9        | Data Model, UI/UX, Test Strategy, Test Plan, Test Spec, Source Code, SIT Plan, SIT Spec, UAT Plan, UAT Spec | **重要**: 機能仕様の明確化遅延が全実装に波及、UAT/E2E検証まで継続参照        |
-| **Business Requirements**       | 6        | Func Req, Non-Func Req, Test Strategy, UAT Plan, UAT Spec                                                   | **重要**: ビジネス目標の曖昧さがプロジェクト全体の方向性を見失わせる         |
+| **Business Goal**               | 6        | Func Req, Non-Func Req, Test Strategy, UAT Plan, UAT Spec                                                   | **重要**: ビジネス目標の曖昧さがプロジェクト全体の方向性を見失わせる         |
 | **Non-Functional Requirements** | 6        | ADR, Runtime Arch, Security Arch, Reliability Arch, Test Strategy, Test Plan                                | **重要**: 性能・セキュリティ要件の曖昧さが設計やり直しを招く                 |
 | **Data Model**                  | 4        | UI/UX, API, Database Schema, Source Code                                                                    | **重要**: データ構造変更のコストが高い、早期レビュー必須                     |
 | **DevOps Architecture**         | 4        | Dev Env Arch, Impl Guide, Pipeline Def, Repository Config                                                   | 開発プロセスの基盤、プロジェクト初期に確定                                   |
@@ -566,7 +562,7 @@ graph LR
 | **Source Code**                  | 5      | Func Req, Impl Guide, UI/UX, API, DB Schema               | **最重要**: 全設計の統合実装、並行作業の調整が鍵、統合テスト重視         |
 | **Implementation Guide**         | 4      | Runtime Arch, Security Arch, Dev Env Arch, DevOps Arch    | **重要**: 複数アーキテクチャの実装方針統合、早期ドラフト作成で並行作業可 |
 | **Infrastructure Architecture**  | 3      | Reliability Arch, Runtime Arch, Security Arch             | **重要**: 信頼性・性能・セキュリティの統合設計、SREの重点作業領域        |
-| **Test Strategy**                | 3      | Business Req, Functional Req, Non-Functional Req          | **重要**: 全要件に基づく包括的テスト戦略、品質ゲート定義                 |
+| **Test Strategy**                | 3      | Business Goal, Functional Req, Non-Functional Req         | **重要**: 全要件に基づく包括的テスト戦略、品質ゲート定義                 |
 | **UAT Specification**            | 3      | UAT Plan, Business Req, Functional Req                    | **重要**: ビジネス受入テスト詳細化、最終リリース判断の基盤               |
 | **Observability Architecture**   | 3      | Runtime Arch, Infrastructure Arch, Reliability Arch       | 運用監視の統合設計、インフラ確定後に詳細化                               |
 | **Test Specification**           | 2      | Test Plan, Functional Requirements                        | テスト戦略と機能仕様の統合、並行作業可能                                 |
@@ -602,12 +598,13 @@ gantt
     section Layer 1: PM
     Charter                       :crit, charter, 2025-01-01, 5d
     Roadmap                       :crit, roadmap, after charter, 3d
+    Business Goal                 :crit, bizgoal, after charter, 5d
+    User Story                    :crit, userstory, after bizgoal, 10d
 
     section Layer 2: 要件
-    Business Requirements         :crit, biz, after charter, 10d
-    Functional Requirements       :crit, func, after biz, 15d
-    Non-Functional Requirements   :crit, nonfunc, after biz, 10d
-    Test Strategy                 :crit, teststrat, after biz func nonfunc, 5d
+    Functional Requirements       :crit, func, after userstory, 15d
+    Non-Functional Requirements   :crit, nonfunc, after bizgoal userstory, 10d
+    Test Strategy                 :crit, teststrat, after func nonfunc, 5d
 
     section Layer 3: 設計
     Runtime Architecture          :crit, runtime, after nonfunc, 15d
@@ -748,18 +745,18 @@ Ukiyoue フレームワークでは、成果物間のトレーサビリティを
 }
 ```
 
-### 例：Business Requirements のトレース情報
+### 例：Business Goal のトレース情報
 
 ```json
 {
-  "@context": "https://ukiyoue.dev/contexts/business-requirements.jsonld",
-  "@type": "BusinessRequirements",
-  "@id": "BIZ-REQ-TOS-001",
-  "title": "Table Order System Business Requirements",
+  "@context": "https://ukiyoue.dev/contexts/business-goal.jsonld",
+  "@type": "BusinessGoal",
+  "@id": "BG-TOS-001",
+  "title": "Table Order System Business Goal",
   "traceability": {
     "derivedFrom": ["PC-TOS-001"],
-    "relatedBusinessGoals": ["BG-TOS-001", "BG-TOS-002", "BG-TOS-003"],
-    "satisfiedBy": ["FR-TOS-001", "FR-TOS-002"]
+    "relatedUserStories": ["US-TOS-001", "US-TOS-002"],
+    "satisfiedBy": ["FR-TOS-001", "NFR-TOS-001"]
   }
 }
 ```
@@ -780,5 +777,5 @@ Ukiyoue フレームワークでは、成果物間のトレーサビリティを
 ## 関連ドキュメント
 
 - [artifact-overview.md](artifact-overview.md) - 成果物分類の全体像
-- [artifact-definitions.md](artifact-definitions.md) - 40種類の成果物詳細定義
+- [artifact-definitions.md](artifact-definitions.md) - 42種類の成果物詳細定義
 - [ADR-007](architecture-decisions/007-json-artifact-traceability.md) - JSON成果物のトレーサビリティ実現方式

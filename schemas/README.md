@@ -192,10 +192,6 @@ if (validate(document)) {
 
 ### Layer 2: 要件定義
 
-#### business-requirements.json (REQ-BIZ)
-
-**ID パターン**: `BG-[0-9]{3}` (Business Goals), `BR-[0-9]{3}` (Business Requirements)
-
 #### functional-requirements.json (REQ-FUNC)
 
 **ID パターン**: `FR-[A-Z]+-[0-9]{3}` (Functional Requirements), `UC-[0-9]{3}` (Use Cases)
@@ -286,7 +282,7 @@ if (!validate(data)) {
 - [ADR-002: JSON Schema Draft 版の選定](../specs/design-decisions/002-json-schema-draft-version.md)
 - [ADR-005: 実行可能コードの JSON 化適用範囲](../specs/design-decisions/005-executable-code-representation.md)
 - [ADR-007: JSON 成果物のトレーサビリティ実現方式](../specs/design-decisions/007-json-artifact-traceability.md)
-- [artifact-definitions.md](../specs/artifact-definitions.md) - 40 種類の成果物タイプ詳細定義
+- [artifact-definitions.md](../specs/artifact-definitions.md) - 42 種類の成果物タイプ詳細定義
 - [JSON Schema Draft-07 Specification](https://json-schema.org/draft-07/json-schema-release-notes.html)
 
 ## 🔍 検証方法

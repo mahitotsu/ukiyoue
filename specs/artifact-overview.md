@@ -14,14 +14,14 @@
 
 ## 📈 全体サマリー
 
-- **成果物総数**: 43種類
+- **成果物総数**: 42種類
 - **レイヤー数**: 6層（ビジネス → 要件定義 → 設計 → 実装・テスト → 運用 → 検証）
 - **主要な特徴**:
   - ✅ プロジェクトライフサイクル全体をカバー
   - ✅ アプリケーションとインフラストラクチャの両方を含む
   - ✅ 開発環境の明示的な設計と実装（Development Environment Architecture & Configuration）
   - ✅ 信頼性・運用性の明示的な設計（Reliability, Observability, DevOps Architecture）
-  - ✅ トップダウンフロー + フィードバックループ（Test Results → Roadmap/Business Req）
+  - ✅ トップダウンフロー + フィードバックループ（Test Results → Roadmap/Functional Req）
   - ✅ 複数入力を持つ統合ポイント（Source Code が最多：5つの設計情報を統合）
 
 ---
@@ -37,9 +37,9 @@ graph TD
         L1_docs["Charter, Roadmap, Risk Register, Business Goal, User Story"]
     end
 
-    subgraph Layer2["Layer 2: 要件定義（4種類）"]
-        L2_desc["ビジネス要件、機能要件、非機能要件、テスト戦略"]
-        L2_docs["Business Req, Functional Req, Non-Functional Req, Test Strategy"]
+    subgraph Layer2["Layer 2: 要件定義（3種類）"]
+        L2_desc["機能要件、非機能要件、テスト戦略"]
+        L2_docs["Functional Req, Non-Functional Req, Test Strategy"]
     end
 
     subgraph Layer3["Layer 3: 設計（13種類）"]
@@ -68,7 +68,7 @@ graph TD
     Layer4 -->|"運用準備"| Layer5
     Layer5 -->|"検証"| Layer6
 
-    Total["合計: 43種類の成果物タイプ"]
+    Total["合計: 42種類の成果物タイプ"]
 
     Layer6 -.->|"まとめ"| Total
 
@@ -105,7 +105,7 @@ graph TD
 
 ### 詳細仕様
 
-- [artifact-definitions.md](artifact-definitions.md) - 43種類の成果物詳細定義
+- [artifact-definitions.md](artifact-definitions.md) - 42種類の成果物詳細定義
 - [artifact-relationships.md](artifact-relationships.md) - 成果物間の依存関係とデータフロー
 
 ### フレームワーク仕様
