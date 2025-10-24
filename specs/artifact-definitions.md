@@ -223,7 +223,7 @@
   - **根拠**: なぜこの選択肢を選んだか（技術的理由、コスト、リスク）
   - **影響**: この決定が他のコンポーネントに与える影響
   - **ステータス**: Proposed/Accepted/Deprecated/Superseded
-- **入力**: Non-Functional Requirements（制約と品質要件から技術選定の根拠を得る）
+- **入力**: Non-Functional Requirements（制約と品質要件）、Runtime Architecture（技術スタック選定）、Infrastructure Architecture（インフラ選定）、Security Architecture（セキュリティ実装方式）（アーキテクチャ設計全般で発生する技術決定の記録）
 - **読者**: アーキテクト、開発チームリーダー、新規参画メンバー
 - **更新頻度**: 重要な技術決定時、アーキテクチャ変更時、決定の見直し時
 - **特徴**: **決定の記録**（「なぜ」を残す履歴文書、後で振り返るための証拠）
@@ -239,7 +239,7 @@
   - **技術スタック**: 言語、フレームワーク、ミドルウェア
   - **データフロー**: リクエスト処理の流れ、イベントフロー
   - **統合ポイント**: 外部API、SaaS、レガシーシステムとの連携
-- **入力**: Architecture Decision Record（技術選定の根拠）、Non-Functional Requirements（性能・拡張性要件）
+- **入力**: Architecture Decision Record（技術選定の根拠）、Functional Requirements（コンポーネント分割とデータフローの根拠）、Non-Functional Requirements（性能・拡張性要件）
 - **読者**: アーキテクト、開発者、インフラエンジニア、新規参画メンバー
 - **更新頻度**: 設計段階で作成、アーキテクチャ変更時、技術スタック変更時
 - **特徴**: **実行時構造文書**（Non-Functional Requirementsを満たすシステム構造設計）
@@ -255,7 +255,7 @@
   - **関係性と整合性**: 参照関係、埋め込み vs 参照の選択、整合性制約の論理設計
   - **アクセスパターン設計**: クエリパターン、インデックス方針、パーティショニング方針
   - **ドメイン定義**: 共通データ型の技術的定義（メールアドレス形式、電話番号形式等）
-- **入力**: Conceptual Data Model（概念エンティティを論理設計に詳細化）、Data Dictionary（属性の型と制約）、Functional Requirements（扱うデータの種類）、Runtime Architecture（データストア選定とアクセス方法）
+- **入力**: Conceptual Data Model（概念エンティティを論理設計に詳細化）、Data Dictionary（属性の型と制約）、Use Case（アクセスパターンの根拠）、Functional Requirements（扱うデータの種類）、Runtime Architecture（データストア選定とアクセス方法）
 - **読者**: データアーキテクト、開発者、DBA、インフラエンジニア
 - **更新頻度**: 設計段階で作成、データ構造変更時、パフォーマンス要件変更時
 - **特徴**: **論理データモデル**（データストア非依存だが実装可能な詳細レベル、Conceptual Data Modelを技術的に詳細化、Layer 4の物理データモデルへの入力）
@@ -422,7 +422,7 @@
   - **期待結果**: 合格判定基準
   - **テストデータ**: テスト用マスタ、トランザクションデータ
   - **トレーサビリティ**: どの要件をテストしているか（要件IDとの紐付け）
-- **入力**: Test Plan（テスト戦略を詳細化）、Functional Requirements（テスト対象機能の詳細仕様）
+- **入力**: Test Plan（テスト戦略を詳細化）、Functional Requirements（テスト対象機能の詳細仕様）、UI/UX Specification（画面テストケース）、API Specification（APIテストケース）
 - **読者**: テスター、QAエンジニア、開発者
 - **更新頻度**: テスト設計段階で作成、仕様変更時、不具合修正時
 - **特徴**: **テスト詳細仕様文書**（Test Planを実行可能な手順に落とし込む）
@@ -463,7 +463,7 @@
   - **依存関係固定**: package-lock.json、poetry.lock、Gemfile.lock
   - **セットアップスクリプト**: bootstrap.sh、環境構築自動化スクリプト
   - **READMEと手順書**: 開発環境構築手順、トラブルシューティング
-- **入力**: Development Environment Architecture（開発環境設計を実装に落とす）
+- **入力**: Development Environment Architecture（開発環境設計を実装に落とす）、Runtime Architecture（技術スタック情報）、Repository Configuration（品質ツール設定との整合性）
 - **読者**: 開発者（全員）、新規参画メンバー、オンボーディング担当者
 - **更新頻度**: プロジェクト開始時、ツール追加時、環境変更時、継続的に更新
 - **特徴**: **ローカル環境実装コード**（開発者が即座にローカル開発を開始できる環境の自動構築）
