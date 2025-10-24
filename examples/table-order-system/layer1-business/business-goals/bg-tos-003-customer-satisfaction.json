@@ -7,7 +7,7 @@
   "version": "0.1.0",
   "status": "draft",
   "title": "顧客満足度の向上",
-  "description": "顧客が自分のペースでメニューを閲覧・注文でき、注文状況をリアルタイムで確認できることで、顧客体験を向上させる",
+  "description": "顧客が自分のペースでメニューを閲覧・注文でき、注文状況を確認できることで、顧客体験を向上させる",
   "priority": "high",
   "category": "customer-satisfaction",
   "owner": "レストランオーナー（山田太郎）",
