@@ -2,7 +2,7 @@
   "$schema": "https://ukiyoue.example.org/schemas/layer1/business-goal.json",
   "type": "business-goal",
   "@type": "BusinessGoal",
-  "@context": "https://ukiyoue.example.org/context/layer1.jsonld",
+  "@context": "https://ukiyoue.example.org/contexts/base.jsonld",
   "id": "bg-tos-001",
   "version": "0.1.0",
   "status": "draft",

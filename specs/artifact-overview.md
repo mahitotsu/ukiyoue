@@ -37,9 +37,9 @@ graph TD
         L1_docs["Charter, Roadmap, Risk Register, Business Goal, User Story"]
     end
 
-    subgraph Layer2["Layer 2: 要件定義（3種類）"]
-        L2_desc["機能要件、非機能要件、テスト戦略"]
-        L2_docs["Functional Req, Non-Functional Req, Test Strategy"]
+    subgraph Layer2["Layer 2: 要件定義（6種類）"]
+        L2_desc["ユースケース、機能要件、非機能要件、データ辞書、概念データモデル、テスト戦略"]
+        L2_docs["Use Case, Functional Req, Non-Functional Req,<br/>Data Dictionary, Conceptual Data Model, Test Strategy"]
     end
 
     subgraph Layer3["Layer 3: 設計（13種類）"]
@@ -48,8 +48,8 @@ graph TD
     end
 
     subgraph Layer4["Layer 4: 実装・テスト（11種類）"]
-        L4_desc["アプリケーションコード、インフラコード、データベース実装、開発環境実装、CI/CD、監視、テスト"]
-        L4_docs["Impl Guide, DB Schema, Dev Env Config, IaC, CI/CD Pipeline, Repository Config,<br/>Monitoring & Logging Config,<br/>Source Code, Test Code, Test Results, Source Code Doc"]
+        L4_desc["アプリケーションコード、インフラコード、データストア実装、開発環境実装、CI/CD、監視、テスト"]
+        L4_docs["Impl Guide, Physical Data Model, Dev Env Config, IaC, CI/CD Pipeline, Repository Config,<br/>Monitoring & Logging Config,<br/>Source Code, Test Code, Test Results, Source Code Doc"]
     end
 
     subgraph Layer5["Layer 5: 運用（4種類）"]

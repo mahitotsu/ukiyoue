@@ -22,7 +22,9 @@ ADR-005により、Layer 4の実行可能コード（Source Code/Test Code等）
 
 - **上流→下流**: Business Goal → Functional Requirements → Architecture → Implementation
 - **検証関係**: Requirements → Test Specification → Test Results
-- **文書間参照**: Architecture → ADR, Data Model → Database Schema
+- **成果物間参照**: Business Goal → User Story, User Story → Use Case
+- **文書間参照**: Architecture → ADR, Data Model → Physical Data Model
+- **外部参照**: RFC、標準仕様、外部ツールドキュメント
 
 ### Requirements
 

@@ -14,7 +14,7 @@ Ukiyoue フレームワークは、ADR-001 により「JSON + JSON Schema + JSON
 
 - **Source Code** (JavaScript/Python/Java/Go など)
 - **Test Code** (同上)
-- **Database Schema** (SQL DDL)
+- **Physical Data Model** (SQL DDL)
 - **Infrastructure as Code** (Terraform/CloudFormation/Ansible など)
 
 これらは**プログラミング言語・形式言語で記述される実行可能コード**であり、以下の特性を持つ：

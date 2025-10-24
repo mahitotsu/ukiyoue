@@ -248,7 +248,7 @@ async function validateDocument(
 
     try {
       const documentLoader = createLocalDocumentLoader(
-        'https://ukiyoue.example.org/',
+        'https://ukiyoue.example.org/contexts/',
         options.allowRemote
       );
 

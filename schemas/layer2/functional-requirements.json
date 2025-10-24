@@ -95,70 +95,12 @@
       },
       "minItems": 1
     },
-    "useCases": {
+    "relatedUseCases": {
       "type": "array",
-      "description": "ユースケース",
+      "description": "関連するユースケース（Layer 2のuse-caseへの参照）",
       "items": {
-        "type": "object",
-        "required": ["id", "name", "actors"],
-        "properties": {
-          "id": {
-            "type": "string",
-            "pattern": "^UC-[0-9]{3}$",
-            "description": "ユースケースID（例: UC-001）"
-          },
-          "name": {
-            "type": "string",
-            "description": "ユースケース名"
-          },
-          "actors": {
-            "type": "array",
-            "items": { "type": "string" },
-            "description": "アクター（ユーザーロール）",
-            "minItems": 1
-          },
-          "description": {
-            "type": "string",
-            "description": "ユースケースの説明"
-          },
-          "preconditions": {
-            "type": "array",
-            "items": { "type": "string" },
-            "description": "事前条件"
-          },
-          "mainFlow": {
-            "type": "array",
-            "items": { "type": "string" },
-            "description": "メインフロー（基本シナリオ）"
-          },
-          "alternativeFlows": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "name": { "type": "string" },
-                "steps": {
-                  "type": "array",
-                  "items": { "type": "string" }
-                }
-              }
-            },
-            "description": "代替フロー"
-          },
-          "postconditions": {
-            "type": "array",
-            "items": { "type": "string" },
-            "description": "事後条件"
-          },
-          "relatedRequirements": {
-            "type": "array",
-            "items": {
-              "type": "string",
-              "pattern": "^FR-[A-Z]+-[0-9]{3}$"
-            },
-            "description": "関連する機能要求ID"
-          }
-        }
+        "type": "string",
+        "pattern": "^UC-[A-Z]+-[0-9]{3}$"
       }
     }
   }

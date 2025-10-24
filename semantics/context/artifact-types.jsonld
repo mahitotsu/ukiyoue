@@ -74,14 +74,26 @@
         "relatedBusinessGoals": "ukiyoue:relatedBusinessGoals"
       }
     },
-    "BusinessRequirements": {
-      "@id": "ukiyoue:BusinessRequirements",
+    "UseCase": {
+      "@id": "ukiyoue:UseCase",
       "@type": "@id",
       "@context": {
-        "relatedBusinessGoals": "ukiyoue:relatedBusinessGoals",
-        "requirements": "ukiyoue:requirements",
-        "stakeholderNeeds": "ukiyoue:stakeholderNeeds",
-        "successCriteria": "ukiyoue:successCriteria"
+        "goal": "ukiyoue:goal",
+        "actors": "ukiyoue:actors",
+        "scope": "ukiyoue:scope",
+        "level": "ukiyoue:level",
+        "preconditions": "ukiyoue:preconditions",
+        "triggers": "ukiyoue:triggers",
+        "mainFlow": "ukiyoue:mainFlow",
+        "alternativeFlows": "ukiyoue:alternativeFlows",
+        "exceptionFlows": "ukiyoue:exceptionFlows",
+        "postconditions": "ukiyoue:postconditions",
+        "businessRules": "ukiyoue:businessRules",
+        "nonFunctionalRequirements": "ukiyoue:nonFunctionalRequirements",
+        "extensions": "ukiyoue:extensions",
+        "includes": "ukiyoue:includes",
+        "relatedUserStories": "ukiyoue:relatedUserStories",
+        "derivedFunctionalRequirements": "ukiyoue:derivedFunctionalRequirements"
       }
     },
     "FunctionalRequirements": {
@@ -90,7 +102,7 @@
       "@context": {
         "requirements": "ukiyoue:requirements",
         "relatedUserStories": "ukiyoue:relatedUserStories",
-        "useCases": "ukiyoue:useCases",
+        "relatedUseCases": "ukiyoue:relatedUseCases",
         "acceptanceCriteria": "ukiyoue:acceptanceCriteria"
       }
     },

@@ -66,8 +66,11 @@ export function createLocalDocumentLoader(
   return async (url: string) => {
     // If it's a local Ukiyoue context, load from file system
     if (url.startsWith(contextBaseUrl)) {
-      const fileName = url.replace(contextBaseUrl, '');
-      const filePath = `${semanticsDir}/${fileName}`;
+      // Extract relative path after base URL
+      // e.g., "https://ukiyoue.example.org/contexts/base.jsonld" -> "base.jsonld"
+      const relativePath = url.substring(contextBaseUrl.length);
+      // Context files are in semantics/context/ directory
+      const filePath = `${semanticsDir}/context/${relativePath}`;
 
       try {
         const content = await Bun.file(filePath).text();
@@ -78,6 +81,26 @@ export function createLocalDocumentLoader(
         };
       } catch (error) {
         throw new Error(`Failed to load local context: ${url}\nPath: ${filePath}\n${error}`);
+      }
+    }
+
+    // Also support legacy single "context" path (without trailing slash for backwards compatibility)
+    if (url.includes('ukiyoue.example.org/context/')) {
+      const match = url.match(/\/context\/(.+\.jsonld)$/);
+      if (match) {
+        const fileName = match[1];
+        const filePath = `${semanticsDir}/context/${fileName}`;
+
+        try {
+          const content = await Bun.file(filePath).text();
+          return {
+            contextUrl: undefined,
+            document: JSON.parse(content),
+            documentUrl: url,
+          };
+        } catch (error) {
+          throw new Error(`Failed to load local context: ${url}\nPath: ${filePath}\n${error}`);
+        }
       }
     }
 

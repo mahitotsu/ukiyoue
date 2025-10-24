@@ -22,6 +22,7 @@ graph LR
     UserStory[User Story]
 
     %% Layer 2: Requirements
+    UseCase[Use Case]
     FuncReq[Functional Requirements]
     NonFuncReq[Non-Functional Requirements]
     TestStrategy[Test Strategy]
@@ -45,7 +46,7 @@ graph LR
     %% Layer 4: Implementation & Test
     ImplGuide[Implementation Guide]
     DevEnvConfig[Development Environment Configuration]
-    DBSchema[Database Schema]
+    PhysicalData[Physical Data Model]
     IaC[Infrastructure as Code]
     PipelineDef[CI/CD Pipeline Definition]
     RepoConfig[Repository Configuration]
@@ -76,18 +77,21 @@ graph LR
     BizGoal --> UserStory
 
     %% Layer 1 to Layer 2: Business to Requirements
+    BizGoal --> UseCase
+    UserStory --> UseCase
+    UseCase --> FuncReq
     BizGoal --> FuncReq
     BizGoal --> NonFuncReq
-    UserStory --> FuncReq
 
     %% Charter: プロジェクト承認・正当化（Why this project? 投資判断）
     %% BizGoal: 測定可能なビジネス目標（KPI、成功基準）
     %% UserStory: ユーザー視点の機能要求（As a, I want, So that）
+    %% UseCase: アクターとシステムの相互作用（詳細シナリオ、機能の源泉）
     %% RiskReg: プロジェクト全期間を通じて継続的に作成・更新（ADRと同様）
     %% FuncReq: 機能仕様詳細（How to implement? 実装可能な仕様）
 
     %% Requirements Decomposition
-    UserStory --> FuncReq
+    UseCase --> FuncReq
     BizGoal --> NonFuncReq
 
     %% Test Strategy (Overall Test Policy)
@@ -120,11 +124,11 @@ graph LR
     InfraArch --> ObservabilityArch
 
     %% Data Design Flow
-    DataModel --> DBSchema
+    DataModel --> PhysicalData
     DataModel --> API
     DataModel --> UIUX
 
-    %% Security Flow
+    %% Implementation Flow
     SecArch --> ImplGuide
     SecArch --> InfraArch
 
@@ -153,7 +157,7 @@ graph LR
     FuncReq --> SrcCode
     UIUX --> SrcCode
     API --> SrcCode
-    DBSchema --> SrcCode
+    PhysicalData --> SrcCode
     SrcCode --> SrcDoc
 
     %% Test Flow
@@ -214,9 +218,9 @@ graph LR
 
     class Charter,Roadmap layer1
     class BizReq,FuncReq,NonFuncReq,TestStrategy layer2
-    class ADR,RuntimeArch,DataModel,UIUX,API,SecArch,ReliabilityArch,InfraArch,ObservabilityArch,DevOpsArch,DevEnvArch,TestPlan,TestSpec layer3
-    class ImplGuide,DBSchema,DevEnvConfig,IaC,PipelineDef,RepoConfig,MonitoringConfig,SrcCode,TestCode,TestResults,SrcDoc layer4
-    class DeployGuide,OpsManual,IncidentGuide,TroubleshootGuide layer5
+    class RuntimeArch,DataModel,UIUX,API,SecurityArch,ReliabilityArch,InfraArch,ObservabilityArch,DevOpsArch,DevEnvArch,TestPlan,TestSpec,ADR layer3
+    class ImplGuide,PhysicalData,DevEnvConfig,IaC,PipelineDef,RepoConfig,MonitoringConfig,SrcCode,TestCode,TestResults,SrcDoc layer4
+    class DeployGuide,OpsManual,IncidentResponse,TroubleshootGuide layer5
     class SITPlan,SITSpec,SITResult,UATPlan,UATSpec,UATResult layer6
 ```
 
@@ -231,14 +235,15 @@ Project Charter（起点: プロジェクト承認・正当化）
   → Roadmap（スケジュールとマイルストーン）
   → Business Goal（ビジネス目標・KPI定義）
     → User Story（ユーザー視点の要求）
-      → Functional Requirements & Non-Functional Requirements（システム要件）
-        → Test Strategy（全体テスト戦略・品質ゲート定義）
-          → 設計（Layer 3: 13種類）
-            → 実装・テスト（Layer 4: 11種類）
-              → 運用（Layer 5: 4種類）
-                → 検証（Layer 6: 6種類）
-                  - SIT（技術統合検証）
-                  - UAT（ビジネス受入検証）
+      → Use Case（アクターとシステムの相互作用シナリオ）
+        → Functional Requirements & Non-Functional Requirements（システム要件）
+          → Test Strategy（全体テスト戦略・品質ゲート定義）
+            → 設計（Layer 3: 13種類）
+              → 実装・テスト（Layer 4: 11種類）
+                → 運用（Layer 5: 4種類）
+                  → 検証（Layer 6: 6種類）
+                    - SIT（技術統合検証）
+                    - UAT（ビジネス受入検証）
 ```
 
 #### 横断的な依存関係（フィードバックループ）
@@ -305,13 +310,14 @@ graph LR
 
 ```mermaid
 graph LR
-    BizGoal[Business Goal] --> FuncReq[Functional Requirements]
-    UserStory[User Story] --> FuncReq
+    BizGoal[Business Goal] --> UseCase[Use Case]
+    UserStory[User Story] --> UseCase
+    UseCase --> FuncReq[Functional Requirements]
+    BizGoal --> FuncReq
     BizGoal --> NonFuncReq[Non-Functional Requirements]
-    UserStory --> NonFuncReq
 ```
 
-**フロー**: ビジネスゴールとユーザーストーリー → 機能要件・非機能要件への分解
+**フロー**: ビジネスゴールとユーザーストーリー → ユースケース（詳細シナリオ） → 機能要件・非機能要件への分解
 
 ##### テスト戦略チェーン（Layer 2→4→6）
 
@@ -368,16 +374,25 @@ graph LR
 
 ```mermaid
 graph LR
-    FuncReq[Functional Requirements] --> DataModel[Data Model]
+    DataDict[Data Dictionary] --> ConceptModel[Conceptual Data Model]
+    UseCase[Use Case] --> ConceptModel
+
+    ConceptModel --> DataModel[Data Model]
+    DataDict --> DataModel
+    FuncReq[Functional Requirements] --> DataModel
     RuntimeArch[Runtime Architecture] --> DataModel
 
-    DataModel --> DBSchema[Database Schema]
+    DataModel --> PhysicalData[Physical Data Model]
     DataModel --> API[API Specification]
     DataModel --> UIUX[UI/UX Specification]
     DataModel --> SrcCode[Source Code]
 ```
 
-**フロー**: 機能要件 + 実行基盤 → 論理データモデル → 物理実装
+**フロー**:
+
+- Layer 2: 用語定義（Data Dictionary）→ 概念構造（Conceptual Data Model）
+- Layer 3: 論理データモデル（Data Model、データストア非依存）
+- Layer 4: 物理実装（Physical Data Model、データストア固有）
 
 ##### セキュリティチェーン（Layer 2→3→4→5）
 
@@ -445,7 +460,7 @@ graph LR
     FuncReq[Functional Requirements] --> SrcCode
     UIUX[UI/UX Specification] --> SrcCode
     API[API Specification] --> SrcCode
-    DBSchema[Database Schema] --> SrcCode
+    PhysicalData[Physical Data Model] --> SrcCode
 
     SrcCode --> SrcDoc[Source Code Documentation]
 ```
@@ -546,7 +561,7 @@ graph LR
 | **Functional Requirements**     | 9        | Data Model, UI/UX, Test Strategy, Test Plan, Test Spec, Source Code, SIT Plan, SIT Spec, UAT Plan, UAT Spec | **重要**: 機能仕様の明確化遅延が全実装に波及、UAT/E2E検証まで継続参照        |
 | **Business Goal**               | 6        | Func Req, Non-Func Req, Test Strategy, UAT Plan, UAT Spec                                                   | **重要**: ビジネス目標の曖昧さがプロジェクト全体の方向性を見失わせる         |
 | **Non-Functional Requirements** | 6        | ADR, Runtime Arch, Security Arch, Reliability Arch, Test Strategy, Test Plan                                | **重要**: 性能・セキュリティ要件の曖昧さが設計やり直しを招く                 |
-| **Data Model**                  | 4        | UI/UX, API, Database Schema, Source Code                                                                    | **重要**: データ構造変更のコストが高い、早期レビュー必須                     |
+| **Data Model**                  | 4        | UI/UX, API, Physical Data Model, Source Code                                                                | **重要**: データ構造変更のコストが高い、早期レビュー必須                     |
 | **DevOps Architecture**         | 4        | Dev Env Arch, Impl Guide, Pipeline Def, Repository Config                                                   | 開発プロセスの基盤、プロジェクト初期に確定                                   |
 | **Test Strategy**               | 3        | Test Plan, SIT Plan, UAT Plan                                                                               | **重要**: 全体テスト方針、品質ゲート定義、リリース基準の統括                 |
 
@@ -623,14 +638,14 @@ gantt
     section Layer 4: 実装準備
     Implementation Guide          :crit, implguide, after runtime security devenv devops, 8d
     Dev Environment Configuration :devenvconf, after devenv, 5d
-    Database Schema               :crit, dbschema, after datamodel, 8d
+    Physical Data Model           :crit, physicaldata, after datamodel, 8d
     Infrastructure as Code        :iac, after infra, 10d
     CI/CD Pipeline Definition     :pipeline, after devops, 8d
     Repository Configuration      :repo, after devops devenv, 5d
     Monitoring Configuration      :monitoring, after observ, 8d
 
     section Layer 4: 実装
-    Source Code                   :crit, code, after func implguide ui api dbschema repo devenvconf, 30d
+    Source Code                   :crit, code, after func implguide ui api physicaldata repo devenvconf, 30d
     Test Code                     :crit, testcode, after testspec code, 20d
     Test Results                  :crit, testresult, after testcode, 10d
     Source Code Documentation     :codedoc, after code, 8d

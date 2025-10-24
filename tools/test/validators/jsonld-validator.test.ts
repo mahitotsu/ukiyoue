@@ -1,5 +1,4 @@
 import { describe, expect, test } from 'bun:test';
-import { resolve } from 'path';
 import {
   createLocalDocumentLoader,
   validateJsonLd,
@@ -8,7 +7,6 @@ import {
 
 describe('jsonld-validator', () => {
   const contextBaseUrl = 'https://ukiyoue.example.org/contexts/';
-  const contextDir = resolve(__dirname, '../../../semantics/context/');
 
   describe('validateJsonLd', () => {
     test('should pass for valid JSON-LD document with inline context', async () => {
@@ -45,7 +43,7 @@ describe('jsonld-validator', () => {
         title: 'Test Project Charter',
       };
 
-      const documentLoader = createLocalDocumentLoader(contextBaseUrl, contextDir);
+      const documentLoader = createLocalDocumentLoader(contextBaseUrl);
       const result = await validateJsonLd(document, {
         documentLoader,
         validateExpansion: true,
@@ -83,7 +81,7 @@ describe('jsonld-validator', () => {
         title: 'Test Project Charter',
       };
 
-      const documentLoader = createLocalDocumentLoader(contextBaseUrl, contextDir);
+      const documentLoader = createLocalDocumentLoader(contextBaseUrl);
       const result = await validateJsonLd(document, {
         documentLoader,
         validateExpansion: true,
@@ -102,7 +100,7 @@ describe('jsonld-validator', () => {
         title: 'Test Project Charter',
       };
 
-      const documentLoader = createLocalDocumentLoader(contextBaseUrl, contextDir);
+      const documentLoader = createLocalDocumentLoader(contextBaseUrl);
       const result = await validateJsonLd(document, {
         documentLoader,
         validateExpansion: true,
@@ -143,7 +141,7 @@ describe('jsonld-validator', () => {
         title: 'Test Project Charter',
       };
 
-      const documentLoader = createLocalDocumentLoader(contextBaseUrl, contextDir);
+      const documentLoader = createLocalDocumentLoader(contextBaseUrl);
       const result = await validateJsonLd(document, {
         documentLoader,
         validateExpansion: true,
@@ -242,7 +240,7 @@ describe('jsonld-validator', () => {
 
   describe('createLocalDocumentLoader', () => {
     test('should load local context file', async () => {
-      const documentLoader = createLocalDocumentLoader(contextBaseUrl, contextDir);
+      const documentLoader = createLocalDocumentLoader(contextBaseUrl);
 
       const result = await documentLoader('https://ukiyoue.example.org/contexts/base.jsonld');
 
@@ -255,7 +253,7 @@ describe('jsonld-validator', () => {
     });
 
     test('should reject non-local context URLs', async () => {
-      const documentLoader = createLocalDocumentLoader(contextBaseUrl, contextDir);
+      const documentLoader = createLocalDocumentLoader(contextBaseUrl);
 
       await expect(documentLoader('https://schema.org/')).rejects.toThrow(
         'Context URL not in allowed local base'
@@ -263,7 +261,7 @@ describe('jsonld-validator', () => {
     });
 
     test('should reject nonexistent local context', async () => {
-      const documentLoader = createLocalDocumentLoader(contextBaseUrl, contextDir);
+      const documentLoader = createLocalDocumentLoader(contextBaseUrl);
 
       await expect(
         documentLoader('https://ukiyoue.example.org/contexts/nonexistent.jsonld')
@@ -286,7 +284,7 @@ describe('jsonld-validator', () => {
         customField: 'custom value',
       };
 
-      const documentLoader = createLocalDocumentLoader(contextBaseUrl, contextDir);
+      const documentLoader = createLocalDocumentLoader(contextBaseUrl);
       const result = await validateJsonLd(document, {
         documentLoader,
         validateExpansion: true,

@@ -1,0 +1,256 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://ukiyoue.example.org/schemas/layer2/conceptual-data-model.json",
+  "title": "Conceptual Data Model",
+  "description": "概念データモデル（REQ-CONCEPT）: ビジネス概念（エンティティ）間の関係性を定義",
+  "allOf": [{ "$ref": "../_common.json#/definitions/baseArtifact" }],
+  "type": "object",
+  "required": ["title", "entities"],
+  "properties": {
+    "@type": {
+      "const": "ConceptualDataModel"
+    },
+    "title": {
+      "type": "string",
+      "description": "概念データモデルのタイトル",
+      "minLength": 1
+    },
+    "overview": {
+      "type": "string",
+      "description": "概念データモデルの概要"
+    },
+    "entities": {
+      "type": "array",
+      "description": "概念エンティティ",
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "description"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^ENT-[A-Z]+-[0-9]{3}$",
+            "description": "エンティティID（例: ENT-TOS-001）"
+          },
+          "name": {
+            "type": "string",
+            "description": "エンティティ名（例: Customer, Order, MenuItem, Table）",
+            "minLength": 1
+          },
+          "description": {
+            "type": "string",
+            "description": "エンティティのビジネス的な意味と役割",
+            "minLength": 1
+          },
+          "attributes": {
+            "type": "array",
+            "description": "主要な属性（概念レベル、詳細は Data Dictionary で定義）",
+            "items": {
+              "type": "object",
+              "required": ["name", "description"],
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "description": "属性名"
+                },
+                "description": {
+                  "type": "string",
+                  "description": "属性の意味"
+                },
+                "termReference": {
+                  "type": "string",
+                  "pattern": "^TERM-[A-Z]+-[0-9]{3}$",
+                  "description": "Data Dictionary の用語IDへの参照"
+                }
+              }
+            }
+          },
+          "isAggregateRoot": {
+            "type": "boolean",
+            "description": "このエンティティが集約ルート（Aggregate Root）かどうか",
+            "default": false
+          },
+          "synonyms": {
+            "type": "array",
+            "description": "同義語・別名",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "minItems": 1
+    },
+    "relationships": {
+      "type": "array",
+      "description": "エンティティ間の関係性",
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "sourceEntity", "targetEntity", "type"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^REL-[A-Z]+-[0-9]{3}$",
+            "description": "関係ID（例: REL-TOS-001）"
+          },
+          "name": {
+            "type": "string",
+            "description": "関係の名前（例: places, contains, assigned to）",
+            "minLength": 1
+          },
+          "description": {
+            "type": "string",
+            "description": "関係の意味と詳細"
+          },
+          "sourceEntity": {
+            "type": "string",
+            "pattern": "^ENT-[A-Z]+-[0-9]{3}$",
+            "description": "関係の起点エンティティID"
+          },
+          "targetEntity": {
+            "type": "string",
+            "pattern": "^ENT-[A-Z]+-[0-9]{3}$",
+            "description": "関係の終点エンティティID"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["one-to-one", "one-to-many", "many-to-one", "many-to-many"],
+            "description": "関係の種類"
+          },
+          "cardinality": {
+            "type": "object",
+            "description": "多重度（詳細）",
+            "properties": {
+              "source": {
+                "type": "string",
+                "description": "起点側の多重度（例: 1, 0..1, 0..*, 1..*）"
+              },
+              "target": {
+                "type": "string",
+                "description": "終点側の多重度（例: 1, 0..1, 0..*, 1..*）"
+              }
+            }
+          },
+          "isOptional": {
+            "type": "boolean",
+            "description": "この関係が任意かどうか",
+            "default": false
+          },
+          "businessRule": {
+            "type": "string",
+            "description": "この関係に関するビジネスルール"
+          }
+        }
+      }
+    },
+    "businessRules": {
+      "type": "array",
+      "description": "エンティティ全体に関わるビジネスルール",
+      "items": {
+        "type": "object",
+        "required": ["id", "rule"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^BR-[A-Z]+-[0-9]{3}$",
+            "description": "ビジネスルールID（例: BR-TOS-001）"
+          },
+          "rule": {
+            "type": "string",
+            "description": "ルールの記述",
+            "minLength": 1
+          },
+          "description": {
+            "type": "string",
+            "description": "ルールの詳細説明"
+          },
+          "affectedEntities": {
+            "type": "array",
+            "description": "このルールが影響するエンティティID",
+            "items": {
+              "type": "string",
+              "pattern": "^ENT-[A-Z]+-[0-9]{3}$"
+            }
+          },
+          "type": {
+            "type": "string",
+            "enum": ["constraint", "calculation", "validation", "state-transition"],
+            "description": "ルールの種類"
+          },
+          "example": {
+            "type": "string",
+            "description": "ルールの具体例"
+          }
+        }
+      }
+    },
+    "stateTransitions": {
+      "type": "array",
+      "description": "状態遷移定義（該当エンティティがある場合）",
+      "items": {
+        "type": "object",
+        "required": ["entityId", "states", "transitions"],
+        "properties": {
+          "entityId": {
+            "type": "string",
+            "pattern": "^ENT-[A-Z]+-[0-9]{3}$",
+            "description": "状態を持つエンティティID"
+          },
+          "states": {
+            "type": "array",
+            "description": "取りうる状態のリスト",
+            "items": {
+              "type": "object",
+              "required": ["name", "description"],
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "description": "状態名（例: pending, confirmed, completed）"
+                },
+                "description": {
+                  "type": "string",
+                  "description": "状態の意味"
+                },
+                "isInitial": {
+                  "type": "boolean",
+                  "description": "初期状態かどうか",
+                  "default": false
+                },
+                "isFinal": {
+                  "type": "boolean",
+                  "description": "最終状態かどうか",
+                  "default": false
+                }
+              }
+            }
+          },
+          "transitions": {
+            "type": "array",
+            "description": "状態遷移のリスト",
+            "items": {
+              "type": "object",
+              "required": ["from", "to", "trigger"],
+              "properties": {
+                "from": {
+                  "type": "string",
+                  "description": "遷移元の状態"
+                },
+                "to": {
+                  "type": "string",
+                  "description": "遷移先の状態"
+                },
+                "trigger": {
+                  "type": "string",
+                  "description": "遷移のトリガー（イベント）"
+                },
+                "condition": {
+                  "type": "string",
+                  "description": "遷移の条件"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

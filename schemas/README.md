@@ -25,10 +25,12 @@ schemas/
 │   ├── risk-register.json   # PM-RISK
 │   ├── business-goal.json   # BIZ-GOAL
 │   └── user-story.json      # BIZ-STORY
-├── layer2/                  # Layer 2: 要件定義（4スキーマ）
-│   ├── business-requirements.json       # REQ-BIZ
+├── layer2/                  # Layer 2: 要件定義（6スキーマ）
+│   ├── use-case.json                    # REQ-UC
 │   ├── functional-requirements.json     # REQ-FUNC
 │   ├── non-functional-requirements.json # REQ-NONFUNC
+│   ├── data-dictionary.json             # REQ-DICT
+│   ├── conceptual-data-model.json       # REQ-CONCEPT
 │   └── test-strategy.json               # REQ-TESTSTRATEGY
 ├── layer3/                  # Layer 3: 設計・アーキテクチャ（13スキーマ）
 │   ├── architecture-decision-record.json           # ARCH-ADR
@@ -192,13 +194,35 @@ if (validate(document)) {
 
 ### Layer 2: 要件定義
 
+#### use-case.json (REQ-UC)
+
+**ID パターン**: `UC-[A-Z]+-[0-9]{3}` (Use Case)
+
+アクターとシステムの相互作用を詳細に記述するユースケース。メインフロー、代替フロー、例外フローを定義。
+
 #### functional-requirements.json (REQ-FUNC)
 
-**ID パターン**: `FR-[A-Z]+-[0-9]{3}` (Functional Requirements), `UC-[0-9]{3}` (Use Cases)
+**ID パターン**: `FR-[A-Z]+-[0-9]{3}` (Functional Requirements)
+
+システムの機能要件を定義。ユースケースから導出される機能仕様。
 
 #### non-functional-requirements.json (REQ-NONFUNC)
 
 **ID パターン**: `NFR-[A-Z]+-[0-9]{3}` (Non-Functional Requirements)
+
+システムの非機能要件を定義。品質特性と制約条件。
+
+#### data-dictionary.json (REQ-DICT)
+
+**ID パターン**: `TERM-[A-Z]+-[0-9]{3}` (Term)
+
+プロジェクト固有の用語定義。データ型、フォーマット、制約、バリデーションルール。
+
+#### conceptual-data-model.json (REQ-CONCEPT)
+
+**ID パターン**: `ENT-[A-Z]+-[0-9]{3}` (Entity), `REL-[A-Z]+-[0-9]{3}` (Relationship)
+
+ビジネス概念間の関係性を定義。エンティティ、関係性、ビジネスルール、状態遷移。
 
 #### test-strategy.json (REQ-TESTSTRATEGY)
 
@@ -210,7 +234,7 @@ if (validate(document)) {
 
 - **ARCH-ADR**: 技術選定の決定記録（status, decision, context, rationale）
 - **ARCH-RUNTIME**: 実行時システム構造（components, communication）
-- **ARCH-DATA**: データモデル（entities, ER diagram, data dictionary）
+- **ARCH-DATA**: データモデル（論理設計、データストア種別ごとの設計、アクセスパターン、マルチストア対応）
 - **ARCH-UI**: UI/UX 仕様（screens, wireframes, interactions）
 - **ARCH-API**: API 仕様（endpoints, request/response）
 - **ARCH-SECURITY**: セキュリティ（auth, encryption, vulnerabilities）
