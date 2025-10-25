@@ -55,13 +55,11 @@ table-order-system/
 ├── layer3-architecture/      # System architecture (ADR-006: 3-layer separation)
 │   ├── reliability/          # Reliability architecture (SLO, dependencies)
 │   ├── infrastructure/       # Infrastructure architecture (API, data model)
-│   └── observability/        # Observability architecture (logging, metrics)
+│   ├── observability/        # Observability architecture (logging, metrics)
+│   └── adrs/                 # Architecture Decision Records (Layer 3 artifacts)
 │
 ├── layer4-implementation/    # Implementation (ADR-005: native language)
 │   └── services/             # Microservices (TypeScript + Bun)
-│
-├── adrs/                     # Architecture Decision Records
-│   └── (decisions specific to this project)
 │
 └── traceability/             # Traceability matrix (ADR-007: hybrid approach)
     └── matrix-auto-generated.json

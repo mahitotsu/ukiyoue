@@ -97,7 +97,14 @@ Use consistent ID format across all artifacts:
 
 ### When Creating ADRs
 
-ADRs for this project follow the same format as framework ADRs but focus on **project-specific decisions**:
+ADRs for this project are **Layer 3 JSON artifacts** (not Markdown):
+
+- Schema: `schemas/layer3/architecture-decision-record.json`
+- Location: `layer3-architecture/adrs/adr-tos-XXX-title.json`
+- Format: JSON (per ADR-001, all Ukiyoue artifacts are JSON)
+- Focus: **Project-specific decisions** (database, protocol, deployment)
+
+Example decisions to document:
 
 - Why this database?
 - Why this communication protocol?
@@ -165,7 +172,7 @@ bun run generate-traceability examples/table-order-system/
 - **Framework Instructions**: `/home/akring/ukiyoue/.github/copilot-instructions.md`
 - **Schemas**: `/home/akring/ukiyoue/schemas/`
 - **Framework ADRs**: `/home/akring/ukiyoue/specs/architecture-decisions/`
-- **Project ADRs**: `/home/akring/ukiyoue/examples/table-order-system/adrs/`
+- **Project ADRs**: `/home/akring/ukiyoue/examples/table-order-system/layer3-architecture/adrs/`
 - **Validator**: `/home/akring/ukiyoue/tools/src/validate.ts`
 
 ## Development Status Tracking
