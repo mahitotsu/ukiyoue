@@ -96,7 +96,7 @@ semantics/
 
 ### artifact-types.jsonld
 
-- 42 種類の成果物タイプのセマンティック定義
+- 39 種類の成果物タイプのセマンティック定義
   - **Layer 1 (Business)**: ProjectCharter, Roadmap, RiskRegister, BusinessGoal, UserStory
   - **Layer 2 (Requirements)**: FunctionalRequirements, NonFunctionalRequirements, TestStrategy
   - **Layer 3-6**: (その他の設計・実装・運用・検証成果物)

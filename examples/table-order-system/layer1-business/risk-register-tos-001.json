@@ -9,7 +9,7 @@
   "title": "テーブルオーダーシステム リスク登録簿",
   "description": "テーブルオーダーシステム開発プロジェクトにおける全リスクと前提条件を一元管理",
   "traceability": {
-    "derivedFrom": ["pc-tos-001", "roadmap-tos-001"]
+    "derivedFrom": ["pc-tos-001", "roadmap-tos-001", "bg-tos-001", "bg-tos-002", "bg-tos-003"]
   },
   "risks": [
     {

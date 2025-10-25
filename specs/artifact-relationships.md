@@ -59,8 +59,7 @@ graph LR
     %% Layer 5: Operations
     DeployGuide[Deployment Guide]
     OpsManual[Operations Manual]
-    IncidentGuide[Incident Response Guide]
-    TroubleshootGuide[Troubleshooting Guide]
+    Runbook[Runbook]
 
     %% Layer 6: Verification
     SITPlan[System Integration Test Plan]
@@ -149,7 +148,7 @@ graph LR
     %% Observability Flow
     ObservabilityArch --> MonitoringConfig
     MonitoringConfig --> OpsManual
-    MonitoringConfig --> TroubleshootGuide
+    MonitoringConfig --> Runbook
 
     %% Design to Implementation
     RuntimeArch --> ImplGuide
@@ -170,8 +169,8 @@ graph LR
 
     %% Operations Flow
     DeployGuide --> OpsManual
-    OpsManual --> IncidentGuide
-    ObservabilityArch --> IncidentGuide
+    OpsManual --> Runbook
+    ObservabilityArch --> Runbook
 
     %% System Integration Test Flow (Layer 6 - Technical Verification)
     TestStrategy --> SITPlan
@@ -181,8 +180,7 @@ graph LR
     FuncReq --> SITSpec
     DeployGuide --> SITSpec
     OpsManual --> SITSpec
-    IncidentGuide --> SITSpec
-    TroubleshootGuide --> SITSpec
+    Runbook --> SITSpec
     SITSpec --> SITResult
 
     %% UAT Flow (Layer 6 - Business Acceptance)
@@ -201,12 +199,10 @@ graph LR
     SITResult -.-> FuncReq
     SITResult -.-> DeployGuide
     SITResult -.-> OpsManual
-    SITResult -.-> IncidentGuide
-    SITResult -.-> TroubleshootGuide
+    SITResult -.-> Runbook
     UATResult -.-> BizReq
     UATResult -.-> FuncReq
     UATResult -.-> Roadmap
-    SrcDoc -.-> TroubleshootGuide
 
     %% Styling
     classDef layer1 fill:#e1f5ff,stroke:#01579b,stroke-width:2px
@@ -220,7 +216,7 @@ graph LR
     class BizReq,FuncReq,NonFuncReq,TestStrategy layer2
     class RuntimeArch,DataModel,UIUX,API,SecurityArch,ReliabilityArch,InfraArch,ObservabilityArch,DevOpsArch,DevEnvArch,TestPlan,TestSpec,ADR layer3
     class ImplGuide,PhysicalData,DevEnvConfig,IaC,PipelineDef,RepoConfig,MonitoringConfig,SrcCode,TestCode,TestResults,SrcDoc layer4
-    class DeployGuide,OpsManual,IncidentResponse,TroubleshootGuide layer5
+    class DeployGuide,OpsManual,Runbook layer5
     class SITPlan,SITSpec,SITResult,UATPlan,UATSpec,UATResult layer6
 ```
 
@@ -250,6 +246,25 @@ Project Charter（起点: プロジェクト承認・正当化）
 
 実装・検証の結果が上流成果物の改善にフィードバックされます（点線の依存関係）：
 
+##### 横断的成果物（継続的更新）
+
+以下の成果物は特定の依存関係チェーンに固定されず、プロジェクトライフサイクル全体を通じて継続的に更新されます：
+
+- **Risk Register（リスク登録簿）**
+  - **初期入力**: Project Charter（初期リスクと前提条件）
+  - **継続的追加**: すべてのレイヤーから新規リスクを識別・追加
+    - Layer 1: Roadmap（スケジュールリスク）、Business Goal（目標達成リスク）
+    - Layer 2-3: 設計段階でのリスク識別
+    - Layer 4: 実装・テスト段階でのリスク識別
+    - Layer 5-6: 運用・検証段階でのリスク識別
+  - **参照**: すべての成果物がリスクを参照可能（スケジュール調整、リソース計画等）
+
+- **Architecture Decision Record（アーキテクチャ決定記録）**
+  - **初期入力**: Non-Functional Requirements（制約と品質要件）
+  - **継続的追加**: アーキテクチャ設計全段階で技術決定を記録
+    - Runtime Architecture、Infrastructure Architecture、Security Architecture等
+  - **参照**: すべてのアーキテクチャ成果物が過去の決定を参照可能（一貫性確保）
+
 ##### 実装テスト結果のフィードバック
 
 - **Test Results** → **Roadmap**（品質状況に応じたマイルストーン・スケジュール調整）
@@ -268,8 +283,7 @@ Project Charter（起点: プロジェクト承認・正当化）
 - **SIT Results** → **運用ドキュメント**（実テストによる運用手順の改善）
   - Deployment Guide（デプロイ手順の修正、所要時間の更新）
   - Operations Manual（FAQ追加、監視手順の改善）
-  - Incident Response Guide（障害シナリオ追加、復旧手順の改善）
-  - Troubleshooting Guide（診断フローの改善、不足情報の追加）
+  - Runbook（障害シナリオ追加、復旧手順の改善、診断フローの改善、不足情報の追加）
 
 ##### ビジネス受入テスト結果のフィードバック
 
@@ -282,12 +296,6 @@ Project Charter（起点: プロジェクト承認・正当化）
 - **UAT Results** → **Roadmap**（最終リリース判断による計画の確定）
   - 本番リリース承認 → 本番展開スケジュール確定
   - 条件付き承認 → 追加改善フェーズの計画
-
-##### 運用知見のフィードバック
-
-- **Source Code Documentation** → **Troubleshooting Guide**（実装詳細の運用知見化）
-  - コードロジックの説明 → トラブルシューティング手順への反映
-  - アーキテクチャ構造 → 診断フローへの組み込み
 
 #### レイヤー内の依存関係（詳細化チェーン）
 
@@ -304,7 +312,10 @@ graph LR
 
 **フロー**: プロジェクト承認 → ビジネス目標設定 → ユーザーストーリー作成 → スケジュール計画
 
-**Note**: Risk Register (リスク登録簿) は、ADRと同様にプロジェクトライフサイクル全体を通じて継続的に作成・更新されるため、特定の依存関係チェーンには含まれません。プロジェクト開始時にProject Charterの初期リスクから始まり、各フェーズで新規リスクが識別・追加されます。
+**Note**:
+
+- **Risk Register（リスク登録簿）**: プロジェクトライフサイクル全体を通じて継続的に作成・更新される横断的成果物。Project Charterの初期リスクから始まり、すべてのレイヤーで新規リスクが識別・追加される。特定の依存関係チェーンには含まれない。
+- **Architecture Decision Record（ADR）**: アーキテクチャ設計全段階で技術決定が必要になった時点で継続的に作成される横断的成果物。特定の依存関係チェーンには含まれない。
 
 ##### 要件分解チェーン（Layer 1→2）
 
@@ -368,7 +379,7 @@ graph LR
 
 **フロー**: 非機能要件 → 各種アーキテクチャ詳細化
 
-**注**: ADR（Architecture Decision Record）は、このフロー全体を通じてアーキテクチャ上の決定が必要になった時点で継続的に作成されます。ADRは成果物間のフローではなく、意思決定の記録プロセスです。
+**注**: 横断的成果物（ADR、Risk Register）は、このフロー全体を通じて継続的に作成・更新されます。ADRはアーキテクチャ上の決定が必要になった時点で記録され、Risk Registerはすべての段階でリスクが識別された時点で追加されます。
 
 ##### データ設計チェーン（Layer 2→3→4）
 
@@ -497,13 +508,12 @@ graph LR
 
     ObservArch[Observability Architecture] --> MonConfig[Monitoring & Logging Configuration]
     MonConfig --> OpsManual
-    MonConfig --> TroubleGuide[Troubleshooting Guide]
+    MonConfig --> Runbook[Runbook]
 
-    SrcDoc[Source Code Documentation] -.-> TroubleGuide
-    OpsManual --> TroubleGuide
+    OpsManual --> Runbook
 ```
 
-**フロー**: デプロイ手順 → 運用手順 → 障害対応 + トラブルシューティング
+**フロー**: デプロイ手順 → 運用手順 → 障害対応 + トラブルシューティング（Runbook統合）
 
 ##### システム統合テストチェーン（Layer 2→4→5→6）
 
@@ -517,8 +527,7 @@ graph LR
     FuncReq --> SITSpec
     DeployGuide[Deployment Guide] --> SITSpec
     OpsManual[Operations Manual] --> SITSpec
-    IncidentGuide[Incident Response Guide] --> SITSpec
-    TroubleGuide[Troubleshooting Guide] --> SITSpec
+    Runbook[Runbook] --> SITSpec
 
     SITSpec --> SITResults[SIT Results]
 ```
@@ -571,16 +580,16 @@ graph LR
 
 **注**: フィードバックループ（点線の依存関係）はカウントから除外
 
-| 成果物                           | 入力数 | 主な入力元                                                | プロジェクト管理上の重要性                                               |
-| -------------------------------- | ------ | --------------------------------------------------------- | ------------------------------------------------------------------------ |
-| **System Integration Test Spec** | 6      | SIT Plan, Func Req, Deploy, Ops Manual, Incident, Trouble | **最重要**: 技術統合検証、運用準備度の総合評価                           |
-| **Source Code**                  | 5      | Func Req, Impl Guide, UI/UX, API, DB Schema               | **最重要**: 全設計の統合実装、並行作業の調整が鍵、統合テスト重視         |
-| **Implementation Guide**         | 4      | Runtime Arch, Security Arch, Dev Env Arch, DevOps Arch    | **重要**: 複数アーキテクチャの実装方針統合、早期ドラフト作成で並行作業可 |
-| **Infrastructure Architecture**  | 3      | Reliability Arch, Runtime Arch, Security Arch             | **重要**: 信頼性・性能・セキュリティの統合設計、SREの重点作業領域        |
-| **Test Strategy**                | 3      | Business Goal, Functional Req, Non-Functional Req         | **重要**: 全要件に基づく包括的テスト戦略、品質ゲート定義                 |
-| **UAT Specification**            | 3      | UAT Plan, Business Req, Functional Req                    | **重要**: ビジネス受入テスト詳細化、最終リリース判断の基盤               |
-| **Observability Architecture**   | 3      | Runtime Arch, Infrastructure Arch, Reliability Arch       | 運用監視の統合設計、インフラ確定後に詳細化                               |
-| **Test Specification**           | 2      | Test Plan, Functional Requirements                        | テスト戦略と機能仕様の統合、並行作業可能                                 |
+| 成果物                           | 入力数 | 主な入力元                                             | プロジェクト管理上の重要性                                               |
+| -------------------------------- | ------ | ------------------------------------------------------ | ------------------------------------------------------------------------ |
+| **System Integration Test Spec** | 5      | SIT Plan, Func Req, Deploy, Ops Manual, Runbook        | **最重要**: 技術統合検証、運用準備度の総合評価                           |
+| **Source Code**                  | 5      | Func Req, Impl Guide, UI/UX, API, DB Schema            | **最重要**: 全設計の統合実装、並行作業の調整が鍵、統合テスト重視         |
+| **Implementation Guide**         | 4      | Runtime Arch, Security Arch, Dev Env Arch, DevOps Arch | **重要**: 複数アーキテクチャの実装方針統合、早期ドラフト作成で並行作業可 |
+| **Infrastructure Architecture**  | 3      | Reliability Arch, Runtime Arch, Security Arch          | **重要**: 信頼性・性能・セキュリティの統合設計、SREの重点作業領域        |
+| **Test Strategy**                | 3      | Business Goal, Functional Req, Non-Functional Req      | **重要**: 全要件に基づく包括的テスト戦略、品質ゲート定義                 |
+| **UAT Specification**            | 3      | UAT Plan, Business Req, Functional Req                 | **重要**: ビジネス受入テスト詳細化、最終リリース判断の基盤               |
+| **Observability Architecture**   | 3      | Runtime Arch, Infrastructure Arch, Reliability Arch    | 運用監視の統合設計、インフラ確定後に詳細化                               |
+| **Test Specification**           | 2      | Test Plan, Functional Requirements                     | テスト戦略と機能仕様の統合、並行作業可能                                 |
 
 ##### プロジェクト管理上の推奨アクション
 
@@ -653,12 +662,11 @@ gantt
     section Layer 5: 運用
     Deployment Guide              :deploy, after iac pipeline testresult, 5d
     Operations Manual             :manual, after deploy monitoring testresult, 8d
-    Incident Response Guide       :incident, after observ manual, 5d
-    Troubleshooting Guide         :trouble, after codedoc incident, 5d
+    Runbook                       :runbook, after observ manual codedoc, 5d
 
     section Layer 6: 検証
     System Integration Test Plan  :crit, sitplan, after teststrat func nonfunc, 5d
-    System Integration Test Spec  :crit, sitspec, after sitplan func deploy manual incident trouble, 8d
+    System Integration Test Spec  :crit, sitspec, after sitplan func deploy manual runbook, 8d
     System Integration Test Result :crit, sitresult, after sitspec, 10d
     UAT Plan                      :crit, uatplan, after teststrat biz func, 5d
     UAT Specification             :crit, uatspec, after uatplan biz func sitresult, 8d
@@ -671,10 +679,10 @@ gantt
 
 - **Layer 3並行**: UI/UX, API, Security, Reliability, Infrastructure, Observability, DevOps, Dev Env, Test Plan, Test Spec
 - **Layer 4並行**: Dev Env Config, IaC, CI/CD Pipeline, Repository Config, Monitoring
-- **Layer 5並行**: Deployment Guide, Operations Manual, Incident Guide, Troubleshooting Guide（実装完了後すぐ着手、SIT Specへ）
+- **Layer 5並行**: Deployment Guide, Operations Manual, Runbook（実装完了後すぐ着手、SIT Specへ）
 - **Layer 6前倒し**: SIT Plan, UAT Plan（要件確定後すぐ作成開始、実装と並行して策定）
 
-**注**: ADR（Architecture Decision Record）はプロジェクト全体を通じて継続的に作成される成果物であり、単一のタスクとしてスケジュールされません。アーキテクチャ上の決定が必要になった時点で遅滞なく作成・記録されます。
+**注**: 横断的成果物（ADR、Risk Register）はプロジェクト全体を通じて継続的に作成・更新される成果物であり、単一のタスクとしてスケジュールされません。技術決定やリスク識別が必要になった時点で遅滞なく作成・記録されます。
 
 **スケジュールバッファの配置**:
 

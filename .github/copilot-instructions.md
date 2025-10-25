@@ -74,10 +74,11 @@ Each README.md serves a specific scope without duplication:
 Current state (Phase 1):
 
 - **🎨 Ukiyoue Framework** (Root): specs/ (specification documents and ADRs)
-- **📋 schemas/**: 32 JSON Schema files (31 artifacts + \_common.json)
+- **📋 schemas/**: 31 JSON Schema files (30 artifacts + \_common.json)
   - Layer 1: 5 types (ProjectCharter, Roadmap, RiskRegister, BusinessGoal, UserStory)
   - Layer 2: 6 types (UseCase, FunctionalRequirements, NonFunctionalRequirements, DataDictionary, ConceptualDataModel, TestStrategy)
-  - Layer 3-6: 20 types (Architecture, Implementation, Operations, Verification)
+  - Layer 3-6: 19 types (Architecture, Implementation, Operations, Verification)
+    - Layer 5: Runbook統合（Incident Response Guide + Troubleshooting Guide → Runbook）
   - **Data modeling**: Conceptual (Layer 2) → Logical (Layer 3, multi-store) → Physical (Layer 4, store-specific)
 - **🔗 semantics/**: 6 JSON-LD files (4 contexts + vocabulary + README)
 - **🛠️ tools/**: Comprehensive validator with Bun tests (113 unit tests)
