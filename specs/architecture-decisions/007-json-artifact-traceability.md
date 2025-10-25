@@ -446,6 +446,13 @@ bun run validate:traceability
 - **トレース方向が定義規則に違反**（例: 上流が下流を参照している）
 - **必須トレースの欠落**（例: すべてのFRはBIZ-REQを参照すべき）
 
+**実装**:
+
+- **Reference Validator** (tools/src/validators/reference-validator.ts): 参照先の存在と型チェック
+- **SHACL Validator** (tools/src/validators/shacl-validator.ts): グラフ全体の整合性チェック
+
+詳細は ADR-008（多層検証戦略）を参照。
+
 #### 2. トレーサビリティマトリクス自動生成
 
 ```bash
@@ -479,6 +486,10 @@ bun run generate:traceability-matrix
 - **ADR-005**: 実行可能コードのJSON化適用範囲
   - Layer 4は外部マトリクス（コード変更回避）
   - Layer 1-3,5,6はハイブリッド（異なる判断基準）
+- **ADR-008**: 多層検証戦略
+  - トレーサビリティの検証を多層的に実現
+  - Reference Validator: 個別参照の型チェック
+  - SHACL Validator: グラフ全体の整合性チェック
 
 ## References
 

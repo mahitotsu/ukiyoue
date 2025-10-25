@@ -104,12 +104,7 @@
           "affectedArtifacts": {
             "type": "array",
             "items": { "type": "string" },
-            "description": "影響を受ける成果物のIDリスト（例: pc-tos-001, Phase 2）"
-          },
-          "relatedRequirements": {
-            "type": "array",
-            "items": { "type": "string" },
-            "description": "関連する要件のIDリスト"
+            "description": "影響を受ける成果物のIDリスト。成果物全体のIDを指定（例: pc-tos-001, roadmap-tos-001, us-tos-001）。フェーズIDなどネストしたオブジェクトのIDは指定しない"
           },
           "triggers": {
             "type": "array",

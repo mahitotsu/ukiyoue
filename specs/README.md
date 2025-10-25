@@ -82,6 +82,7 @@ specs/
 - **ADR-005**: 実行可能コードのJSON化適用範囲
 - **ADR-006**: Reliability, Infrastructure, Observability Architecture の分離
 - **ADR-007**: JSON成果物のトレーサビリティ実現方式
+- **ADR-008**: 多層検証戦略（Schema → Reference → JSON-LD → SHACL）
 
 ## 🎯 このドキュメント群の役割
 

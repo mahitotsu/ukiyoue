@@ -54,7 +54,7 @@
   "epic": "キッチン向け注文管理",
   "labels": ["frontend", "backend", "kitchen", "real-time"],
   "traceability": {
-    "derivedFrom": ["pc-tos-001", "bg-tos-001", "bg-tos-002"]
+    "derivedFrom": ["bg-tos-001", "bg-tos-002"]
   },
   "metadata": {
     "created": "2025-10-24",

@@ -178,30 +178,46 @@ validation:
 ```yaml
 tools:
   validators:
-    - schema-validator: スキーマ準拠チェック
-    - link-checker: リンク切れチェック
-    - consistency-checker: 用語の一貫性チェック
+    # Stage 1: JSON Schema 検証
+    - schema-validator: スキーマ準拠チェック、フィールド構造検証
+    # Stage 2: Reference 検証
+    - reference-validator: リンク切れチェック、タイプ一貫性チェック
+    # Stage 3: JSON-LD 検証
+    - jsonld-validator: セマンティック構文検証、コンテキスト展開
+    # Stage 4: SHACL 検証 (オプション、--full-validation)
+    - shacl-validator: グラフ整合性検証、トレーサビリティ完全性チェック
+    # その他（将来実装）
     - metadata-validator: 必須メタデータチェック
+    - consistency-checker: 用語の一貫性チェック
 ```
+
+**多層検証戦略** ([ADR-008](architecture-decisions/008-multi-layer-validation-strategy.md)):
+
+- **Stage 1-3**: デフォルトで有効（高速、ファイル保存時・コミット時に実行）
+- **Stage 4**: `--full-validation` で有効化（低速、CI/CD で実行推奨）
 
 **使用例**:
 
 ```bash
-# 全チェック実行
+# 全チェック実行（Stage 1-3: Schema, Reference, JSON-LD）
 ukiyoue validate --all docs/
 
-# スキーマチェックのみ
-ukiyoue validate --schema docs/api-spec.json
+# 完全検証（Stage 1-4: SHACL 含む、CI/CD推奨）
+ukiyoue validate --full-validation docs/
 
-# CIでの自動実行
-ukiyoue validate --ci --fail-on-error
+# スキーマチェックのみ
+ukiyoue validate --skip-references --skip-jsonld docs/api-spec.json
+
+# CIでの自動実行（JSON-LD スキップで高速化）
+ukiyoue validate --skip-jsonld --fail-on-error docs/
 ```
 
 **検証方法**:
 
 - 各バリデーターが正しくエラーを検出する
 - False positive が少ない
-- 実行速度が適切
+- 実行速度が適切（Stage 1-3: 高速、Stage 4: 低速だが正確）
+- 多層検証により、段階的な品質保証が可能
 
 **実装優先度**: 🔴 Critical (Phase 1)
 

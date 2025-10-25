@@ -31,24 +31,38 @@ This is a **standalone validation tool project**, not the main framework:
 
 ### 3. Validation Architecture
 
-Three-layer validation system:
+**Multi-layer validation system (ADR-008)**:
 
 1. **Schema Validator** (`validators/schema-validator.ts`)
    - JSON Schema Draft-07 validation (ADR-002)
    - Schema auto-detection from document type
    - ajv with strict mode and format validation
+   - Layer: Field structure validation (fast)
 
 2. **Reference Validator** (`validators/reference-validator.ts`)
    - Traceability reference integrity (FR-AUTO-002)
-   - Checks: `derivedFrom`, `satisfies`, `relatedDocuments`, etc.
+   - Type-aware validation (artifact-input-rules.json)
+   - Checks: `derivedFrom`, `satisfies`, `relatedDocuments`, `affectedArtifacts`, `relatedDecisions`, etc.
    - Circular reference detection
    - Cross-document reference resolution
+   - Layer: Reference integrity validation (fast)
 
 3. **JSON-LD Validator** (`validators/jsonld-validator.ts`)
    - JSON-LD 1.1 compliance (ADR-003)
    - Context expansion validation
    - Local document loader (security: no remote contexts by default)
    - @context structure validation
+   - Layer: Semantic syntax validation (fast)
+
+4. **SHACL Validator** (`validators/shacl-validator.ts`) [NEW]
+   - SHACL (Shapes Constraint Language) validation (ADR-008)
+   - Type constraints (sh:class) - validates input artifact types
+   - Document indexing (recursive directory scan)
+   - RDF graph construction (JSON-LD → RDF with recursive loading)
+   - Supports `traceability.derivedFrom` nested structure
+   - Layer: Graph-based semantic integrity validation (slow)
+   - Usage: Optional, enabled with `--full-validation` flag
+   - Purpose: AI-era foundation for advanced semantic reasoning
 
 ### 4. Code Quality Standards
 
@@ -87,10 +101,17 @@ Three-layer validation system:
 
 **Options Philosophy**:
 
-- Enable all validations by default
+- Enable all validations by default (Schema, Reference, JSON-LD)
 - Use `--skip-*` flags to disable specific checks
+- Use `--full-validation` to enable SHACL validation (Stage 4)
 - Security-first: `--allow-remote` explicitly enables risky operations
 - Support both single files and directories
+
+**Validation Timing Recommendations**:
+
+- **Save (Stages 1-2)**: Schema + Reference validation for fast feedback
+- **Commit (Stages 1-3)**: Add JSON-LD validation
+- **CI/CD (Stages 1-4)**: Use `--full-validation` for complete semantic integrity
 
 **Output Format**:
 
@@ -102,6 +123,12 @@ Three-layer validation system:
 📄 Validating: project-charter.json
   🔍 JSON Schema validation...
   ✅ Schema validation passed
+  🔗 Reference validation...
+  ✅ Reference validation passed
+  📊 JSON-LD validation...
+  ✅ JSON-LD validation passed
+  🎯 SHACL validation...
+  ✅ SHACL validation passed
 
 ============================================================
 ✅ All 3 file(s) validated successfully
@@ -115,8 +142,9 @@ tools/
 │   ├── validate.ts              # CLI entry point
 │   ├── validators/
 │   │   ├── schema-validator.ts  # JSON Schema validation
-│   │   ├── reference-validator.ts # Reference integrity
-│   │   └── jsonld-validator.ts  # JSON-LD validation
+│   │   ├── reference-validator.ts # Reference integrity + Type checking
+│   │   ├── jsonld-validator.ts  # JSON-LD validation
+│   │   └── shacl-validator.ts   # SHACL graph validation
 │   └── types/
 │       └── jsonld.d.ts          # Type definitions
 ├── test/
@@ -124,7 +152,9 @@ tools/
 │   ├── validators/
 │   │   ├── schema-validator.test.ts
 │   │   ├── reference-validator.test.ts
-│   │   └── jsonld-validator.test.ts
+│   │   ├── reference-validator-types.test.ts # Type checking tests
+│   │   ├── jsonld-validator.test.ts
+│   │   └── shacl-validator.test.ts
 │   └── fixtures/
 │       ├── valid.json
 │       └── invalid.json
@@ -155,8 +185,15 @@ Auto-detect schema from document:
 
 **Schema Location**: Assumes schemas exist at `../schemas/` relative to tools directory
 **Semantic Context**: Assumes contexts exist at `../semantics/context/`
+**SHACL Shapes**: Assumes shapes exist at `../schemas/shacl/`
 **Resolution**: Use relative paths, not absolute URLs
 **Validation**: Tools validate against parent framework's schemas
+
+**Special Artifacts**:
+
+- **Risk Register**: `derivedFrom` not allowed (maxCount 0), uses individual `risk.affectedArtifacts`
+- **ADR**: `derivedFrom` not allowed (maxCount 0), uses `relatedDecisions`
+- **Artifact References**: Must reference whole artifact ID (e.g., `roadmap-tos-001`), not nested object IDs (e.g., `phase-tos-001`)
 
 ## Implementation Guidelines
 
@@ -262,8 +299,9 @@ const expanded = await jsonld.expand(data, { documentLoader });
 **Unit Tests**: Test each validator module independently
 
 - Schema validator: valid/invalid schemas, format checks
-- Reference validator: circular refs, missing refs, valid refs
+- Reference validator: circular refs, missing refs, valid refs, type checking
 - JSON-LD validator: context expansion, JSON-LD 1.1 features
+- SHACL validator: type constraints, document indexing, RDF graph construction
 
 **Integration Tests**: Test CLI with real files
 
@@ -295,11 +333,17 @@ bun src/validate.ts ../examples/project-charter.json
 # Validate directory
 bun src/validate.ts ../examples/
 
+# Full validation (includes SHACL)
+bun src/validate.ts ../examples/ --full-validation
+
 # Schema validation only
 bun src/validate.ts document.json --skip-references --skip-jsonld
 
 # Skip JSON-LD (faster in CI)
 bun src/validate.ts ../examples/ --skip-jsonld
+
+# Skip SHACL (default, explicit form)
+bun src/validate.ts ../examples/ --skip-shacl
 ```
 
 ### Running Tests
@@ -402,8 +446,9 @@ git commit
 **If you encounter**:
 
 - Schema validation issues → Check ADR-002 (Draft-07), ajv documentation
-- Reference validation issues → Check FR-AUTO-002 (link-checker requirements)
+- Reference validation issues → Check FR-AUTO-002 (link-checker requirements), artifact-input-rules.json
 - JSON-LD issues → Check ADR-003 (JSON-LD 1.1), jsonld.js documentation
+- SHACL validation issues → Check ADR-008 (multi-layer validation), artifact-constraints.ttl
 - Bun runtime issues → Check ADR-004, Bun documentation
 - TypeScript errors → Check tsconfig.json, use strict types
 - Test failures → Run `bun test --verbose`, check fixtures

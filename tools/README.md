@@ -6,9 +6,10 @@
 
 Ukiyoue JSON ドキュメントの包括的な検証ツールを提供します:
 
-1. **JSON Schema 検証** (ADR-002: Draft-07)
-2. **トレーサビリティ参照整合性チェック** (FR-AUTO-002: link-checker)
-3. **JSON-LD セマンティック検証** (ADR-003: JSON-LD 1.1)
+1. **JSON Schema 検証** (ADR-002: Draft-07) - フィールド構造の検証
+2. **トレーサビリティ参照整合性チェック** (FR-AUTO-002: link-checker) - 参照IDの存在と型の検証
+3. **JSON-LD セマンティック検証** (ADR-003: JSON-LD 1.1) - セマンティック構文の検証
+4. **SHACL 検証** (ADR-008: 多層検証戦略) - グラフ全体の整合性と型制約の検証（オプション）
 
 ## 🛠️ ツール一覧
 
@@ -19,10 +20,12 @@ Ukiyoue JSON ドキュメントの包括的な検証ツールを提供します:
 **機能**:
 
 - JSON Schema Draft-07 による厳密な検証
-- トレーサビリティ参照の整合性チェック（derivedFrom, satisfies, relatedDocuments 等）
+- トレーサビリティ参照の整合性チェック（derivedFrom, satisfies, relatedDocuments, affectedArtifacts, relatedDecisions 等）
+- 参照される成果物の型チェック（artifact-input-rules.json）
 - 循環参照の検出
 - JSON-LD 1.1 コンプライアンス検証
 - @context の展開可能性チェック
+- **SHACL 検証**（オプション、--full-validation）: RDF グラフ全体の整合性と型制約の検証
 - セキュリティ: リモートコンテキストの読み込みをデフォルトで無効化
 
 **使用方法**:
@@ -43,6 +46,9 @@ bun tools/src/validate.ts examples/project-charter.json --schema schemas/layer1/
 # JSON-LD 検証をスキップ
 bun tools/src/validate.ts examples/ --skip-jsonld
 
+# フル検証（SHACL含む、CI/CD推奨）
+bun tools/src/validate.ts examples/ --full-validation
+
 # 詳細出力
 bun tools/src/validate.ts examples/ --verbose
 
@@ -55,6 +61,8 @@ bun run validate examples/
 - `--skip-schema`: JSON Schema 検証をスキップ
 - `--skip-references`: 参照整合性チェックをスキップ
 - `--skip-jsonld`: JSON-LD 検証をスキップ
+- `--skip-shacl`: SHACL 検証をスキップ（--full-validation 使用時）
+- `--full-validation`: 全ての検証を有効化（SHACL含む、遅いがCI/CD推奨）
 - `--allow-remote`: リモート @context の読み込みを許可（セキュリティ警告）
 - `--schema <path>`: 明示的にスキーマファイルを指定
 - `--verbose`: 詳細な検証結果を表示
@@ -69,6 +77,9 @@ bun run validate examples/
 🔨 Building document index...
 ✅ Indexed 3 document(s)
 
+⚠️  Full validation mode: SHACL validation enabled (slower, graph-wide integrity)
+   Project root: /path/to/examples
+
 📄 Validating: project-charter.json
   🔍 JSON Schema validation...
   ✅ Schema validation passed
@@ -76,10 +87,18 @@ bun run validate examples/
   ✅ Reference validation passed
   🌐 JSON-LD validation...
   ✅ JSON-LD validation passed
+  📊 SHACL validation...
+  ✅ SHACL validation passed
 
 ============================================================
 ✅ All 3 file(s) validated successfully
 ```
+
+**検証戦略の推奨**:
+
+- **ファイル保存時**: Stage 1-2（Schema + Reference）- 高速
+- **コミット前**: Stage 1-3（Schema + Reference + JSON-LD）- 標準
+- **CI/CD**: Stage 1-4（--full-validation でSHACL含む）- 完全
 
 ## 📦 インストール
 
@@ -104,7 +123,7 @@ bun run test:coverage:report
 bun test test/validators/reference-validator.test.ts
 ```
 
-**テストカバレッジ**: 113 tests (全て通過)
+**テストカバレッジ**: 137 tests (全て通過)
 
 - **CLI統合テスト** (`validate.test.ts`): 39 tests
   - 引数解析、ファイル収集、検証オーケストレーション、出力フォーマット
@@ -118,6 +137,12 @@ bun test test/validators/reference-validator.test.ts
 - **参照整合性チェック** (`reference-validator.test.ts`): 22 tests
   - 基本参照検証、循環参照検出、自己参照、空配列/null/undefined処理
   - 深い循環参照、複数経路循環、全参照フィールドタイプ、ドキュメントインデックス
+- **参照型チェック** (`reference-validator-types.test.ts`): 13 tests
+  - 成果物間の型制約検証（artifact-input-rules.json）
+  - User Story → Business Goal、Risk Register affectedArtifacts、ADR relatedDecisions
+- **SHACL 検証** (`shacl-validator.test.ts`): 11 tests
+  - RDF グラフ生成、型制約、derivedFrom 制約
+  - Risk Register/ADR の特殊ケース（derivedFrom不要）
 
 **コードカバレッジ**:
 
@@ -139,15 +164,20 @@ bun test test/validators/reference-validator.test.ts
 - ✅ FR-AUTO-002 (自動バリデーション): 全ての検証機能をテスト
 - ✅ ADR-002 (JSON Schema Draft-07): フォーマット検証、$ref解決、オプション
 - ✅ ADR-003 (JSON-LD 1.1): コンテキスト、展開、1.1機能
-- ✅ 参照整合性: 循環検出、欠落検出、全参照フィールドタイプ
+- ✅ ADR-008 (多層検証戦略): SHACL検証、型制約、グラフ整合性
+- ✅ 参照整合性: 循環検出、欠落検出、全参照フィールドタイプ、型チェック
 - ✅ エラーハンドリング: 不正入力、ファイルエラー、パースエラー
 - ✅ エッジケース: null/undefined、空配列、自己参照、深いネスト
+- ✅ 特殊成果物: Risk Register/ADR（derivedFrom不要、個別フィールド検証）
 
 ## 🔧 技術仕様
 
 - **ランタイム**: Bun (ADR-004)
 - **言語**: TypeScript (strict mode)
 - **JSON Schema**: ajv v8+ (Draft-07, ADR-002)
+- **JSON-LD**: jsonld v8+ (1.1, ADR-003)
+- **SHACL**: rdf-validate-shacl v0.6+ (W3C SHACL, ADR-008)
+- **RDF処理**: N3.js v1.26+ (Turtle/RDF)
 - **JSON-LD**: jsonld v8+ (JSON-LD 1.1, ADR-003)
 - **フォーマット**: ajv-formats (uri, date-time 等)
 - **出力**: chalk (カラフルな CLI 出力)

@@ -4,13 +4,16 @@
  * Validates traceability reference integrity:
  * - Checks that all referenced document IDs exist
  * - Detects circular references
+ * - Validates reference types against artifact input rules
  * - Validates relatedDocuments, derivedFrom, satisfies fields
  *
  * Satisfies: FR-AUTO-002 (link-checker component)
  */
 
+import artifactInputRules from '@ukiyoue/schemas/constraints/artifact-input-rules.json';
+
 export interface ReferenceValidationError {
-  type: 'missing-reference' | 'circular-reference' | 'invalid-format';
+  type: 'missing-reference' | 'circular-reference' | 'invalid-format' | 'invalid-input-type';
   field: string;
   documentId: string;
   referencedId: string;
@@ -46,6 +49,8 @@ function extractReferences(
     'derivedFrom',
     'satisfies',
     'relatedDocuments',
+    'affectedArtifacts', // Risk Register: each risk's affected artifacts
+    'relatedDecisions', // ADR: related ADRs
     'parentId',
     'childIds',
     'dependsOn',
@@ -88,6 +93,83 @@ function extractReferences(
 }
 
 /**
+ * Normalize artifact type to canonical form
+ * e.g., "ProjectCharter" -> "project-charter", "PM-CHARTER" -> "project-charter"
+ */
+function normalizeArtifactType(type: string): string {
+  // Convert to lowercase and hyphenated
+  const normalized = type
+    .replace(/([A-Z])/g, '-$1')
+    .toLowerCase()
+    .replace(/^-/, '');
+
+  // Check if it's already a canonical type
+  if (artifactInputRules.rules[normalized as keyof typeof artifactInputRules.rules]) {
+    return normalized;
+  }
+
+  // Check aliases
+  for (const [canonical, aliases] of Object.entries(artifactInputRules.typeAliases)) {
+    if (aliases.includes(type) || aliases.includes(normalized)) {
+      return canonical;
+    }
+  }
+
+  return normalized;
+}
+
+/**
+ * Validate that referenced document type is allowed as input
+ */
+function validateInputType(
+  documentType: string,
+  referencedType: string,
+  field: string
+): { valid: boolean; message?: string } {
+  const normalizedDocType = normalizeArtifactType(documentType);
+  const normalizedRefType = normalizeArtifactType(referencedType);
+
+  // Only validate derivedFrom field (input validation)
+  if (field !== 'derivedFrom') {
+    return { valid: true };
+  }
+
+  const rules =
+    artifactInputRules.rules[normalizedDocType as keyof typeof artifactInputRules.rules];
+
+  if (!rules) {
+    // Unknown artifact type, skip validation
+    return { valid: true };
+  }
+
+  // Check if it's a continuous input artifact (Risk Register, ADR)
+  if ('continuousInputs' in rules && rules.continuousInputs) {
+    // These artifacts accept inputs from any layer, no strict validation
+    return { valid: true };
+  }
+
+  const allowedInputs: string[] = rules.inputs || [];
+
+  if (allowedInputs.length === 0) {
+    // No inputs allowed (e.g., Project Charter)
+    return {
+      valid: false,
+      message: `${documentType} should not have derivedFrom references (starting point artifact)`,
+    };
+  }
+
+  if (!allowedInputs.includes(normalizedRefType)) {
+    const allowedList = allowedInputs.join(', ');
+    return {
+      valid: false,
+      message: `${documentType} can only derive from [${allowedList}], but found ${referencedType}`,
+    };
+  }
+
+  return { valid: true };
+}
+
+/**
  * Detect circular references using DFS
  */
 function detectCircularReferences(
@@ -124,6 +206,7 @@ export function validateReferences(
 ): ReferenceValidationResult {
   const errors: ReferenceValidationError[] = [];
   const documentId = document.id as string;
+  const documentType = (document['@type'] as string) || (document.type as string);
 
   if (!documentId || typeof documentId !== 'string') {
     return {
@@ -144,9 +227,11 @@ export function validateReferences(
   // Extract all references from the document
   const references = extractReferences(document);
 
-  // Check each reference exists in the index
+  // Check each reference exists in the index and validate input types
   for (const ref of references) {
-    if (!documentIndex[ref.id]) {
+    const referencedDoc = documentIndex[ref.id];
+
+    if (!referencedDoc) {
       errors.push({
         type: 'missing-reference',
         field: ref.field,
@@ -155,6 +240,21 @@ export function validateReferences(
         message: `Referenced document "${ref.id}" does not exist`,
         path: `/${ref.path}`,
       });
+    } else if (documentType) {
+      // Validate input type
+      const referencedType = referencedDoc.type;
+      const typeValidation = validateInputType(documentType, referencedType, ref.field);
+
+      if (!typeValidation.valid) {
+        errors.push({
+          type: 'invalid-input-type',
+          field: ref.field,
+          documentId,
+          referencedId: ref.id,
+          message: typeValidation.message || 'Invalid input type',
+          path: `/${ref.path}`,
+        });
+      }
     }
   }
 

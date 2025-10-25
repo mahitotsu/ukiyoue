@@ -15,6 +15,7 @@
 | [005](005-executable-code-representation.md)                      | 実行可能コードのJSON化適用範囲                                 | ✅ Accepted |
 | [006](006-reliability-infrastructure-observability-separation.md) | Reliability, Infrastructure, Observability Architecture の分離 | ✅ Accepted |
 | [007](007-json-artifact-traceability.md)                          | JSON成果物のトレーサビリティ実現方式                           | ✅ Accepted |
+| [008](008-multi-layer-validation-strategy.md)                     | 多層検証戦略                                                   | ✅ Accepted |
 
 ## Decision Flow
 
@@ -43,6 +44,12 @@ ADR-006: Architecture Separation
        ↓
 ADR-007: JSON Artifact Traceability
   └─ Hybrid: Embedded + Auto-generated Matrix
+       ↓
+ADR-008: Multi-Layer Validation Strategy
+  ├─ JSON Schema: Field-level structure
+  ├─ Reference Validator: Type consistency (artifact-input-rules.json)
+  ├─ JSON-LD Validator: Semantic syntax
+  └─ SHACL Validator: Graph-wide integrity
 ```
 
 ## ADR Template

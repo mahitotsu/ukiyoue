@@ -19,18 +19,24 @@
     "check": "bun run typecheck && bun run lint && bun run format:check && bun run test"
   },
   "dependencies": {
+    "@rdfjs/data-model": "^2.1.1",
     "@ukiyoue/schemas": "file:../schemas",
     "@ukiyoue/semantics": "file:../semantics",
     "ajv": "^8.17.1",
     "ajv-formats": "^3.0.1",
     "chalk": "^5.3.0",
-    "jsonld": "^8.3.3"
+    "jsonld": "^8.3.3",
+    "n3": "^1.26.0",
+    "rdf-parse": "^4.0.0",
+    "rdf-validate-shacl": "^0.6.5"
   },
   "devDependencies": {
     "@eslint/js": "^9.38.0",
     "@types/bun": "latest",
     "@types/jsonld": "^1.5.15",
+    "@types/n3": "^1.26.1",
     "@types/node": "^24.9.1",
+    "@types/rdfjs__data-model": "^2.0.9",
     "@typescript-eslint/eslint-plugin": "^8.46.2",
     "@typescript-eslint/parser": "^8.46.2",
     "eslint": "^9.38.0",

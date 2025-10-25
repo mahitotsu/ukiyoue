@@ -54,7 +54,7 @@
   "epic": "顧客向け注文機能",
   "labels": ["frontend", "backend", "order-processing"],
   "traceability": {
-    "derivedFrom": ["pc-tos-001", "bg-tos-001", "bg-tos-002"]
+    "derivedFrom": ["bg-tos-001", "bg-tos-002"]
   },
   "metadata": {
     "created": "2025-10-24",

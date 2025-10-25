@@ -19,6 +19,9 @@ JSON Schema Draft-07 を使用して、成果物の構造（structure）と制�
 schemas/
 ├── README.md                 # このファイル
 ├── _common.json             # 共通定義（baseArtifact, traceability, dateRange, status）
+├── constraints/             # 構造制約（非JSON Schema形式）
+│   └── artifact-input-rules.json  # 参照タイプ制約
+├── shacl/                   # セマンティック制約（SHACL形式、将来実装）
 ├── layer1/                  # Layer 1: ビジネス層（5スキーマ）
 │   ├── project-charter.json # PM-CHARTER
 │   ├── roadmap.json         # PM-ROADMAP
@@ -46,11 +49,10 @@ schemas/
 │   ├── development-environment-architecture.json   # ARCH-DEVENV
 │   ├── test-plan.json                              # ARCH-TESTPLAN
 │   └── test-specification.json                     # ARCH-TESTSPEC
-├── layer5/                  # Layer 5: 運用（4スキーマ）
+├── layer5/                  # Layer 5: 運用（3スキーマ）
 │   ├── deployment-guide.json         # OPS-DEPLOY
 │   ├── operations-manual.json        # OPS-MANUAL
-│   ├── incident-response-guide.json  # OPS-INCIDENT
-│   └── troubleshooting-guide.json    # OPS-TROUBLESHOOT
+│   └── runbook.json                  # OPS-RUNBOOK
 └── layer6/                  # Layer 6: 検証（6スキーマ）
     ├── sit-plan.json          # VERIFY-SIT-PLAN
     ├── sit-specification.json # VERIFY-SIT-SPEC
@@ -351,10 +353,90 @@ bunx ajv validate -s schemas/layer1/project-charter.json -d document.json
 - 意図しないプロパティの混入を防止
 - 拡張が必要な場合は明示的にスキーマを更新
 
-## 🚀 今後の拡張
+## � 制約の種類と配置
+
+Ukiyoue フレームワークでは、3種類の制約を使い分けます：
+
+### 1. 構造制約（JSON Schema Draft-07）
+
+**配置**: `schemas/layer*/*.json`, `_common.json`
+
+**目的**: フィールドレベルの型と必須項目の定義
+
+**例**:
+
+```json
+{
+  "type": "object",
+  "required": ["id", "title"],
+  "properties": {
+    "id": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+    "title": { "type": "string", "minLength": 1 }
+  }
+}
+```
+
+### 2. 参照タイプ制約（独自形式）
+
+**配置**: `schemas/constraints/artifact-input-rules.json`
+
+**目的**: `derivedFrom` で参照できる成果物タイプの制約
+
+**理由**: JSON Schema では「参照先のドキュメントタイプ」を検証できない
+
+**例**:
+
+```json
+{
+  "user-story": {
+    "inputs": ["business-goal"],
+    "description": "User Story は Business Goal のみから派生可能"
+  }
+}
+```
+
+**検証内容**:
+
+- User Story の `derivedFrom` が Business Goal を参照しているか
+- Project Charter が `derivedFrom` を持たないか（起点成果物）
+- Risk Register や ADR は任意の成果物から参照可能（継続的更新）
+
+**利用**: `@ukiyoue/validator` の reference-validator.ts で使用
+
+### 3. セマンティック制約（SHACL）
+
+**配置**: `schemas/shacl/*.ttl` （将来実装）
+
+**目的**: RDF グラフ構造とオントロジーレベルの整合性
+
+**例** （実装予定）:
+
+```turtle
+ex:UserStoryShape
+  a sh:NodeShape ;
+  sh:targetClass ukiyoue:UserStory ;
+  sh:property [
+    sh:path ukiyoue:derivedFrom ;
+    sh:class ukiyoue:BusinessGoal ;
+    sh:minCount 1 ;
+  ] .
+```
+
+**実装タイミング**: JSON-LD の利用が拡大し、セマンティック検索や推論が必要になった段階
+
+### 制約の比較表
+
+| 制約タイプ         | 形式           | 検証ツール                | 検証対象                       | 実装状況  |
+| ------------------ | -------------- | ------------------------- | ------------------------------ | --------- |
+| **構造制約**       | JSON Schema    | ajv, JSON SchemaValidator | フィールドの型、必須項目       | ✅ 実装済 |
+| **参照タイプ制約** | 独自 JSON      | reference-validator.ts    | derivedFrom の参照先タイプ     | ✅ 実装済 |
+| **セマンティック** | SHACL (Turtle) | Apache Jena, pySHACL      | RDF グラフ、オントロジー整合性 | 🔜 将来   |
+
+## �🚀 今後の拡張
 
 - [ ] スキーマバージョニング戦略の策定
 - [ ] カスタムフォーマット定義（email, url, date-time）
 - [ ] スキーマ間の整合性検証ツール
 - [ ] OpenAPI 3.x との統合（API 仕様）
+- [ ] SHACL による高度なセマンティック制約の実装
 - [ ] JSON Schema 2020-12 への移行検討

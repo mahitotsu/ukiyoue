@@ -7,6 +7,7 @@
   "exports": {
     ".": "./index.js",
     "./_common.json": "./_common.json",
+    "./constraints/*": "./constraints/*",
     "./layer1/*": "./layer1/*",
     "./layer2/*": "./layer2/*",
     "./layer3/*": "./layer3/*",
@@ -16,6 +17,8 @@
   },
   "files": [
     "_common.json",
+    "constraints/",
+    "shacl/",
     "layer1/",
     "layer2/",
     "layer3/",

@@ -59,7 +59,7 @@
     "relatedDecisions": {
       "type": "array",
       "items": { "type": "string" },
-      "description": "関連する他のADR"
+      "description": "関連する他のADRのIDリスト。ADR成果物全体のIDを指定（例: adr-001, adr-002）"
     }
   }
 }

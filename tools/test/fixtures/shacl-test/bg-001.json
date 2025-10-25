@@ -1,0 +1,7 @@
+{
+  "@context": "https://ukiyoue.example.org/context/base.jsonld",
+  "id": "bg-001",
+  "type": "business-goal",
+  "title": "Test Business Goal",
+  "derivedFrom": ["pc-001"]
+}

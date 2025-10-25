@@ -47,7 +47,7 @@ ukiyoue/
   - Layer 2に Data Dictionary、Conceptual Data Model を追加
   - Data Model（論理データモデル）をマルチストア対応に拡張
 - ✅ JSON-LD セマンティクス定義完了
-- ✅ バリデーションツール実装（Minimal Validator）
+- ✅ バリデーションツール実装（多層検証: Schema → Reference → JSON-LD → SHACL）
 - 📋 次: サンプルドキュメント作成、ツール拡張
 
 詳細は [`specs/README.md`](specs/README.md) を参照してください。
@@ -153,7 +153,7 @@ Phase 0（仕様設計）完了、Phase 1（実装）進行中です。
 
 - ✅ スキーマ設計・実装（31成果物 + 共通定義）
 - ✅ JSON-LD セマンティクス定義
-- ✅ バリデーションツール実装
+- ✅ バリデーションツール実装（多層検証: Schema → Reference → JSON-LD → SHACL）
 - 📋 サンプルドキュメント作成
 - 📋 ツール機能拡張
 

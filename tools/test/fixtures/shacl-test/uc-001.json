@@ -1,0 +1,7 @@
+{
+  "@context": "https://ukiyoue.example.org/context/base.jsonld",
+  "id": "uc-001",
+  "type": "use-case",
+  "title": "Test Use Case",
+  "derivedFrom": ["us-001"]
+}

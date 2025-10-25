@@ -15,6 +15,8 @@
  *   --skip-schema        Skip JSON Schema validation
  *   --skip-references    Skip reference integrity checks
  *   --skip-jsonld        Skip JSON-LD validation
+ *   --skip-shacl         Skip SHACL validation (when --full-validation is used)
+ *   --full-validation    Enable all validations including SHACL (slow, recommended for CI/CD)
  *   --allow-remote       Allow remote @context loading (security: disabled by default)
  *   --schema <path>      Explicit schema file path
  *   --verbose            Show detailed validation output
@@ -31,12 +33,15 @@
  *
  *   # Skip JSON-LD validation
  *   bun tools/src/validate.ts examples/ --skip-jsonld
+ *
+ *   # Full validation including SHACL (CI/CD recommended)
+ *   bun tools/src/validate.ts examples/ --full-validation
  */
 
 import { getSchemasDir } from '@ukiyoue/schemas';
 import chalk from 'chalk';
 import { existsSync, lstatSync, readdirSync, readFileSync } from 'fs';
-import { basename, extname, join, resolve } from 'path';
+import { basename, dirname, extname, join, resolve } from 'path';
 import {
   createLocalDocumentLoader,
   validateJsonLd,
@@ -44,12 +49,15 @@ import {
 } from './validators/jsonld-validator.js';
 import { buildDocumentIndex, validateReferences } from './validators/reference-validator.js';
 import { validateSchema } from './validators/schema-validator.js';
+import { validateShacl } from './validators/shacl-validator.js';
 
 // Parse command line arguments
 interface CliOptions {
   skipSchema: boolean;
   skipReferences: boolean;
   skipJsonLd: boolean;
+  skipShacl: boolean;
+  fullValidation: boolean;
   allowRemote: boolean;
   schemaPath?: string;
   verbose: boolean;
@@ -62,6 +70,8 @@ function parseArgs(): { paths: string[]; options: CliOptions } {
     skipSchema: false,
     skipReferences: false,
     skipJsonLd: false,
+    skipShacl: false,
+    fullValidation: false,
     allowRemote: false,
     verbose: false,
   };
@@ -78,6 +88,10 @@ function parseArgs(): { paths: string[]; options: CliOptions } {
       options.skipReferences = true;
     } else if (arg === '--skip-jsonld') {
       options.skipJsonLd = true;
+    } else if (arg === '--skip-shacl') {
+      options.skipShacl = true;
+    } else if (arg === '--full-validation') {
+      options.fullValidation = true;
     } else if (arg === '--allow-remote') {
       options.allowRemote = true;
     } else if (arg === '--verbose') {
@@ -148,7 +162,8 @@ function inferSchemaPath(document: Record<string, unknown>): string | null {
 async function validateDocument(
   filePath: string,
   options: CliOptions,
-  documentIndex?: Record<string, { filePath: string; type: string }>
+  documentIndex?: Record<string, { filePath: string; type: string }>,
+  projectRoot?: string
 ): Promise<boolean> {
   console.log(chalk.blue(`\n📄 Validating: ${basename(filePath)}`));
 
@@ -287,6 +302,36 @@ async function validateDocument(
     }
   }
 
+  // 4. SHACL Validation (optional, enabled with --full-validation)
+  if (options.fullValidation && !options.skipShacl && projectRoot) {
+    console.log(chalk.blue('  📊 SHACL validation...'));
+
+    try {
+      const result = await validateShacl(document, {
+        documentIndexPath: projectRoot,
+        verbose: options.verbose,
+      });
+
+      if (result.valid) {
+        console.log(chalk.green('  ✅ SHACL validation passed'));
+      } else {
+        console.log(chalk.red('  ❌ SHACL validation failed:'));
+        result.errors.forEach((error, index) => {
+          console.log(chalk.red(`     [${index + 1}] ${error}`));
+        });
+        if (options.verbose) {
+          console.log(
+            chalk.gray(`     💡 SHACL validates graph-wide integrity and type constraints`)
+          );
+        }
+        hasErrors = true;
+      }
+    } catch (error) {
+      console.error(chalk.red(`  ❌ SHACL validation error: ${error}`));
+      hasErrors = true;
+    }
+  }
+
   return !hasErrors;
 }
 
@@ -302,6 +347,12 @@ async function main() {
     console.log(chalk.cyan('  --skip-schema        Skip JSON Schema validation'));
     console.log(chalk.cyan('  --skip-references    Skip reference integrity checks'));
     console.log(chalk.cyan('  --skip-jsonld        Skip JSON-LD validation'));
+    console.log(
+      chalk.cyan('  --skip-shacl         Skip SHACL validation (when --full-validation is used)')
+    );
+    console.log(
+      chalk.cyan('  --full-validation    Enable all validations including SHACL (slow, CI/CD)')
+    );
     console.log(chalk.cyan('  --allow-remote       Allow remote @context loading (security risk)'));
     console.log(chalk.cyan('  --schema <path>      Explicit schema file path'));
     console.log(
@@ -314,6 +365,8 @@ async function main() {
     console.log(chalk.cyan('  bun tools/src/validate.ts layer1-business/'));
     console.log(chalk.gray('\n  # Skip JSON-LD validation (faster)'));
     console.log(chalk.cyan('  bun tools/src/validate.ts layer1-business/ --skip-jsonld'));
+    console.log(chalk.gray('\n  # Full validation with SHACL (CI/CD recommended)'));
+    console.log(chalk.cyan('  bun tools/src/validate.ts layer1-business/ --full-validation'));
     console.log(chalk.gray('\n  # Verbose mode with detailed errors'));
     console.log(chalk.cyan('  bun tools/src/validate.ts document.json --verbose'));
     process.exit(1);
@@ -335,6 +388,9 @@ async function main() {
 
   console.log(chalk.blue(`📁 Found ${files.length} JSON file(s)\n`));
 
+  // Determine project root for SHACL validation
+  const projectRoot = lstatSync(targetPath).isDirectory() ? targetPath : dirname(targetPath);
+
   // Build document index for reference validation
   let documentIndex: Record<string, { filePath: string; type: string }> | undefined;
   if (!options.skipReferences) {
@@ -343,9 +399,19 @@ async function main() {
     console.log(chalk.green(`✅ Indexed ${Object.keys(documentIndex).length} document(s)\n`));
   }
 
+  // Show SHACL validation status
+  if (options.fullValidation && !options.skipShacl) {
+    console.log(
+      chalk.yellow(
+        `⚠️  Full validation mode: SHACL validation enabled (slower, graph-wide integrity)`
+      )
+    );
+    console.log(chalk.gray(`   Project root: ${projectRoot}\n`));
+  }
+
   // Validate each file
   const results = await Promise.all(
-    files.map((file) => validateDocument(file, options, documentIndex))
+    files.map((file) => validateDocument(file, options, documentIndex, projectRoot))
   );
 
   const successCount = results.filter((r) => r).length;

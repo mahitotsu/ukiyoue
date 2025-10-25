@@ -8,9 +8,6 @@
   "status": "draft",
   "title": "テーブルオーダーシステム リスク登録簿",
   "description": "テーブルオーダーシステム開発プロジェクトにおける全リスクと前提条件を一元管理",
-  "traceability": {
-    "derivedFrom": ["pc-tos-001", "roadmap-tos-001", "bg-tos-001", "bg-tos-002", "bg-tos-003"]
-  },
   "risks": [
     {
       "id": "RISK-TOS-001",
@@ -31,7 +28,7 @@
         ],
         "contingencyPlan": "習熟度が低い場合は、パイロット運用期間を延長し、追加トレーニングを実施"
       },
-      "affectedArtifacts": ["pc-tos-001", "phase-tos-004"],
+      "affectedArtifacts": ["pc-tos-001", "roadmap-tos-001"],
       "triggers": [
         "トレーニング時の理解度が低い",
         "操作エラーが頻発する",
@@ -80,7 +77,7 @@
         ],
         "contingencyPlan": "スコープを見直し、Phase 1での必須要件を絞り込む。必要に応じてPhase 2の開始を遅らせる"
       },
-      "affectedArtifacts": ["phase-tos-001", "phase-tos-002", "phase-tos-003"],
+      "affectedArtifacts": ["roadmap-tos-001"],
       "triggers": [
         "要件レビュー会議の遅延・キャンセル",
         "ステークホルダー間での意見の対立",
@@ -106,7 +103,7 @@
         ],
         "contingencyPlan": "技術的課題が解決しない場合は、アーキテクチャを見直し、より実績のある技術スタックに変更"
       },
-      "affectedArtifacts": ["phase-tos-002", "phase-tos-003"],
+      "affectedArtifacts": ["roadmap-tos-001"],
       "triggers": [
         "PoC実施時の技術的問題",
         "パフォーマンステストでの不合格",
@@ -132,7 +129,7 @@
         ],
         "contingencyPlan": "重大なバグの場合は一時的にシステムを停止し、従来の運用に戻す。修正後に再開"
       },
-      "affectedArtifacts": ["phase-tos-003", "phase-tos-004"],
+      "affectedArtifacts": ["roadmap-tos-001"],
       "triggers": [
         "UAT時の重大バグ検出",
         "パイロット運用開始後のエラー報告",

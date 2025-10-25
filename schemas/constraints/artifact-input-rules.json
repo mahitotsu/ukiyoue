@@ -1,0 +1,277 @@
+{
+  "$schema": "https://ukiyoue.example.org/meta-schemas/artifact-input-rules.schema.json",
+  "title": "Artifact Input Rules",
+  "description": "Defines valid input artifact types for each artifact type based on artifact-definitions.md (NOT JSON Schema Draft-07 format)",
+  "version": "1.0.0",
+  "format": "custom-constraint-rules",
+  "rules": {
+    "project-charter": {
+      "inputs": [],
+      "description": "Project starting point, no inputs"
+    },
+    "roadmap": {
+      "inputs": ["project-charter"],
+      "feedbackLoops": ["test-result"],
+      "description": "Derived from Project Charter, feedback from Test Results"
+    },
+    "risk-register": {
+      "inputs": [],
+      "description": "No derivedFrom required; traceability via individual risk affectedArtifacts"
+    },
+    "business-goal": {
+      "inputs": ["project-charter"],
+      "description": "Derived from Project Charter"
+    },
+    "user-story": {
+      "inputs": ["business-goal"],
+      "description": "Derived from Business Goal"
+    },
+    "use-case": {
+      "inputs": ["user-story", "business-goal"],
+      "description": "Derived from User Story and Business Goal"
+    },
+    "functional-requirements": {
+      "inputs": ["use-case", "business-goal"],
+      "description": "Derived from Use Case and Business Goal"
+    },
+    "non-functional-requirements": {
+      "inputs": ["business-goal", "user-story"],
+      "description": "Derived from Business Goal and User Story"
+    },
+    "data-dictionary": {
+      "inputs": ["user-story", "use-case"],
+      "description": "Terms from User Story and Use Case"
+    },
+    "conceptual-data-model": {
+      "inputs": ["data-dictionary", "use-case"],
+      "description": "Entities from Data Dictionary and Use Case"
+    },
+    "test-strategy": {
+      "inputs": ["business-goal", "functional-requirements", "non-functional-requirements"],
+      "description": "Derived from Business Goal and Requirements"
+    },
+    "architecture-decision-record": {
+      "inputs": [],
+      "description": "No derivedFrom required; use impact and relatedDecisions fields instead"
+    },
+    "runtime-architecture": {
+      "inputs": [
+        "architecture-decision-record",
+        "functional-requirements",
+        "non-functional-requirements"
+      ],
+      "description": "Derived from ADR and Requirements"
+    },
+    "data-model": {
+      "inputs": [
+        "conceptual-data-model",
+        "data-dictionary",
+        "use-case",
+        "functional-requirements",
+        "runtime-architecture"
+      ],
+      "description": "Logical data model from conceptual model"
+    },
+    "ui-ux-specification": {
+      "inputs": ["functional-requirements", "data-model"],
+      "description": "UI design from Requirements and Data Model"
+    },
+    "api-specification": {
+      "inputs": ["runtime-architecture", "data-model"],
+      "description": "API design from Architecture and Data Model"
+    },
+    "security-architecture": {
+      "inputs": ["non-functional-requirements", "runtime-architecture"],
+      "description": "Security design from NFR and Runtime Architecture"
+    },
+    "reliability-architecture": {
+      "inputs": ["non-functional-requirements"],
+      "description": "Reliability requirements definition"
+    },
+    "infrastructure-architecture": {
+      "inputs": ["reliability-architecture", "runtime-architecture", "security-architecture"],
+      "description": "Infrastructure design from Reliability, Runtime, and Security"
+    },
+    "observability-architecture": {
+      "inputs": ["runtime-architecture", "infrastructure-architecture", "reliability-architecture"],
+      "description": "Observability design from Runtime, Infrastructure, and Reliability"
+    },
+    "devops-architecture": {
+      "inputs": ["runtime-architecture"],
+      "description": "DevOps design from Runtime Architecture"
+    },
+    "development-environment-architecture": {
+      "inputs": ["runtime-architecture", "devops-architecture"],
+      "description": "Dev environment design from Runtime and DevOps"
+    },
+    "test-plan": {
+      "inputs": ["test-strategy", "functional-requirements", "non-functional-requirements"],
+      "description": "Test plan from Strategy and Requirements"
+    },
+    "test-specification": {
+      "inputs": [
+        "test-plan",
+        "functional-requirements",
+        "ui-ux-specification",
+        "api-specification"
+      ],
+      "description": "Test specs from Plan and functional designs"
+    },
+    "implementation-guide": {
+      "inputs": [
+        "runtime-architecture",
+        "security-architecture",
+        "development-environment-architecture",
+        "devops-architecture"
+      ],
+      "description": "Implementation standards from multiple architectures"
+    },
+    "development-environment-configuration": {
+      "inputs": [
+        "development-environment-architecture",
+        "runtime-architecture",
+        "repository-configuration"
+      ],
+      "description": "Dev environment implementation"
+    },
+    "physical-data-model": {
+      "inputs": ["data-model"],
+      "description": "Physical data model from logical model"
+    },
+    "infrastructure-as-code": {
+      "inputs": ["infrastructure-architecture"],
+      "description": "Infrastructure implementation"
+    },
+    "ci-cd-pipeline-definition": {
+      "inputs": ["devops-architecture"],
+      "description": "CI/CD pipeline implementation"
+    },
+    "repository-configuration": {
+      "inputs": ["devops-architecture"],
+      "description": "Repository setup from DevOps architecture"
+    },
+    "monitoring-logging-configuration": {
+      "inputs": ["observability-architecture"],
+      "description": "Monitoring implementation"
+    },
+    "source-code": {
+      "inputs": [
+        "functional-requirements",
+        "implementation-guide",
+        "ui-ux-specification",
+        "api-specification",
+        "physical-data-model"
+      ],
+      "description": "Source code from requirements and designs"
+    },
+    "test-code": {
+      "inputs": ["test-specification", "source-code"],
+      "description": "Test code from test specs and source code"
+    },
+    "test-result": {
+      "inputs": ["test-code"],
+      "feedbackTargets": ["roadmap", "functional-requirements"],
+      "description": "Test results, provides feedback to upstream"
+    },
+    "source-code-documentation": {
+      "inputs": ["source-code"],
+      "description": "Code documentation from source code"
+    },
+    "deployment-guide": {
+      "inputs": ["infrastructure-as-code", "ci-cd-pipeline-definition", "test-result"],
+      "description": "Deployment procedures"
+    },
+    "operations-manual": {
+      "inputs": ["deployment-guide", "monitoring-logging-configuration", "test-result"],
+      "description": "Operations procedures"
+    },
+    "runbook": {
+      "inputs": ["observability-architecture", "operations-manual", "source-code-documentation"],
+      "feedbackSources": ["sit-result"],
+      "description": "Incident response and troubleshooting guide"
+    },
+    "sit-plan": {
+      "inputs": ["test-strategy", "functional-requirements", "non-functional-requirements"],
+      "description": "System Integration Test plan"
+    },
+    "sit-specification": {
+      "inputs": [
+        "sit-plan",
+        "functional-requirements",
+        "deployment-guide",
+        "operations-manual",
+        "runbook"
+      ],
+      "description": "System Integration Test specification"
+    },
+    "sit-result": {
+      "inputs": ["sit-specification"],
+      "feedbackTargets": [
+        "functional-requirements",
+        "deployment-guide",
+        "operations-manual",
+        "runbook"
+      ],
+      "description": "System Integration Test results, provides feedback"
+    },
+    "uat-plan": {
+      "inputs": ["test-strategy", "business-goal", "functional-requirements"],
+      "description": "User Acceptance Test plan"
+    },
+    "uat-specification": {
+      "inputs": ["uat-plan", "business-goal", "functional-requirements", "sit-result"],
+      "description": "User Acceptance Test specification"
+    },
+    "uat-result": {
+      "inputs": ["uat-specification"],
+      "feedbackTargets": ["business-goal", "functional-requirements", "roadmap"],
+      "description": "User Acceptance Test results, provides feedback"
+    }
+  },
+  "typeAliases": {
+    "project-charter": ["PM-CHARTER", "charter"],
+    "roadmap": ["PM-ROADMAP"],
+    "risk-register": ["PM-RISK", "risk"],
+    "business-goal": ["BIZ-GOAL", "goal"],
+    "user-story": ["BIZ-STORY", "story"],
+    "use-case": ["REQ-UC"],
+    "functional-requirements": ["REQ-FUNC", "func-req"],
+    "non-functional-requirements": ["REQ-NONFUNC", "nonfunc-req", "nfr"],
+    "data-dictionary": ["REQ-DICT", "dict"],
+    "conceptual-data-model": ["REQ-CONCEPT", "concept"],
+    "test-strategy": ["REQ-TESTSTRATEGY", "test-strat"],
+    "architecture-decision-record": ["ARCH-ADR", "adr"],
+    "runtime-architecture": ["ARCH-RUNTIME"],
+    "data-model": ["ARCH-DATA", "logical-data-model"],
+    "ui-ux-specification": ["ARCH-UI"],
+    "api-specification": ["ARCH-API"],
+    "security-architecture": ["ARCH-SECURITY"],
+    "reliability-architecture": ["ARCH-RELIABILITY"],
+    "infrastructure-architecture": ["ARCH-INFRA"],
+    "observability-architecture": ["ARCH-OBSERVABILITY"],
+    "devops-architecture": ["ARCH-DEVOPS"],
+    "development-environment-architecture": ["ARCH-DEVENV"],
+    "test-plan": ["ARCH-TESTPLAN"],
+    "test-specification": ["ARCH-TESTSPEC"],
+    "implementation-guide": ["IMPL-GUIDE"],
+    "development-environment-configuration": ["IMPL-DEVENV"],
+    "physical-data-model": ["IMPL-PHYSICAL-DATA"],
+    "infrastructure-as-code": ["IMPL-IAC"],
+    "ci-cd-pipeline-definition": ["IMPL-PIPELINE"],
+    "repository-configuration": ["IMPL-REPO"],
+    "monitoring-logging-configuration": ["IMPL-MONITORING"],
+    "source-code": ["IMPL-CODE"],
+    "test-code": ["IMPL-TESTCODE"],
+    "test-result": ["IMPL-TESTRESULT"],
+    "source-code-documentation": ["IMPL-CODEDOC"],
+    "deployment-guide": ["OPS-DEPLOY"],
+    "operations-manual": ["OPS-MANUAL"],
+    "runbook": ["OPS-RUNBOOK"],
+    "sit-plan": ["VERIFY-SIT-PLAN"],
+    "sit-specification": ["VERIFY-SIT-SPEC"],
+    "sit-result": ["VERIFY-SIT-RESULT"],
+    "uat-plan": ["VERIFY-UAT-PLAN"],
+    "uat-specification": ["VERIFY-UAT-SPEC"],
+    "uat-result": ["VERIFY-UAT-RESULT"]
+  }
+}
