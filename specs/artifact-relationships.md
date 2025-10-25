@@ -33,7 +33,6 @@ graph LR
     RuntimeArch[Runtime Architecture]
     DataModel[Logical Data Model]
     UIUX[UI/UX Specification]
-    API[API Specification]
     SecArch[Security Architecture]
     ReliabilityArch[Reliability Architecture]
     InfraArch[Infrastructure Architecture]
@@ -45,6 +44,7 @@ graph LR
 
     %% Layer 4: Implementation & Test
     ImplGuide[Implementation Guide]
+    API[API Specification]
     DevEnvConfig[Development Environment Configuration]
     PhysicalData[Physical Data Model]
     IaC[Infrastructure as Code]
@@ -235,7 +235,7 @@ Project Charter（起点: プロジェクト承認・正当化）
         → Functional Requirements & Non-Functional Requirements（システム要件）
           → Test Strategy（全体テスト戦略・品質ゲート定義）
             → 設計（Layer 3: 13種類）
-              → 実装・テスト（Layer 4: 11種類）
+              → 実装・テスト（Layer 4: 12種類）
                 → 運用（Layer 5: 4種類）
                   → 検証（Layer 6: 6種類）
                     - SIT（技術統合検証）
@@ -401,7 +401,8 @@ graph LR
 
 **フロー**:
 
-- Layer 2: 用語定義（Data Dictionary）→ 概念構造（Conceptual Data Model）
+- Layer 1: 用語定義（Data Dictionary、ビジネス用語とシステム用語の統一辞書）
+- Layer 2: 概念構造（Conceptual Data Model、エンティティ間の関係性）
 - Layer 3: 論理データモデル（Logical Data Model、データストア非依存）
 - Layer 4: 物理実装（Physical Data Model、データストア固有）
 
@@ -637,7 +638,7 @@ gantt
     API Specification             :api, after runtime datamodel, 8d
     Security Architecture         :security, after nonfunc runtime, 8d
     Reliability Architecture      :reliability, after nonfunc, 5d
-    Infrastructure Architecture   :infra, after reliability runtime security, 10d
+    Infrastructure Architecture   :infra, after reliability runt
     Observability Architecture    :observ, after runtime infra reliability, 8d
     DevOps Architecture           :devops, after runtime, 5d
     Dev Environment Architecture  :devenv, after runtime devops, 5d
@@ -800,5 +801,7 @@ Ukiyoue フレームワークでは、成果物間のトレーサビリティを
 ## 関連ドキュメント
 
 - [artifact-overview.md](artifact-overview.md) - 成果物分類の全体像
-- [artifact-definitions.md](artifact-definitions.md) - 42種類の成果物詳細定義
-- [ADR-007](architecture-decisions/007-json-artifact-traceability.md) - JSON成果物のトレーサビリティ実現方式
+- [artifact-definitions.md](artifact-definitions.md) - 45種類の成果物詳細定義
+- [ADR-005](architecture-decisions/005-executable-code-representation.md) - 実行可能コードのJSON化適用範囲
+- [ADR-007](architecture-decisions/007-traceability-implementation.md) - トレーサビリティ実装戦略
+- [ADR-009](architecture-decisions/009-data-dictionary-integration.md) - Data Dictionary統合戦略

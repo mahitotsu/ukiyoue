@@ -22,25 +22,25 @@ schemas/
 ├── constraints/             # 構造制約（非JSON Schema形式）
 │   └── artifact-input-rules.json  # 参照タイプ制約
 ├── shacl/                   # セマンティック制約（SHACL形式、将来実装）
-├── layer1/                  # Layer 1: ビジネス層（5スキーマ）
+├── layer1/                  # Layer 1: ビジネス層（6スキーマ）
 │   ├── project-charter.json # PM-CHARTER
 │   ├── roadmap.json         # PM-ROADMAP
 │   ├── risk-register.json   # PM-RISK
 │   ├── business-goal.json   # BIZ-GOAL
-│   └── user-story.json      # BIZ-STORY
-├── layer2/                  # Layer 2: 要件定義（6スキーマ）
+│   ├── user-story.json      # BIZ-STORY
+│   └── data-dictionary.json # BIZ-DICT
+├── layer2/                  # Layer 2: 要件定義（5スキーマ）
 │   ├── use-case.json                    # REQ-UC
 │   ├── functional-requirements.json     # REQ-FUNC
 │   ├── non-functional-requirements.json # REQ-NONFUNC
-│   ├── data-dictionary.json             # REQ-DICT
 │   ├── conceptual-data-model.json       # REQ-CONCEPT
 │   └── test-strategy.json               # REQ-TESTSTRATEGY
 ├── layer3/                  # Layer 3: 設計・アーキテクチャ（13スキーマ）
 │   ├── architecture-decision-record.json           # ARCH-ADR
 │   ├── runtime-architecture.json                   # ARCH-RUNTIME
 │   ├── data-model.json                             # ARCH-DATA
+│   ├── api-architecture.json                       # ARCH-API
 │   ├── ui-ux-specification.json                    # ARCH-UI
-│   ├── api-specification.json                      # ARCH-API
 │   ├── security-architecture.json                  # ARCH-SECURITY
 │   ├── reliability-architecture.json               # ARCH-RELIABILITY
 │   ├── infrastructure-architecture.json            # ARCH-INFRA
@@ -49,6 +49,8 @@ schemas/
 │   ├── development-environment-architecture.json   # ARCH-DEVENV
 │   ├── test-plan.json                              # ARCH-TESTPLAN
 │   └── test-specification.json                     # ARCH-TESTSPEC
+├── layer4/                  # Layer 4: 実装可能仕様（1スキーマ）
+│   └── api-specification.json                      # IMPL-API (OpenAPI/Swagger)
 ├── layer5/                  # Layer 5: 運用（3スキーマ）
 │   ├── deployment-guide.json         # OPS-DEPLOY
 │   ├── operations-manual.json        # OPS-MANUAL
@@ -62,7 +64,7 @@ schemas/
     └── uat-result.json        # VERIFY-UAT-RESULT
 ```
 
-**注意**: Layer 4（実装・テスト）は実行可能コードのため、JSON 化対象外（ADR-005 参照）
+**注意**: Layer 4の大部分（実装コード・テストコード等）は実行可能コードのため、JSON化対象外（ADR-005参照）。ただし、**API Specification（OpenAPI/Swagger）は機械可読な仕様書**として例外的にJSON化対象。
 
 ## 🔧 技術仕様
 
@@ -194,6 +196,21 @@ if (validate(document)) {
 
 - `phases`: フェーズ定義（目的、タイムライン、成果物、依存関係）
 
+#### data-dictionary.json (BIZ-DICT)
+
+**ID パターン**: `TERM-[A-Z]+-[0-9]{3}` (Term)
+
+プロジェクト固有のビジネス用語とシステム用語を定義。データ型、フォーマット、制約、バリデーションルール。
+
+**主な構造**:
+
+- `domain`: ドメイン分類（business/system/analytics/infrastructure）
+- `layer`: 抽象度レイヤー（conceptual/logical/physical）
+- `canonicalName`: 正式な用語名
+- `synonyms`: 同義語リスト
+- `deprecated`: 非推奨フラグ
+- `replacedBy`: 置き換え先の用語ID
+
 ### Layer 2: 要件定義
 
 #### use-case.json (REQ-UC)
@@ -213,12 +230,6 @@ if (validate(document)) {
 **ID パターン**: `NFR-[A-Z]+-[0-9]{3}` (Non-Functional Requirements)
 
 システムの非機能要件を定義。品質特性と制約条件。
-
-#### data-dictionary.json (REQ-DICT)
-
-**ID パターン**: `TERM-[A-Z]+-[0-9]{3}` (Term)
-
-プロジェクト固有の用語定義。データ型、フォーマット、制約、バリデーションルール。
 
 #### conceptual-data-model.json (REQ-CONCEPT)
 

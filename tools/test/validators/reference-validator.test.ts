@@ -127,7 +127,7 @@ describe('reference-validator', () => {
   });
 
   describe('validateReferencesAcrossDocuments', () => {
-    test('should detect circular references', () => {
+    test('should detect circular references', async () => {
       const documents = [
         {
           id: 'doc-001',
@@ -158,7 +158,7 @@ describe('reference-validator', () => {
         'doc-003': { filePath: '/test/doc-003.json', type: 'TestDocument' },
       };
 
-      const result = validateReferencesAcrossDocuments(documents, index);
+      const result = await validateReferencesAcrossDocuments(documents, index);
 
       expect(result.valid).toBe(false);
       const circularError = result.errors.find((e) => e.type === 'circular-reference');
@@ -166,7 +166,7 @@ describe('reference-validator', () => {
       expect(circularError?.message).toContain('Circular reference detected');
     });
 
-    test('should pass for valid document graph', () => {
+    test('should pass for valid document graph', async () => {
       const documents = [
         {
           id: 'doc-001',
@@ -198,7 +198,7 @@ describe('reference-validator', () => {
         'doc-003': { filePath: '/test/doc-003.json', type: 'TestDocument' },
       };
 
-      const result = validateReferencesAcrossDocuments(documents, index);
+      const result = await validateReferencesAcrossDocuments(documents, index);
 
       expect(result.valid).toBe(true);
       expect(result.errors).toHaveLength(0);
@@ -289,7 +289,7 @@ describe('reference-validator', () => {
       expect(result.valid).toBe(true);
     });
 
-    test('should validate deep circular reference (A→B→C→D→A)', () => {
+    test('should validate deep circular reference (A→B→C→D→A)', async () => {
       const documents = [
         {
           id: 'doc-a',
@@ -320,14 +320,14 @@ describe('reference-validator', () => {
         'doc-d': { filePath: '/test/doc-d.json', type: 'TestDocument' },
       };
 
-      const result = validateReferencesAcrossDocuments(documents, index);
+      const result = await validateReferencesAcrossDocuments(documents, index);
 
       expect(result.valid).toBe(false);
       const circularError = result.errors.find((e) => e.type === 'circular-reference');
       expect(circularError).toBeDefined();
     });
 
-    test('should detect circular reference in multiple paths', () => {
+    test('should detect circular reference in multiple paths', async () => {
       const documents = [
         {
           id: 'doc-001',
@@ -357,7 +357,7 @@ describe('reference-validator', () => {
         'doc-003': { filePath: '/test/doc-003.json', type: 'TestDocument' },
       };
 
-      const result = validateReferencesAcrossDocuments(documents, index);
+      const result = await validateReferencesAcrossDocuments(documents, index);
 
       expect(result.valid).toBe(false);
       expect(result.errors.some((e) => e.type === 'circular-reference')).toBe(true);

@@ -1,8 +1,8 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://ukiyoue.example.org/schemas/layer2/data-dictionary.json",
+  "$id": "https://ukiyoue.example.org/schemas/layer1/data-dictionary.json",
   "title": "Data Dictionary",
-  "description": "データ辞書（REQ-DICT）: プロジェクト固有の用語とその属性レベルの詳細を定義",
+  "description": "データ辞書（BIZ-DICT）: プロジェクト固有の用語とその属性レベルの詳細を定義",
   "allOf": [{ "$ref": "../_common.json#/definitions/baseArtifact" }],
   "type": "object",
   "required": ["title", "terms"],
@@ -36,10 +36,25 @@
             "description": "用語名（例: Order ID, Order Status, Table Number）",
             "minLength": 1
           },
+          "canonicalName": {
+            "type": "string",
+            "description": "正規化された用語名（変数名・フィールド名で使用すべき形式、例: OrderId, TableNumber）",
+            "pattern": "^[A-Z][a-zA-Z0-9]*$"
+          },
           "description": {
             "type": "string",
             "description": "用語のビジネス的な意味と説明",
             "minLength": 1
+          },
+          "domain": {
+            "type": "string",
+            "description": "用語のドメイン分類（ADR-009）",
+            "enum": ["business", "system", "analytics", "infrastructure"]
+          },
+          "layer": {
+            "type": "string",
+            "description": "データモデリングのレイヤー（ADR-009）",
+            "enum": ["conceptual", "logical", "physical"]
           },
           "dataType": {
             "type": "string",
@@ -167,7 +182,24 @@
           },
           "synonyms": {
             "type": "array",
-            "description": "同義語・別名",
+            "description": "同義語・別名（これらを使用した場合は警告が出る）",
+            "items": {
+              "type": "string"
+            }
+          },
+          "deprecated": {
+            "type": "boolean",
+            "description": "非推奨フラグ（この用語は使用すべきでない）",
+            "default": false
+          },
+          "replacedBy": {
+            "type": "string",
+            "description": "非推奨の場合、代替となる用語ID",
+            "pattern": "^TERM-[A-Z]+-[0-9]{3}$"
+          },
+          "tags": {
+            "type": "array",
+            "description": "フリーフォームタグ（検索・分類用）",
             "items": {
               "type": "string"
             }

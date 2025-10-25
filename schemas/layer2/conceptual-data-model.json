@@ -36,6 +36,11 @@
             "description": "エンティティ名（例: Customer, Order, MenuItem, Table）",
             "minLength": 1
           },
+          "termReference": {
+            "type": "string",
+            "pattern": "^TERM-[A-Z]+-[0-9]{3}$",
+            "description": "Data Dictionary の用語IDへの参照（推奨、ADR-009）"
+          },
           "description": {
             "type": "string",
             "description": "エンティティのビジネス的な意味と役割",

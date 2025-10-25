@@ -1,8 +1,8 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://ukiyoue.example.org/schemas/layer3/api-specification.json",
+  "$id": "https://ukiyoue.example.org/schemas/layer4/api-specification.json",
   "title": "API Specification",
-  "description": "API仕様（ARCH-API）: システム間/コンポーネント間のインターフェースを厳密に定義",
+  "description": "API仕様書（IMPL-API）: 実装可能な詳細API仕様を機械可読形式で定義（OpenAPI/Swagger）",
   "allOf": [{ "$ref": "../_common.json#/definitions/baseArtifact" }],
   "type": "object",
   "required": ["title", "endpoints"],
@@ -46,6 +46,11 @@
                 "name": { "type": "string" },
                 "in": { "type": "string", "enum": ["path", "query", "header", "body"] },
                 "type": { "type": "string" },
+                "termReference": {
+                  "type": "string",
+                  "pattern": "^TERM-[A-Z]+-[0-9]{3}$",
+                  "description": "Data Dictionary の用語IDへの参照（推奨、ADR-009）"
+                },
                 "required": { "type": "boolean" },
                 "description": { "type": "string" }
               }

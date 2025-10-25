@@ -22,9 +22,11 @@ semantics/
 │   ├── base.jsonld          # 基本vocabulary定義
 │   ├── properties.jsonld    # 共通プロパティ定義
 │   ├── traceability.jsonld  # トレーサビリティ関係定義
-│   └── artifact-types.jsonld # 成果物タイプ定義（42種類）
+│   ├── artifact-types.jsonld # 成果物タイプ定義（45種類）
+│   └── data-dictionary.jsonld # Data Dictionary用語管理定義
 └── vocabularies/             # 統合vocabulary
-    └── ukiyoue.jsonld       # Ukiyoue vocabulary統合エントリポイント
+    ├── ukiyoue.jsonld       # Ukiyoue vocabulary統合エントリポイント
+    └── data-dictionary.ttl  # Data Dictionary Ontology (OWL/SKOS)
 ```
 
 ## 🔧 技術仕様
@@ -96,18 +98,60 @@ semantics/
 
 ### artifact-types.jsonld
 
-- 39 種類の成果物タイプのセマンティック定義
-  - **Layer 1 (Business)**: ProjectCharter, Roadmap, RiskRegister, BusinessGoal, UserStory
-  - **Layer 2 (Requirements)**: FunctionalRequirements, NonFunctionalRequirements, TestStrategy
-  - **Layer 3-6**: (その他の設計・実装・運用・検証成果物)
+- 45 種類の成果物タイプのセマンティック定義
+  - **Layer 1 (Business)**: ProjectCharter, Roadmap, RiskRegister, BusinessGoal, UserStory, DataDictionary
+  - **Layer 2 (Requirements)**: FunctionalRequirements, NonFunctionalRequirements, UseCase, ConceptualDataModel, TestStrategy
+  - **Layer 3 (Design)**: RuntimeArchitecture, ApiArchitecture, DataModel, SecurityArchitecture, etc.
+  - **Layer 4-6**: (実装・運用・検証成果物)
 - 各タイプごとの nested context
 - プロパティの標準 vocabulary へのマッピング
 - 新しいトレーサビリティ関係：`relatedBusinessGoals`, `relatedUserStories`
+
+### data-dictionary.jsonld
+
+- Data Dictionary（データ辞書）用語管理のセマンティック定義
+- **SKOS (Simple Knowledge Organization System)** ベース：
+  - `skos:prefLabel` → `termName`（推奨ラベル）
+  - `skos:altLabel` → `synonyms`（別名・同義語）
+  - `skos:definition` → `definition`（定義）
+  - `skos:related`, `skos:broader`, `skos:narrower` → 用語間関係
+- **DCAT (Data Catalog Vocabulary)** 統合：
+  - `dcat:Dataset` → Data Dictionary collection
+  - `dcat:keyword` → `tags`（タグ付け）
+- **PROV (Provenance)** 統合：
+  - `prov:wasDerivedFrom` → `termReference`（用語参照のトレーサビリティ）
+  - `prov:wasRevisedBy` → `replacedBy`（非推奨用語の置き換え）
+- **Domain/Layer 分類**：
+  - `domain`: business/system/analytics/infrastructure
+  - `layer`: conceptual/logical/physical
+- **目的**: RDF エクスポートによるデータカタログ統合（ADR-009 Phase 2）
 
 ### ukiyoue.jsonld
 
 - 上記すべての context を統合
 - 単一エントリポイントとして使用推奨
+
+### data-dictionary.ttl (Ontology)
+
+- **形式**: RDF/Turtle（OWL 2 + SKOS Core）
+- **目的**: Data Dictionary の形式的オントロジー定義
+- **主要クラス**:
+  - `ukiyoue:DataDictionary` (subclass of `skos:ConceptScheme`, `dcat:Dataset`)
+  - `ukiyoue:Term` (subclass of `skos:Concept`)
+  - Domain classes: `BusinessDomain`, `SystemDomain`, `AnalyticsDomain`, `InfrastructureDomain`
+  - Layer classes: `ConceptualLayer`, `LogicalLayer`, `PhysicalLayer`
+- **主要プロパティ**:
+  - `ukiyoue:canonicalName`: コード/スキーマでの正規名称
+  - `ukiyoue:dataType`: データ型（String, Integer, Date, etc.）
+  - `ukiyoue:domain`: 意味的ドメイン
+  - `ukiyoue:layer`: 抽象レイヤー
+  - `ukiyoue:deprecated`: 非推奨フラグ
+  - `ukiyoue:termReference`: 用語参照（トレーサビリティ）
+- **SHACL互換**: OWL制約でバリデーションルールを定義
+- **用途**:
+  - RDF triplestore への Data Dictionary インポート
+  - SPARQL クエリによる高度な用語検索
+  - データカタログツール（Apache Atlas, AWS Glue等）との統合
 
 ## 🛠️ ツール対応
 

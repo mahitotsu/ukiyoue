@@ -1,0 +1,207 @@
+{
+  "$schema": "https://ukiyoue.example.org/schemas/layer2/conceptual-data-model.json",
+  "@context": "https://ukiyoue.example.org/context/base.jsonld",
+  "@type": "ConceptualDataModel",
+  "id": "cdm-tos-001",
+  "title": "Table Order System - Conceptual Data Model",
+  "description": "Defines core business entities and their relationships for the Table Order System",
+  "traceability": {
+    "derivedFrom": []
+  },
+  "entities": [
+    {
+      "id": "ENT-TOS-001",
+      "name": "Order",
+      "termReference": "TERM-TOS-001",
+      "description": "Customer's food and beverage request",
+      "attributes": [
+        {
+          "name": "orderId",
+          "termReference": "TERM-TOS-002",
+          "description": "Unique order identifier",
+          "dataType": "UUID",
+          "required": true
+        },
+        {
+          "name": "status",
+          "termReference": "TERM-TOS-008",
+          "description": "Current order state",
+          "dataType": "Enum",
+          "required": true
+        },
+        {
+          "name": "createdAt",
+          "description": "Order creation timestamp",
+          "dataType": "DateTime",
+          "required": true
+        }
+      ],
+      "relationships": [
+        {
+          "type": "belongsTo",
+          "targetEntity": "ENT-TOS-002",
+          "description": "Order is placed at one Table",
+          "multiplicity": "1"
+        },
+        {
+          "type": "hasMany",
+          "targetEntity": "ENT-TOS-004",
+          "description": "Order contains multiple Menu Items",
+          "multiplicity": "1..*"
+        }
+      ]
+    },
+    {
+      "id": "ENT-TOS-002",
+      "name": "Table",
+      "termReference": "TERM-TOS-004",
+      "description": "Physical dining table",
+      "attributes": [
+        {
+          "name": "tableNumber",
+          "termReference": "TERM-TOS-006",
+          "description": "Unique table identifier",
+          "dataType": "Integer",
+          "required": true
+        },
+        {
+          "name": "capacity",
+          "description": "Number of seats",
+          "dataType": "Integer",
+          "required": true
+        }
+      ],
+      "relationships": [
+        {
+          "type": "hasMany",
+          "targetEntity": "ENT-TOS-001",
+          "description": "Table can have multiple Orders",
+          "multiplicity": "0..*"
+        }
+      ]
+    },
+    {
+      "id": "ENT-TOS-003",
+      "name": "Menu",
+      "termReference": "TERM-TOS-003",
+      "description": "Collection of available items",
+      "attributes": [
+        {
+          "name": "name",
+          "description": "Menu name (e.g., Lunch Menu, Dinner Menu)",
+          "dataType": "String",
+          "required": true
+        },
+        {
+          "name": "availableFrom",
+          "description": "Menu availability start time",
+          "dataType": "DateTime",
+          "required": false
+        },
+        {
+          "name": "availableUntil",
+          "description": "Menu availability end time",
+          "dataType": "DateTime",
+          "required": false
+        }
+      ],
+      "relationships": [
+        {
+          "type": "hasMany",
+          "targetEntity": "ENT-TOS-004",
+          "description": "Menu contains multiple Menu Items",
+          "multiplicity": "1..*"
+        }
+      ]
+    },
+    {
+      "id": "ENT-TOS-004",
+      "name": "MenuItem",
+      "termReference": "TERM-TOS-005",
+      "description": "Individual food or beverage item",
+      "attributes": [
+        {
+          "name": "name",
+          "description": "Item name",
+          "dataType": "String",
+          "required": true
+        },
+        {
+          "name": "price",
+          "description": "Item price",
+          "dataType": "Decimal",
+          "required": true
+        },
+        {
+          "name": "category",
+          "termReference": "TERM-TOS-009",
+          "description": "Item category",
+          "dataType": "String",
+          "required": true
+        },
+        {
+          "name": "description",
+          "description": "Item description",
+          "dataType": "String",
+          "required": false
+        }
+      ],
+      "relationships": [
+        {
+          "type": "belongsTo",
+          "targetEntity": "ENT-TOS-003",
+          "description": "MenuItem belongs to one Menu",
+          "multiplicity": "1"
+        }
+      ]
+    },
+    {
+      "id": "ENT-TOS-005",
+      "name": "Customer",
+      "termReference": "TERM-TOS-007",
+      "description": "Person dining at the restaurant",
+      "attributes": [
+        {
+          "name": "customerId",
+          "description": "Optional customer identifier for loyalty program",
+          "dataType": "UUID",
+          "required": false
+        },
+        {
+          "name": "name",
+          "description": "Customer name",
+          "dataType": "String",
+          "required": false
+        }
+      ],
+      "relationships": [
+        {
+          "type": "hasMany",
+          "targetEntity": "ENT-TOS-001",
+          "description": "Customer can place multiple Orders",
+          "multiplicity": "0..*"
+        }
+      ]
+    }
+  ],
+  "businessRules": [
+    {
+      "id": "BR-TOS-001",
+      "rule": "Each Order must have at least one MenuItem",
+      "description": "Each Order must have at least one MenuItem",
+      "entities": ["ENT-TOS-001", "ENT-TOS-004"]
+    },
+    {
+      "id": "BR-TOS-002",
+      "rule": "Order status must transition in sequence",
+      "description": "Order status must transition in sequence: PENDING → PREPARING → READY → COMPLETED",
+      "entities": ["ENT-TOS-001"]
+    },
+    {
+      "id": "BR-TOS-003",
+      "rule": "Table can only have one active Order at a time",
+      "description": "Table can only have one active (PENDING/PREPARING/READY) Order at a time",
+      "entities": ["ENT-TOS-002", "ENT-TOS-001"]
+    }
+  ]
+}

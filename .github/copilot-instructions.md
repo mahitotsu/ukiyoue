@@ -75,14 +75,14 @@ Current state (Phase 1):
 
 - **🎨 Ukiyoue Framework** (Root): specs/ (specification documents and ADRs)
 - **📋 schemas/**: 31 JSON Schema files (30 artifacts + \_common.json)
-  - Layer 1: 5 types (ProjectCharter, Roadmap, RiskRegister, BusinessGoal, UserStory)
-  - Layer 2: 6 types (UseCase, FunctionalRequirements, NonFunctionalRequirements, DataDictionary, ConceptualDataModel, TestStrategy)
+  - Layer 1: 6 types (ProjectCharter, Roadmap, RiskRegister, BusinessGoal, UserStory, DataDictionary)
+  - Layer 2: 5 types (UseCase, FunctionalRequirements, NonFunctionalRequirements, ConceptualDataModel, TestStrategy)
   - Layer 3-6: 19 types (Architecture, Implementation, Operations, Verification)
     - Layer 5: Runbook統合（Incident Response Guide + Troubleshooting Guide → Runbook）
-  - **Data modeling**: Conceptual (Layer 2) → Logical (Layer 3, multi-store) → Physical (Layer 4, store-specific)
+  - **Data modeling**: Terminology (Layer 1) → Conceptual (Layer 2) → Logical (Layer 3, multi-store) → Physical (Layer 4, store-specific)
 - **🔗 semantics/**: 6 JSON-LD files (4 contexts + vocabulary + README)
-- **🛠️ tools/**: Comprehensive validator with Bun tests (113 unit tests)
-- **📘 examples/**: Table Order System example with Layer 1 artifacts (11 files validated)
+- **🛠️ tools/**: Comprehensive validator with Bun tests (147 unit tests)
+- **📘 examples/**: Table Order System example with Layer 1 artifacts (12 files validated)
 
 ### 6. Code Quality Standards
 

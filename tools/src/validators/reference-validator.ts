@@ -11,14 +11,26 @@
  */
 
 import artifactInputRules from '@ukiyoue/schemas/constraints/artifact-input-rules.json';
+import { readdir } from 'node:fs/promises';
+import { join } from 'node:path';
 
 export interface ReferenceValidationError {
-  type: 'missing-reference' | 'circular-reference' | 'invalid-format' | 'invalid-input-type';
+  type:
+    | 'missing-reference'
+    | 'circular-reference'
+    | 'invalid-format'
+    | 'invalid-input-type'
+    | 'missing-term-reference'
+    | 'term-type-mismatch'
+    | 'term-constraint-violation'
+    | 'synonym-used'
+    | 'deprecated-term-used';
   field: string;
   documentId: string;
   referencedId: string;
   message: string;
   path: string;
+  severity?: 'error' | 'warning' | 'info';
 }
 
 export interface ReferenceValidationResult {
@@ -267,10 +279,14 @@ export function validateReferences(
 /**
  * Validate reference integrity across multiple documents
  */
-export function validateReferencesAcrossDocuments(
+export async function validateReferencesAcrossDocuments(
   documents: Array<Record<string, unknown>>,
-  documentIndex: DocumentIndex
-): ReferenceValidationResult {
+  documentIndex: DocumentIndex,
+  options: {
+    projectRoot?: string;
+    skipTerminology?: boolean;
+  } = {}
+): Promise<ReferenceValidationResult> {
   const errors: ReferenceValidationError[] = [];
   const references = new Map<string, string[]>();
 
@@ -290,6 +306,15 @@ export function validateReferencesAcrossDocuments(
     // Validate individual document references
     const result = validateReferences(doc, documentIndex);
     errors.push(...result.errors);
+
+    // Validate terminology references (ADR-009)
+    if (!options.skipTerminology) {
+      const termResult = await validateTermReferences(doc, {
+        projectRoot: options.projectRoot,
+        skipTerminology: options.skipTerminology,
+      });
+      errors.push(...termResult.errors);
+    }
   }
 
   // Second pass: detect circular references
@@ -308,7 +333,7 @@ export function validateReferencesAcrossDocuments(
   }
 
   return {
-    valid: errors.length === 0,
+    valid: errors.filter((e) => e.severity !== 'warning' && e.severity !== 'info').length === 0,
     errors,
   };
 }
@@ -343,4 +368,290 @@ export async function buildDocumentIndex(filePaths: string[]): Promise<DocumentI
   }
 
   return index;
+}
+
+// ========================================
+// Terminology Reference Validation (ADR-009)
+// ========================================
+
+export interface TermReference {
+  path: string;
+  fieldName: string;
+  termId: string;
+  dataType?: string;
+  constraints?: {
+    required?: boolean;
+    unique?: boolean;
+  };
+}
+
+export interface DataDictionary {
+  id: string;
+  type: string;
+  terms: Array<{
+    id: string;
+    term: string;
+    canonicalName?: string;
+    dataType?: string;
+    domain?: string;
+    layer?: string;
+    constraints?: {
+      required?: boolean;
+      unique?: boolean;
+      minLength?: number;
+      maxLength?: number;
+    };
+    synonyms?: string[];
+    deprecated?: boolean;
+    replacedBy?: string;
+  }>;
+}
+
+/**
+ * Extract termReference fields from a document recursively
+ */
+function extractTermReferences(obj: unknown, path: string = ''): TermReference[] {
+  const refs: TermReference[] = [];
+
+  if (typeof obj !== 'object' || obj === null) {
+    return refs;
+  }
+
+  for (const [key, value] of Object.entries(obj)) {
+    const currentPath = path ? `${path}.${key}` : key;
+
+    if (key === 'termReference' && typeof value === 'string') {
+      // Get parent object to extract field information
+      const parentObj = obj as Record<string, unknown>;
+
+      refs.push({
+        path: currentPath,
+        fieldName: (parentObj.name as string) || (parentObj.term as string) || 'unknown',
+        termId: value,
+        dataType:
+          (parentObj.dataType as string | undefined) || (parentObj.type as string | undefined),
+        constraints: parentObj.constraints as TermReference['constraints'],
+      });
+    } else if (typeof value === 'object' && value !== null) {
+      refs.push(...extractTermReferences(value, currentPath));
+    }
+  }
+
+  return refs;
+}
+
+/**
+ * Find Data Dictionary file in project
+ */
+async function findDataDictionary(projectRoot: string): Promise<string | null> {
+  // Common locations for data-dictionary.json
+  const searchPaths = [
+    join(projectRoot, 'layer2-requirements', 'data-dictionary.json'),
+    join(projectRoot, 'data-dictionary.json'),
+  ];
+
+  for (const searchPath of searchPaths) {
+    try {
+      await Bun.file(searchPath).text();
+      return searchPath;
+    } catch {
+      // File doesn't exist, continue
+    }
+  }
+
+  // Recursive search in subdirectories
+  try {
+    const entries = await readdir(projectRoot, { withFileTypes: true });
+    for (const entry of entries) {
+      if (entry.isDirectory() && !entry.name.startsWith('.')) {
+        const subPath = join(projectRoot, entry.name);
+        const found = await findDataDictionary(subPath);
+        if (found) {
+          return found;
+        }
+      } else if (entry.isFile() && entry.name === 'data-dictionary.json') {
+        return join(projectRoot, entry.name);
+      }
+    }
+  } catch {
+    // Permission error or other issue
+  }
+
+  return null;
+}
+
+/**
+ * Load Data Dictionary from file
+ */
+async function loadDataDictionary(filePath: string): Promise<DataDictionary | null> {
+  try {
+    const content = await Bun.file(filePath).text();
+    const parsed: unknown = JSON.parse(content);
+
+    if (typeof parsed !== 'object' || parsed === null) {
+      return null;
+    }
+
+    const dict = parsed as Record<string, unknown>;
+
+    if (!dict.terms || !Array.isArray(dict.terms)) {
+      return null;
+    }
+
+    // Runtime validation passed, safe to cast
+    return dict as unknown as DataDictionary;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Validate terminology references in a document
+ */
+export async function validateTermReferences(
+  data: unknown,
+  options: {
+    projectRoot?: string;
+    dataDictionaryPath?: string;
+    skipTerminology?: boolean;
+  } = {}
+): Promise<ReferenceValidationResult> {
+  const errors: ReferenceValidationError[] = [];
+
+  // Skip if explicitly disabled
+  if (options.skipTerminology) {
+    return { valid: true, errors: [] };
+  }
+
+  // Type guard
+  if (typeof data !== 'object' || data === null) {
+    return { valid: true, errors: [] };
+  }
+
+  const doc = data as Record<string, unknown>;
+  const documentId = (doc.id as string) || 'unknown';
+
+  // Load Data Dictionary
+  let dictPath = options.dataDictionaryPath;
+  if (!dictPath && options.projectRoot) {
+    const foundPath = await findDataDictionary(options.projectRoot);
+    if (foundPath) {
+      dictPath = foundPath;
+    }
+  }
+
+  if (!dictPath) {
+    // No Data Dictionary found - this is OK, terminology validation is optional
+    return { valid: true, errors: [] };
+  }
+
+  const dictionary = await loadDataDictionary(dictPath);
+  if (!dictionary) {
+    // Could not load dictionary - skip validation
+    return { valid: true, errors: [] };
+  }
+
+  // Extract term references
+  const termRefs = extractTermReferences(data);
+
+  // Validate each term reference
+  for (const ref of termRefs) {
+    const term = dictionary.terms.find((t) => t.id === ref.termId);
+
+    // 1. Check if term exists
+    if (!term) {
+      errors.push({
+        type: 'missing-term-reference',
+        field: 'termReference',
+        documentId,
+        referencedId: ref.termId,
+        message: `Term '${ref.termId}' not found in Data Dictionary`,
+        path: `/${ref.path}`,
+        severity: 'error',
+      });
+      continue;
+    }
+
+    // 2. Check if term is deprecated
+    if (term.deprecated) {
+      const replacement = term.replacedBy ? ` Use '${term.replacedBy}' instead.` : '';
+      errors.push({
+        type: 'deprecated-term-used',
+        field: ref.fieldName,
+        documentId,
+        referencedId: ref.termId,
+        message: `Term '${term.term}' (${ref.termId}) is deprecated.${replacement}`,
+        path: `/${ref.path}`,
+        severity: 'warning',
+      });
+    }
+
+    // 3. Check data type consistency
+    if (ref.dataType && term.dataType && ref.dataType !== term.dataType) {
+      errors.push({
+        type: 'term-type-mismatch',
+        field: ref.fieldName,
+        documentId,
+        referencedId: ref.termId,
+        message: `Type mismatch: field type '${ref.dataType}' does not match term type '${term.dataType}'`,
+        path: `/${ref.path}`,
+        severity: 'error',
+      });
+    }
+
+    // 4. Check constraint consistency
+    if (ref.constraints && term.constraints) {
+      if (term.constraints.required && !ref.constraints.required) {
+        errors.push({
+          type: 'term-constraint-violation',
+          field: ref.fieldName,
+          documentId,
+          referencedId: ref.termId,
+          message: `Field '${ref.fieldName}' should be required according to term definition`,
+          path: `/${ref.path}`,
+          severity: 'warning',
+        });
+      }
+
+      if (term.constraints.unique && !ref.constraints.unique) {
+        errors.push({
+          type: 'term-constraint-violation',
+          field: ref.fieldName,
+          documentId,
+          referencedId: ref.termId,
+          message: `Field '${ref.fieldName}' should have unique constraint according to term definition`,
+          path: `/${ref.path}`,
+          severity: 'warning',
+        });
+      }
+    }
+  }
+
+  // 5. Check if field names use synonyms instead of canonical names
+  for (const term of dictionary.terms) {
+    if (!term.synonyms || term.synonyms.length === 0) {
+      continue;
+    }
+
+    // Search for synonym usage in field names (simple text search)
+    const docStr = JSON.stringify(data);
+    for (const synonym of term.synonyms) {
+      if (docStr.includes(`"${synonym}"`)) {
+        errors.push({
+          type: 'synonym-used',
+          field: synonym,
+          documentId,
+          referencedId: term.id,
+          message: `Found synonym '${synonym}', consider using canonical term '${term.term}' (${term.id})`,
+          path: '/document',
+          severity: 'info',
+        });
+      }
+    }
+  }
+
+  return {
+    valid: errors.filter((e) => e.severity === 'error').length === 0,
+    errors,
+  };
 }

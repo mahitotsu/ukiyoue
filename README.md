@@ -44,7 +44,8 @@ ukiyoue/
 - ✅ コンセプト、要件定義、技術選定（ADR）完了
 - ✅ ドキュメント一覧と入出力関係の定義完了
 - ✅ スキーマ設計・実装完了（31成果物 + 共通定義）
-  - Layer 2に Data Dictionary、Conceptual Data Model を追加
+  - Layer 1に Data Dictionary（ビジネス用語とシステム用語の統一辞書）を追加
+  - Layer 2に Conceptual Data Model を追加
   - Data Model（論理データモデル）をマルチストア対応に拡張
 - ✅ JSON-LD セマンティクス定義完了
 - ✅ バリデーションツール実装（多層検証: Schema → Reference → JSON-LD → SHACL）

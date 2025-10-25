@@ -5,7 +5,8 @@
  * Validates Ukiyoue JSON documents with:
  * 1. JSON Schema validation (ADR-002: Draft-07)
  * 2. Traceability reference integrity (FR-AUTO-002: link-checker)
- * 3. JSON-LD semantic validation (ADR-003: JSON-LD 1.1)
+ * 3. Terminology reference validation (ADR-009: Data Dictionary integration)
+ * 4. JSON-LD semantic validation (ADR-003: JSON-LD 1.1)
  *
  * Usage:
  *   bun tools/src/validate.ts <document-path> [options]
@@ -14,6 +15,7 @@
  * Options:
  *   --skip-schema        Skip JSON Schema validation
  *   --skip-references    Skip reference integrity checks
+ *   --skip-terminology   Skip terminology reference validation
  *   --skip-jsonld        Skip JSON-LD validation
  *   --skip-shacl         Skip SHACL validation (when --full-validation is used)
  *   --full-validation    Enable all validations including SHACL (slow, recommended for CI/CD)
@@ -47,7 +49,11 @@ import {
   validateJsonLd,
   validateJsonLd11Context,
 } from './validators/jsonld-validator.js';
-import { buildDocumentIndex, validateReferences } from './validators/reference-validator.js';
+import {
+  buildDocumentIndex,
+  validateReferences,
+  validateTermReferences,
+} from './validators/reference-validator.js';
 import { validateSchema } from './validators/schema-validator.js';
 import { validateShacl } from './validators/shacl-validator.js';
 
@@ -57,6 +63,7 @@ interface CliOptions {
   skipReferences: boolean;
   skipJsonLd: boolean;
   skipShacl: boolean;
+  skipTerminology: boolean;
   fullValidation: boolean;
   allowRemote: boolean;
   schemaPath?: string;
@@ -71,6 +78,7 @@ function parseArgs(): { paths: string[]; options: CliOptions } {
     skipReferences: false,
     skipJsonLd: false,
     skipShacl: false,
+    skipTerminology: false,
     fullValidation: false,
     allowRemote: false,
     verbose: false,
@@ -90,6 +98,8 @@ function parseArgs(): { paths: string[]; options: CliOptions } {
       options.skipJsonLd = true;
     } else if (arg === '--skip-shacl') {
       options.skipShacl = true;
+    } else if (arg === '--skip-terminology') {
+      options.skipTerminology = true;
     } else if (arg === '--full-validation') {
       options.fullValidation = true;
     } else if (arg === '--allow-remote') {
@@ -254,6 +264,60 @@ async function validateDocument(
         }
       });
       hasErrors = true;
+    }
+  }
+
+  // 2.5. Terminology Reference Validation (ADR-009)
+  if (!options.skipTerminology && projectRoot) {
+    console.log(chalk.blue('  📚 Terminology validation...'));
+
+    const result = await validateTermReferences(document, {
+      projectRoot,
+      skipTerminology: options.skipTerminology,
+    });
+
+    if (result.valid && result.errors.length === 0) {
+      console.log(chalk.green('  ✅ Terminology validation passed'));
+    } else {
+      // Separate errors, warnings, info
+      const errors = result.errors.filter((e) => e.severity === 'error');
+      const warnings = result.errors.filter((e) => e.severity === 'warning');
+      const infos = result.errors.filter((e) => e.severity === 'info');
+
+      if (errors.length > 0) {
+        console.log(chalk.red(`  ❌ Terminology validation failed (${errors.length} errors):`));
+        errors.forEach((error, index) => {
+          console.log(chalk.red(`     [${index + 1}] ${error.path}: ${error.message}`));
+          if (options.verbose) {
+            console.log(chalk.gray(`         Type: ${error.type}, Term: ${error.referencedId}`));
+          }
+        });
+        hasErrors = true;
+      }
+
+      if (warnings.length > 0) {
+        console.log(chalk.yellow(`  ⚠️  Terminology warnings (${warnings.length} warnings):`));
+        warnings.forEach((warning, index) => {
+          console.log(chalk.yellow(`     [${index + 1}] ${warning.path}: ${warning.message}`));
+          if (options.verbose) {
+            console.log(
+              chalk.gray(`         Type: ${warning.type}, Term: ${warning.referencedId}`)
+            );
+          }
+        });
+      }
+
+      if (infos.length > 0 && options.verbose) {
+        console.log(chalk.cyan(`  ℹ️  Terminology info (${infos.length} suggestions):`));
+        infos.forEach((info, index) => {
+          console.log(chalk.cyan(`     [${index + 1}] ${info.path}: ${info.message}`));
+        });
+      }
+
+      // Valid if only warnings/infos
+      if (errors.length === 0) {
+        console.log(chalk.green('  ✅ Terminology validation passed (with warnings/suggestions)'));
+      }
     }
   }
 

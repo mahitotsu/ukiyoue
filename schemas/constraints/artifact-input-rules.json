@@ -39,8 +39,8 @@
       "description": "Derived from Business Goal and User Story"
     },
     "data-dictionary": {
-      "inputs": ["user-story", "use-case"],
-      "description": "Terms from User Story and Use Case"
+      "inputs": [],
+      "description": "No derivedFrom required; terms collected from all artifacts throughout project lifecycle"
     },
     "conceptual-data-model": {
       "inputs": ["data-dictionary", "use-case"],
@@ -76,9 +76,13 @@
       "inputs": ["functional-requirements", "data-model"],
       "description": "UI design from Requirements and Data Model"
     },
+    "api-architecture": {
+      "inputs": ["runtime-architecture", "data-model", "security-architecture"],
+      "description": "API design principles from Runtime Architecture, Data Model, and Security Architecture"
+    },
     "api-specification": {
-      "inputs": ["runtime-architecture", "data-model"],
-      "description": "API design from Architecture and Data Model"
+      "inputs": ["api-architecture", "runtime-architecture", "data-model"],
+      "description": "API design from API Architecture, Runtime Architecture, and Data Model"
     },
     "security-architecture": {
       "inputs": ["non-functional-requirements", "runtime-architecture"],
@@ -237,14 +241,15 @@
     "use-case": ["REQ-UC"],
     "functional-requirements": ["REQ-FUNC", "func-req"],
     "non-functional-requirements": ["REQ-NONFUNC", "nonfunc-req", "nfr"],
-    "data-dictionary": ["REQ-DICT", "dict"],
+    "data-dictionary": ["BIZ-DICT", "dict"],
     "conceptual-data-model": ["REQ-CONCEPT", "concept"],
     "test-strategy": ["REQ-TESTSTRATEGY", "test-strat"],
     "architecture-decision-record": ["ARCH-ADR", "adr"],
     "runtime-architecture": ["ARCH-RUNTIME"],
     "data-model": ["ARCH-DATA", "logical-data-model"],
+    "api-architecture": ["ARCH-API"],
     "ui-ux-specification": ["ARCH-UI"],
-    "api-specification": ["ARCH-API"],
+    "api-specification": ["IMPL-API"],
     "security-architecture": ["ARCH-SECURITY"],
     "reliability-architecture": ["ARCH-RELIABILITY"],
     "infrastructure-architecture": ["ARCH-INFRA"],
@@ -273,5 +278,38 @@
     "uat-plan": ["VERIFY-UAT-PLAN"],
     "uat-specification": ["VERIFY-UAT-SPEC"],
     "uat-result": ["VERIFY-UAT-RESULT"]
+  },
+  "terminologyRules": {
+    "description": "Defines terminology reference requirements for each artifact type (ADR-009)",
+    "conceptual-data-model": {
+      "requiresTermReference": true,
+      "level": "error",
+      "fields": ["entities[].termReference", "entities[].attributes[].termReference"],
+      "description": "Entities and attributes should reference Data Dictionary terms"
+    },
+    "data-model": {
+      "requiresTermReference": true,
+      "level": "error",
+      "fields": ["entities[].termReference", "entities[].attributes[].termReference"],
+      "description": "Entities and attributes must reference Data Dictionary terms"
+    },
+    "api-specification": {
+      "requiresTermReference": true,
+      "level": "warning",
+      "fields": ["endpoints[].parameters[].termReference"],
+      "description": "API parameters should reference Data Dictionary terms"
+    },
+    "ui-ux-specification": {
+      "requiresTermReference": false,
+      "level": "info",
+      "fields": ["screens[].fields[].termReference"],
+      "description": "UI fields may optionally reference Data Dictionary terms"
+    },
+    "physical-data-model": {
+      "requiresTermReference": true,
+      "level": "error",
+      "fields": ["tables[].termReference", "tables[].columns[].termReference"],
+      "description": "Tables and columns must reference Data Dictionary terms"
+    }
   }
 }

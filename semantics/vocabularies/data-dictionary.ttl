@@ -1,0 +1,236 @@
+@prefix ukiyoue: <https://ukiyoue.example.org/vocab#> .
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix dc: <http://purl.org/dc/terms/> .
+
+# ============================================================
+# Data Dictionary Ontology for Ukiyoue Framework
+# ============================================================
+# Purpose: Semantic model for terminology management
+# Based on: SKOS, DCAT, PROV
+# Version: 1.0
+# ============================================================
+
+# ------------------------------------------------------------
+# Ontology Declaration
+# ------------------------------------------------------------
+
+<https://ukiyoue.example.org/vocab/data-dictionary>
+    a owl:Ontology ;
+    dc:title "Ukiyoue Data Dictionary Ontology" ;
+    dc:description "Vocabulary for managing terminology in Ukiyoue artifacts" ;
+    dc:creator "Ukiyoue Framework Project" ;
+    dc:created "2025-10-26"^^xsd:date ;
+    owl:imports <http://www.w3.org/2004/02/skos/core> ,
+                <http://www.w3.org/ns/dcat> ,
+                <http://www.w3.org/ns/prov#> .
+
+# ------------------------------------------------------------
+# Classes: Core Entities
+# ------------------------------------------------------------
+
+ukiyoue:DataDictionary
+    a owl:Class , skos:ConceptScheme ;
+    rdfs:label "Data Dictionary"@en , "データ辞書"@ja ;
+    rdfs:comment "A collection of terminology definitions used across artifacts"@en ;
+    rdfs:comment "アーティファクト間で使用される用語定義の集合"@ja ;
+    rdfs:subClassOf dcat:Dataset , skos:ConceptScheme .
+
+ukiyoue:Term
+    a owl:Class , skos:Concept ;
+    rdfs:label "Term"@en , "用語"@ja ;
+    rdfs:comment "A terminology entry with canonical name, data type, and constraints"@en ;
+    rdfs:comment "正規名称、データ型、制約を持つ用語エントリ"@ja ;
+    rdfs:subClassOf skos:Concept .
+
+# ------------------------------------------------------------
+# Classes: Domain Classification
+# ------------------------------------------------------------
+
+ukiyoue:Domain
+    a owl:Class ;
+    rdfs:label "Domain"@en , "ドメイン"@ja ;
+    rdfs:comment "Semantic domain category for terminology"@en ;
+    rdfs:comment "用語の意味的ドメインカテゴリ"@ja .
+
+ukiyoue:BusinessDomain
+    a owl:Class ;
+    rdfs:label "Business Domain"@en , "ビジネスドメイン"@ja ;
+    rdfs:comment "Business-facing terminology (user stories, requirements)"@en ;
+    rdfs:comment "ビジネス向け用語（ユーザーストーリー、要件）"@ja ;
+    rdfs:subClassOf ukiyoue:Domain .
+
+ukiyoue:SystemDomain
+    a owl:Class ;
+    rdfs:label "System Domain"@en , "システムドメイン"@ja ;
+    rdfs:comment "System-internal terminology (implementation, APIs)"@en ;
+    rdfs:comment "システム内部用語（実装、API）"@ja ;
+    rdfs:subClassOf ukiyoue:Domain .
+
+ukiyoue:AnalyticsDomain
+    a owl:Class ;
+    rdfs:label "Analytics Domain"@en , "分析ドメイン"@ja ;
+    rdfs:comment "Data analytics and reporting terminology"@en ;
+    rdfs:comment "データ分析およびレポーティング用語"@ja ;
+    rdfs:subClassOf ukiyoue:Domain .
+
+ukiyoue:InfrastructureDomain
+    a owl:Class ;
+    rdfs:label "Infrastructure Domain"@en , "インフラドメイン"@ja ;
+    rdfs:comment "Infrastructure and operations terminology"@en ;
+    rdfs:comment "インフラおよび運用用語"@ja ;
+    rdfs:subClassOf ukiyoue:Domain .
+
+# ------------------------------------------------------------
+# Classes: Layer Classification
+# ------------------------------------------------------------
+
+ukiyoue:Layer
+    a owl:Class ;
+    rdfs:label "Layer"@en , "レイヤー"@ja ;
+    rdfs:comment "Abstraction layer for data modeling"@en ;
+    rdfs:comment "データモデリングの抽象レイヤー"@ja .
+
+ukiyoue:ConceptualLayer
+    a owl:Class ;
+    rdfs:label "Conceptual Layer"@en , "概念レイヤー"@ja ;
+    rdfs:comment "Business concepts (entities, relationships)"@en ;
+    rdfs:comment "ビジネス概念（エンティティ、関係）"@ja ;
+    rdfs:subClassOf ukiyoue:Layer .
+
+ukiyoue:LogicalLayer
+    a owl:Class ;
+    rdfs:label "Logical Layer"@en , "論理レイヤー"@ja ;
+    rdfs:comment "Logical data model (tables, fields, foreign keys)"@en ;
+    rdfs:comment "論理データモデル（テーブル、フィールド、外部キー）"@ja ;
+    rdfs:subClassOf ukiyoue:Layer .
+
+ukiyoue:PhysicalLayer
+    a owl:Class ;
+    rdfs:label "Physical Layer"@en , "物理レイヤー"@ja ;
+    rdfs:comment "Physical storage implementation (SQL DDL, NoSQL schema)"@en ;
+    rdfs:comment "物理ストレージ実装（SQL DDL、NoSQLスキーマ）"@ja ;
+    rdfs:subClassOf ukiyoue:Layer .
+
+# ------------------------------------------------------------
+# Properties: Core Properties
+# ------------------------------------------------------------
+
+ukiyoue:canonicalName
+    a owl:DatatypeProperty ;
+    rdfs:label "Canonical Name"@en , "正規名称"@ja ;
+    rdfs:comment "Unique canonical identifier in code/schemas"@en ;
+    rdfs:comment "コード/スキーマにおける一意の正規識別子"@ja ;
+    rdfs:domain ukiyoue:Term ;
+    rdfs:range xsd:string .
+
+ukiyoue:dataType
+    a owl:DatatypeProperty ;
+    rdfs:label "Data Type"@en , "データ型"@ja ;
+    rdfs:comment "Data type of the term (String, Integer, Date, etc.)"@en ;
+    rdfs:comment "用語のデータ型（String、Integer、Date等）"@ja ;
+    rdfs:domain ukiyoue:Term ;
+    rdfs:range xsd:string .
+
+ukiyoue:domain
+    a owl:ObjectProperty ;
+    rdfs:label "Domain"@en , "ドメイン"@ja ;
+    rdfs:comment "Semantic domain category"@en ;
+    rdfs:comment "意味的ドメインカテゴリ"@ja ;
+    rdfs:domain ukiyoue:Term ;
+    rdfs:range ukiyoue:Domain .
+
+ukiyoue:layer
+    a owl:ObjectProperty ;
+    rdfs:label "Layer"@en , "レイヤー"@ja ;
+    rdfs:comment "Abstraction layer (conceptual/logical/physical)"@en ;
+    rdfs:comment "抽象レイヤー（概念/論理/物理）"@ja ;
+    rdfs:domain ukiyoue:Term ;
+    rdfs:range ukiyoue:Layer .
+
+ukiyoue:deprecated
+    a owl:DatatypeProperty ;
+    rdfs:label "Deprecated"@en , "非推奨"@ja ;
+    rdfs:comment "Whether the term is deprecated"@en ;
+    rdfs:comment "用語が非推奨かどうか"@ja ;
+    rdfs:domain ukiyoue:Term ;
+    rdfs:range xsd:boolean .
+
+ukiyoue:constraints
+    a owl:ObjectProperty ;
+    rdfs:label "Constraints"@en , "制約"@ja ;
+    rdfs:comment "Validation constraints for the term"@en ;
+    rdfs:comment "用語の検証制約"@ja ;
+    rdfs:domain ukiyoue:Term .
+
+# ------------------------------------------------------------
+# Properties: Relationships (reuse SKOS/PROV)
+# ------------------------------------------------------------
+
+# skos:prefLabel - Term name (preferred label)
+# skos:altLabel - Synonyms (alternative labels)
+# skos:definition - Term definition
+# skos:related - Related terms
+# skos:broader - Broader term (hierarchical)
+# skos:narrower - Narrower term (hierarchical)
+# skos:inScheme - Link to Data Dictionary (Concept Scheme)
+# prov:wasDerivedFrom - Term reference (traceability)
+# prov:wasRevisedBy - Replaced by (deprecation)
+# dcat:keyword - Tags
+
+# ------------------------------------------------------------
+# Property: termReference (Traceability)
+# ------------------------------------------------------------
+
+ukiyoue:termReference
+    a owl:ObjectProperty ;
+    rdfs:label "Term Reference"@en , "用語参照"@ja ;
+    rdfs:comment "Reference to a Data Dictionary term from an artifact"@en ;
+    rdfs:comment "アーティファクトからデータ辞書用語への参照"@ja ;
+    rdfs:domain ukiyoue:Artifact ;
+    rdfs:range ukiyoue:Term ;
+    rdfs:subPropertyOf prov:wasDerivedFrom .
+
+# ------------------------------------------------------------
+# SHACL-compatible Axioms (for validation)
+# ------------------------------------------------------------
+
+# Terms must have exactly one canonical name
+ukiyoue:Term
+    rdfs:subClassOf [
+        a owl:Restriction ;
+        owl:onProperty ukiyoue:canonicalName ;
+        owl:cardinality 1
+    ] .
+
+# Terms must have exactly one data type
+ukiyoue:Term
+    rdfs:subClassOf [
+        a owl:Restriction ;
+        owl:onProperty ukiyoue:dataType ;
+        owl:cardinality 1
+    ] .
+
+# Terms must have exactly one domain
+ukiyoue:Term
+    rdfs:subClassOf [
+        a owl:Restriction ;
+        owl:onProperty ukiyoue:domain ;
+        owl:cardinality 1
+    ] .
+
+# Terms must have exactly one layer
+ukiyoue:Term
+    rdfs:subClassOf [
+        a owl:Restriction ;
+        owl:onProperty ukiyoue:layer ;
+        owl:cardinality 1
+    ] .
+
+# ============================================================
+# End of Data Dictionary Ontology
+# ============================================================
