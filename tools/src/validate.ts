@@ -134,6 +134,14 @@ function collectJsonFiles(path: string): string[] {
     if (entry.isDirectory()) {
       files.push(...collectJsonFiles(fullPath));
     } else if (entry.isFile() && extname(entry.name) === '.json') {
+      // Exclude package.json and other non-Ukiyoue JSON files
+      if (
+        entry.name === 'package.json' ||
+        entry.name === 'package-lock.json' ||
+        entry.name === 'tsconfig.json'
+      ) {
+        continue;
+      }
       files.push(fullPath);
     }
   }
@@ -366,35 +374,7 @@ async function validateDocument(
     }
   }
 
-  // 4. SHACL Validation (optional, enabled with --full-validation)
-  if (options.fullValidation && !options.skipShacl && projectRoot) {
-    console.log(chalk.blue('  📊 SHACL validation...'));
-
-    try {
-      const result = await validateShacl(document, {
-        documentIndexPath: projectRoot,
-        verbose: options.verbose,
-      });
-
-      if (result.valid) {
-        console.log(chalk.green('  ✅ SHACL validation passed'));
-      } else {
-        console.log(chalk.red('  ❌ SHACL validation failed:'));
-        result.errors.forEach((error, index) => {
-          console.log(chalk.red(`     [${index + 1}] ${error}`));
-        });
-        if (options.verbose) {
-          console.log(
-            chalk.gray(`     💡 SHACL validates graph-wide integrity and type constraints`)
-          );
-        }
-        hasErrors = true;
-      }
-    } catch (error) {
-      console.error(chalk.red(`  ❌ SHACL validation error: ${error}`));
-      hasErrors = true;
-    }
-  }
+  // Note: SHACL validation moved to project-wide validation (after all files)
 
   return !hasErrors;
 }
@@ -481,13 +461,80 @@ async function main() {
   const successCount = results.filter((r) => r).length;
   const failCount = results.length - successCount;
 
-  console.log(chalk.bold.blue(`\n${'='.repeat(60)}`));
-  if (failCount === 0) {
+  // 4. SHACL Validation (project-wide, run once after all files)
+  let shaclSuccess = true;
+  if (options.fullValidation && !options.skipShacl && projectRoot) {
+    console.log(chalk.bold.blue(`\n📊 Running project-wide SHACL validation...\n`));
+
+    try {
+      // Load a representative document to trigger full graph validation
+      const firstFile = files[0];
+      if (firstFile) {
+        const content = readFileSync(firstFile, 'utf-8');
+        const document = JSON.parse(content) as Record<string, unknown>;
+
+        const result = await validateShacl(document, {
+          documentIndexPath: projectRoot,
+          verbose: options.verbose,
+        });
+
+        if (result.valid) {
+          console.log(chalk.green('✅ SHACL validation passed (graph-wide integrity check)\n'));
+        } else {
+          console.log(chalk.red('❌ SHACL validation failed (graph-wide integrity issues):\n'));
+
+          // Group errors by artifact ID to avoid showing the same error multiple times
+          const errorsByArtifact = new Map<string, string[]>();
+          for (const error of result.errors) {
+            const match = error.match(/focus: https:\/\/ukiyoue\.example\.org\/artifact\/([^,)]+)/);
+            const artifactId = match?.[1] ?? 'unknown';
+            if (!errorsByArtifact.has(artifactId)) {
+              errorsByArtifact.set(artifactId, []);
+            }
+            const errors = errorsByArtifact.get(artifactId);
+            if (errors) {
+              errors.push(error);
+            }
+          }
+
+          // Display unique errors grouped by artifact
+          let errorIndex = 1;
+          for (const [artifactId, errors] of errorsByArtifact.entries()) {
+            console.log(chalk.yellow(`  Artifact: ${artifactId}`));
+            // Remove duplicate error messages for the same artifact
+            const uniqueErrors = [...new Set(errors.map((e) => e.split(' (focus:')[0]))];
+            for (const errorMsg of uniqueErrors) {
+              console.log(chalk.red(`     [${errorIndex}] ${errorMsg}`));
+              errorIndex++;
+            }
+          }
+
+          if (options.verbose) {
+            console.log(
+              chalk.gray(`\n     💡 SHACL validates graph-wide integrity and type constraints`)
+            );
+          }
+          shaclSuccess = false;
+        }
+      }
+    } catch (error) {
+      console.error(chalk.red(`❌ SHACL validation error: ${error}\n`));
+      shaclSuccess = false;
+    }
+  }
+
+  console.log(chalk.bold.blue(`${'='.repeat(60)}`));
+  if (failCount === 0 && shaclSuccess) {
     console.log(chalk.green.bold(`✅ All ${successCount} file(s) validated successfully`));
     process.exit(0);
   } else {
-    console.log(chalk.red.bold(`❌ ${failCount} file(s) failed validation`));
-    console.log(chalk.green(`✅ ${successCount} file(s) passed validation`));
+    if (failCount > 0) {
+      console.log(chalk.red.bold(`❌ ${failCount} file(s) failed validation`));
+      console.log(chalk.green(`✅ ${successCount} file(s) passed validation`));
+    }
+    if (!shaclSuccess) {
+      console.log(chalk.red.bold(`❌ SHACL validation failed (graph-wide integrity issues)`));
+    }
     process.exit(1);
   }
 }
