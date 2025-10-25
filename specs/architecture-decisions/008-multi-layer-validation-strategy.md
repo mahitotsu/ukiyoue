@@ -228,9 +228,36 @@ SHACL Validator → CI/CD や明示的リクエストのみ
 - **グラフパターン検証**: トレーサビリティパスの完全性
 - **関係の整合性**: 複数ドキュメントをまたぐ依存関係
 - **オントロジー制約**: クラス階層、プロパティの定義域・値域
+- **双方向トレーサビリティ検証**: ADR-007 の単方向定義を補完
+
+**双方向検証の役割** (ADR-007 との連携):
+
+ADR-007 では、成果物内に**単方向参照のみ**を定義する（例: UserStory → BusinessGoal）。
+逆方向の確認（例: BusinessGoal が最低1つの UserStory に具体化されているか）は **SHACL で検証**する。
 
 ```turtle
-# 検証例: User Story は Business Goal を経由して Project Charter に到達可能か
+# 順方向検証 (Reference Validator でも実施)
+ukiyoue:UserStoryShape
+  sh:property [
+    sh:path ukiyoue:derivedFrom ;
+    sh:class ukiyoue:BusinessGoal ;
+    sh:minCount 1 ;
+    sh:message "User Story must derive from Business Goal"
+  ] .
+
+# 逆方向検証 (SHACL のみで実施)
+ukiyoue:BusinessGoalShape
+  sh:property [
+    sh:path [ sh:inversePath ukiyoue:derivedFrom ] ;  # 逆参照 (inverse path)
+    sh:class ukiyoue:UserStory ;
+    sh:minCount 1 ;
+    sh:message "Business Goal must be realized by at least one User Story"
+  ] .
+```
+
+**検証例**: User Story は Business Goal を経由して Project Charter に到達可能か
+
+```turtle
 ukiyoue:UserStoryCompletenessShape
   a sh:NodeShape ;
   sh:targetClass ukiyoue:UserStory ;
@@ -253,6 +280,8 @@ ukiyoue:UserStoryCompletenessShape
 **SHACL 定義** (schemas/shacl/artifact-constraints.ttl):
 
 - 基本構造制約（minCount/maxCount）
+- 型制約（sh:class）による入力成果物の型検証
+- **双方向トレーサビリティ制約（sh:inversePath）**
 - グラフパターン制約（SPARQL ベース）
 - オントロジー制約（クラス階層、プロパティ制約）
 
@@ -316,6 +345,7 @@ bun src/validate.ts file.json --skip-jsonld
 2. **品質の保証**
    - SHACL でプロジェクト全体の整合性を検証
    - トレーサビリティの断絶、孤立参照を検出
+   - **双方向トレーサビリティ**: 孤立した成果物を検出（例: どのUserStoryにも参照されないBusinessGoal）
 
 3. **AI 機能の実現**
    - SHACL + SPARQL でセマンティック検索・推論が可能
@@ -400,7 +430,9 @@ Phase 3（将来）:
 - **ADR-003**: JSON-LD バージョンの選定
   - JSON-LD 1.1 を採用 → SHACL + RDF の基盤
 - **ADR-007**: JSON 成果物のトレーサビリティ実現方式
-  - 埋め込み + 自動生成マトリクス → Reference Validator + SHACL で検証
+  - **単方向定義原則**: 埋め込み + 自動生成マトリクス → Reference Validator で順方向検証
+  - **双方向検証**: SHACL で逆方向参照を検証（例: BusinessGoal → UserStory の存在確認）
+  - 成果物本体には逆方向参照を持たせず、SHACL で補完的に検証
 
 ## References
 

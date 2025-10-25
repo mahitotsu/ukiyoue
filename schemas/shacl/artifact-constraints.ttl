@@ -51,12 +51,19 @@ ukiyoue:BusinessGoalShape
   a sh:NodeShape ;
   sh:targetClass ukiyoue:BusinessGoal ;
   sh:name "Business Goal Constraints" ;
-  sh:description "Business Goal must be derived from Project Charter" ;
+  sh:description "Business Goal must be derived from Project Charter and realized by at least one User Story" ;
   sh:property [
     sh:path ukiyoue:derivedFrom ;
     sh:minCount 1 ;
     sh:class ukiyoue:ProjectCharter ;
     sh:message "Business Goal must be derived from Project Charter" ;
+  ] ;
+  # Bidirectional traceability: Business Goal must be realized by at least one User Story
+  sh:property [
+    sh:path [ sh:inversePath ukiyoue:derivedFrom ] ;
+    sh:class ukiyoue:UserStory ;
+    sh:minCount 1 ;
+    sh:message "Business Goal must be realized by at least one User Story (reverse traceability check)" ;
   ] .
 
 # User Story - Derived from Business Goal

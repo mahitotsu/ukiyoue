@@ -89,7 +89,11 @@ async function buildDocumentIndex(dirPath: string): Promise<DocumentIndex> {
 /**
  * Convert JSON-LD document to RDF Store
  */
-async function jsonLdToStore(data: unknown, documentIndex?: DocumentIndex): Promise<Store> {
+async function jsonLdToStore(
+  data: unknown,
+  documentIndex?: DocumentIndex,
+  loadAllDocuments = false
+): Promise<Store> {
   const store = new Store();
   const processedIds = new Set<string>();
 
@@ -169,6 +173,21 @@ async function jsonLdToStore(data: unknown, documentIndex?: DocumentIndex): Prom
     await addDocumentToStore(doc);
   }
 
+  // If loadAllDocuments is true and documentIndex is provided, load all documents
+  if (loadAllDocuments && documentIndex) {
+    for (const [id, info] of Object.entries(documentIndex)) {
+      if (!processedIds.has(id)) {
+        try {
+          const content = await readFile(info.filePath, 'utf-8');
+          const doc = JSON.parse(content) as Record<string, unknown>;
+          await addDocumentToStore(doc);
+        } catch {
+          // Ignore errors loading documents
+        }
+      }
+    }
+  }
+
   return store;
 }
 
@@ -207,7 +226,8 @@ export async function validateShacl(
     }
 
     // Convert JSON-LD document to RDF store
-    const dataGraph = await jsonLdToStore(data, documentIndex);
+    // If documentIndexPath is provided, load all documents for bidirectional validation
+    const dataGraph = await jsonLdToStore(data, documentIndex, !!options.documentIndexPath);
 
     if (options.verbose) {
       console.log(
