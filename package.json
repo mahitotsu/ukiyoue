@@ -15,8 +15,6 @@
   "scripts": {
     "format": "prettier --write \"**/*.{json,jsonld,md,ts,tsx}\"",
     "format:check": "prettier --check \"**/*.{json,jsonld,md,ts,tsx}\"",
-    "format:json": "prettier --write \"**/*.{json,jsonld}\"",
-    "format:docs": "prettier --write \"**/*.md\"",
     "lint:md": "markdownlint-cli2 \"**/*.md\"",
     "lint:md:fix": "markdownlint-cli2 --fix \"**/*.md\"",
     "validate": "cd tools && bun run src/cli.ts validate",
