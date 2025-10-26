@@ -1,6 +1,0 @@
-{
-  "@context": "https://ukiyoue.example.org/context/base.jsonld",
-  "id": "pc-001",
-  "type": "project-charter",
-  "title": "Test Project Charter"
-}
