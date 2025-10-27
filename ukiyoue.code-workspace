@@ -5,7 +5,7 @@
       "path": ".",
     },
     {
-      "name": "� JSON Schemas",
+      "name": "📋 JSON Schemas",
       "path": "schemas",
     },
     {
@@ -13,11 +13,15 @@
       "path": "semantics",
     },
     {
-      "name": "�🔧 Tools (CLI & Validator)",
+      "name": "🔧 Tools (CLI & Validator)",
       "path": "tools",
     },
     {
-      "name": "📘 Examples & Templates",
+      "name": "📐 Templates & Components",
+      "path": "templates",
+    },
+    {
+      "name": "📘 Examples",
       "path": "examples",
     },
   ],
