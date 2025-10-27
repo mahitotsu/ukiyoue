@@ -202,21 +202,6 @@ Ukiyoue Frameworkでは、プロジェクトドキュメントをどの形式で
 - **人間による直接編集の難しさ**: IDE サポート、AIエージェント活用
 - **コメント記述の制約**: `$comment`フィールド、別ファイルドキュメント
 
-### Dependencies
-
-**このADRに影響を与えるADR**:
-
-- なし（最初の基盤決定）
-
-**このADRが影響を与えるADR**:
-
-- ADR-002: 構造検証手法の選定 - JSON Schemaが前提となる
-- ADR-003: セマンティック定義手法の選定 - JSON-LDが前提となる
-- ADR-004: スキーマ検証エンジンの選定 - JSON Schema対応ライブラリが必要
-- ADR-005: コンポーネント識別方法の選定 - JSON構造への参照方法
-- ADR-010: JSON Schemaライブラリの選定 - JSON Schema処理ライブラリ
-- ADR-011: JSON-LDライブラリの選定 - JSON-LD処理ライブラリ
-
 ## Implementation Notes
 
 ```yaml
@@ -263,12 +248,11 @@ Ukiyoue Frameworkでは、プロジェクトドキュメントをどの形式で
 - [ ] JSON-LDに代わるセマンティック定義標準が確立される
 - [ ] コミュニティから「JSONが使いづらい」という強い要望が多数寄せられる（50%以上）
 
-## References
+## Related
 
-- [JSON公式仕様 (RFC 8259)](https://www.rfc-editor.org/rfc/rfc8259.html) - IETF標準
-- [JSON Schema公式サイト](https://json-schema.org/) - 最新仕様とドキュメント
-- [JSON-LD 1.1 仕様](https://www.w3.org/TR/json-ld11/) - W3C勧告
-- [YAML 1.2 仕様](https://yaml.org/spec/1.2.2/) - YAML公式仕様
-- [TOML公式仕様](https://toml.io/) - Tom's Obvious, Minimal Language
-- [Why JSON is better than XML](https://www.json.org/json-en.html) - JSON.org
-- ❌ Implementation-dependent parsing (YAML 1.1 vs 1.2 incompatibilities)
+- **ADR-002**: Structure Validation - JSON Schema（構造検証の方法）
+- **ADR-003**: Semantic Definition - JSON-LD（セマンティック定義の方法）
+- **ADR-004**: Schema Validation Engine - Ajv（JSON Schema検証エンジン）
+- **ADR-005**: Element Identification - JSON Pointer（要素識別方法）
+- **ADR-010**: JSON Schema Library（JSON Schemaライブラリ選定）
+- **ADR-011**: JSON-LD Library（JSON-LDライブラリ選定）
