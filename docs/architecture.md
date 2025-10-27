@@ -1006,14 +1006,15 @@ graph TD
 
         B4 --> B5[JSON-LD展開]
         B5 --> B6[RDF変換]
-        B6 --> B7[SHACL検証]
-        B7 --> B8{意味OK?}
-        B8 -->|Yes| B9[Level 3: カスタムルール]
-        B8 -->|No| E2[意味エラー報告]
+        B6 --> B7[SHACL検証<br/>IRI形式チェック]
+        B7 --> B8[参照先存在確認<br/>プロジェクト内検索]
+        B8 --> B9{意味OK?}
+        B9 -->|Yes| B10[Level 3: カスタムルール]
+        B9 -->|No| E2[意味エラー報告]
 
-        B9 --> B10{ルールOK?}
-        B10 -->|Yes| R1[✅ 検証成功]
-        B10 -->|No| E3[ルール違反報告]
+        B10 --> B11{ルールOK?}
+        B11 -->|Yes| R1[✅ 検証成功]
+        B11 -->|No| E3[ルール違反報告]
     end
 
     A4 -.->|後で実行| B1
@@ -1021,7 +1022,7 @@ graph TD
     style A1 fill:#e1f5ff
     style B2 fill:#fff4e1
     style B4 fill:#ffe1f5
-    style B9 fill:#f5e1ff
+    style B10 fill:#f5e1ff
     style R1 fill:#e1ffe1
     style E1 fill:#ffe1e1
     style E2 fill:#ffe1e1
@@ -1046,8 +1047,93 @@ graph TD
   "description": "ユーザーがメールアドレスとパスワードでログインできる",
   "priority": "high",
   "status": "draft",
-  "testCases": ["TC-001"], // ← 関連を**記述**
-  "dependsOn": []
+  "acceptanceCriteria": [
+    "メールアドレスとパスワードでログインできること",
+    "ログイン失敗時はエラーメッセージを表示すること"
+  ],
+  "testCases": ["TC-001", "TC-002"], // ← 関連を**記述**
+  "dependsOn": ["FR-000"] // ← 別の要件への依存を記述
+}
+```
+
+**参照されているスキーマ定義**:
+
+```json
+// schemas/requirement.schema.json
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ukiyoue.dev/schemas/requirement.schema.json",
+  "type": "object",
+  "required": [
+    "@context",
+    "@type",
+    "id",
+    "title",
+    "description",
+    "priority",
+    "status"
+  ],
+  "properties": {
+    "@context": { "type": "string" },
+    "@type": { "type": "string" },
+    "id": {
+      "type": "string",
+      "pattern": "^FR-[0-9]{3}$"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 5,
+      "maxLength": 100
+    },
+    "description": {
+      "type": "string",
+      "minLength": 10
+    },
+    "priority": {
+      "type": "string",
+      "enum": ["high", "medium", "low"]
+    },
+    "status": {
+      "type": "string",
+      "enum": ["draft", "approved", "implemented", "deprecated"]
+    },
+    "acceptanceCriteria": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 1
+    },
+    "testCases": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "dependsOn": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  }
+}
+```
+
+```json
+// semantics/context.jsonld（一部抜粋）
+{
+  "@context": {
+    "@vocab": "https://ukiyoue.dev/vocab#",
+    "FunctionalRequirement": {
+      "@id": "https://ukiyoue.dev/vocab#FunctionalRequirement",
+      "@type": "@id"
+    },
+    "testCases": {
+      "@id": "https://ukiyoue.dev/vocab#testCases",
+      "@type": "@id",
+      "@container": "@set"
+    },
+    "dependsOn": {
+      "@id": "https://ukiyoue.dev/vocab#dependsOn",
+      "@type": "@id",
+      "@container": "@set"
+    }
+  }
 }
 ```
 
@@ -1109,14 +1195,15 @@ if (!isValid) {
 
 **検証内容**:
 
-| 項目           | 例                                                 |
-| -------------- | -------------------------------------------------- |
-| 必須項目       | `id`, `title`, `description`が存在するか           |
-| データ型       | `priority`が文字列か                               |
-| 列挙値         | `status`が`draft/approved/deprecated`のいずれか    |
-| フォーマット   | `id`が`^[A-Z]+-[0-9]+$`パターンに一致するか        |
-| 配列の要素数   | `testCases`が最低1個あるか                         |
-| ネストした構造 | `acceptanceCriteria`の各要素が正しいオブジェクトか |
+| 項目           | 例                                                          |
+| -------------- | ----------------------------------------------------------- |
+| 必須項目       | `id`, `title`, `description`が存在するか                    |
+| データ型       | `priority`が文字列か                                        |
+| 列挙値         | `status`が`draft/approved/implemented/deprecated`のいずれか |
+| フォーマット   | `id`が`^FR-[0-9]{3}$`パターンに一致するか                   |
+| 配列の要素数   | `acceptanceCriteria`が最低1個あるか                         |
+| ネストした構造 | `acceptanceCriteria`の各要素が文字列か                      |
+| 文字列長       | `title`が5〜100文字、`description`が10文字以上か            |
 
 **エラー例**:
 
@@ -1125,8 +1212,8 @@ if (!isValid) {
   "level": "structure",
   "errors": [
     {
-      "path": "/testCases",
-      "message": "必須項目 'testCases' が不足しています",
+      "path": "/acceptanceCriteria",
+      "message": "必須項目 'acceptanceCriteria' が不足しています",
       "expected": "array (minItems: 1)",
       "actual": "undefined"
     }
@@ -1161,7 +1248,8 @@ const expanded = await jsonld.expand(document);
 //   "@context": "https://ukiyoue.dev/context/v1",
 //   "@type": "FunctionalRequirement",
 //   "title": "ユーザー認証機能",
-//   "testCases": ["TC-001"]
+//   "testCases": ["TC-001", "TC-002"],
+//   "dependsOn": ["FR-000"]
 // }
 
 // After（展開後）:
@@ -1172,7 +1260,11 @@ const expanded = await jsonld.expand(document);
 //       { "@value": "ユーザー認証機能" }
 //     ],
 //     "https://ukiyoue.dev/vocab#testCases": [
-//       { "@id": "TC-001" }
+//       { "@id": "TC-001" },
+//       { "@id": "TC-002" }
+//     ],
+//     "https://ukiyoue.dev/vocab#dependsOn": [
+//       { "@id": "FR-000" }
 //     ]
 //   }
 // ]
@@ -1202,6 +1294,8 @@ const rdfDataset = await jsonld.toRDF(expanded, {
 // <FR-001> <dc:title> "ユーザー認証機能" .
 // <FR-001> <ukiyoue:priority> "high" .
 // <FR-001> <ukiyoue:testCases> <TC-001> .
+// <FR-001> <ukiyoue:testCases> <TC-002> .
+// <FR-001> <ukiyoue:dependsOn> <FR-000> .
 ```
 
 **RDFグラフの構造**:
@@ -1213,9 +1307,10 @@ RDFは「主語・述語・目的語」のトリプル（3つ組）の集合で�
 | FR-001          | rdf:type          | FunctionalRequirement |
 | FR-001          | dc:title          | "ユーザー認証機能"    |
 | FR-001          | ukiyoue:testCases | TC-001                |
-| FR-001          | ukiyoue:dependsOn | （空のリスト）        |
+| FR-001          | ukiyoue:testCases | TC-002                |
+| FR-001          | ukiyoue:dependsOn | FR-000                |
 
-このグラフ構造により、「FR-001はテストケースTC-001を持つ」という**意味的な関係**が明示されます。
+このグラフ構造により、「FR-001はテストケースTC-001, TC-002を持つ」「FR-001は要件FR-000に依存する」という**意味的な関係**が明示されます。
 
 ---
 
@@ -1237,9 +1332,14 @@ const shapesGraph = await loadShaclShapes("requirement.ttl");
 //   a sh:NodeShape ;
 //   sh:targetClass ukiyoue:FunctionalRequirement ;
 //   sh:property [
+//     sh:path ukiyoue:dependsOn ;
+//     sh:nodeKind sh:IRI ;
+//     sh:message "依存関係の参照先が有効なIRIではありません" ;
+//   ] ;
+//   sh:property [
 //     sh:path ukiyoue:testCases ;
-//     sh:minCount 1 ;
-//     sh:message "要件には少なくとも1つのテストケースが必要です" ;
+//     sh:nodeKind sh:IRI ;
+//     sh:message "テストケースの参照先が有効なIRIではありません" ;
 //   ] .
 
 // 4. RDFグラフをSHACL Shapeで検証
@@ -1251,9 +1351,34 @@ if (!report.conforms) {
   for (const result of report.results) {
     console.log({
       focusNode: result.focusNode.value, // "FR-001"
-      message: result.message[0].value, // "要件には少なくとも..."
-      path: result.path?.value, // "ukiyoue:testCases"
+      message: result.message[0].value, // "依存関係の参照先が..."
+      path: result.path?.value, // "ukiyoue:dependsOn"
       value: result.value?.value, // 実際の値
+    });
+  }
+}
+
+// 5. 参照先の存在確認（プロジェクト内のドキュメント）
+// SHACLでIRI形式は検証できるが、実際のファイル存在確認は別途必要
+const allDocuments = await loadAllDocuments(projectRoot);
+const documentIds = new Set(allDocuments.map((d) => d.id));
+
+for (const ref of document.dependsOn) {
+  if (!documentIds.has(ref)) {
+    errors.push({
+      path: "dependsOn",
+      message: `参照先のドキュメント '${ref}' が見つかりません`,
+      severity: "error",
+    });
+  }
+}
+
+for (const ref of document.testCases) {
+  if (!documentIds.has(ref)) {
+    errors.push({
+      path: "testCases",
+      message: `参照先のテストケース '${ref}' が見つかりません`,
+      severity: "error",
     });
   }
 }
@@ -1261,14 +1386,15 @@ if (!report.conforms) {
 
 **検証内容**:
 
-| 制約タイプ       | 例                                         |
-| ---------------- | ------------------------------------------ |
-| カーディナリティ | `testCases`は最低1個、最大10個             |
-| ノードの種類     | `dependsOn`の参照先は有効なIRIか           |
-| データ型         | `priority`は文字列型か                     |
-| 値の範囲         | `priority`は`high/medium/low`のいずれかか  |
-| グラフパターン   | `testCases`で参照されるTC-001は存在するか  |
-| 関係の整合性     | 循環参照がないか（AがBに依存、BがAに依存） |
+| 制約タイプ     | 例                                                                |
+| -------------- | ----------------------------------------------------------------- |
+| ノードの種類   | `dependsOn`の各要素が有効なIRI形式か                              |
+| ノードの種類   | `testCases`の各要素が有効なIRI形式か                              |
+| データ型       | `priority`は文字列型か（RDFリテラル）                             |
+| 値の範囲       | `status`は定義された列挙値のいずれかか                            |
+| 参照の存在確認 | `dependsOn`で参照されるFR-000がプロジェクト内に存在するか         |
+| 参照の存在確認 | `testCases`で参照されるTC-001, TC-002がプロジェクト内に存在するか |
+| 関係の整合性   | 循環参照がないか（AがBに依存、BがAに依存）                        |
 
 **SHACL vs JSON Schemaの違い**:
 
@@ -1279,6 +1405,10 @@ if (!report.conforms) {
 | **参照の検証**   | 不可（文字列として扱う） | 可能（IRIとして解決し、存在確認）  |
 | **関係性の検証** | 困難                     | 得意（グラフベース）               |
 | **例**           | "testCasesが配列か"      | "testCasesの参照先が実在するか"    |
+
+**補足: 参照先の存在確認**:
+
+SHACLは参照がIRI形式であることは検証できますが、実際のファイルがプロジェクト内に存在するかは別途確認が必要です。これはSemantic Engineの一部として実装されます。
 
 ---
 
@@ -1325,23 +1455,40 @@ for (const rule of applicableRules) {
 # semantics/rules/consistency.yaml
 rules:
   - id: REQ-001
-    name: "要件にはテストケースが必要"
+    name: "承認済み要件にはテストケースが必要"
+    description: "statusがapprovedまたはimplementedの要件は、最低2個のテストケース（正常系+異常系）が必要"
     level: error
     target:
       type: FunctionalRequirement
+      status: ["approved", "implemented"]
     validation:
-      check: hasLinkedTestCase
-      message: "この要件に対応するテストケースが見つかりません"
-      action: "テストケースを作成し、リンクを設定してください"
+      check: hasMinimumTestCases
+      minCount: 2
+      message: "承認済み要件には最低2個のテストケース（正常系+異常系）が必要です"
+      action: "不足しているテストケースを追加してください"
       reference: "/templates/test-case.json"
+      detail: "現在のテストケース数: {actual}, 必要数: {expected}"
+
+  - id: REQ-002
+    name: "high優先度の要件には受入基準が必須"
+    description: "priorityがhighの要件は、詳細な受入基準が必要"
+    level: error
+    target:
+      type: FunctionalRequirement
+      priority: "high"
+    validation:
+      check: hasAcceptanceCriteria
+      minCount: 3
+      message: "high優先度の要件には最低3個の受入基準が必要です"
+      action: "受入基準を追加してください（What/Why/Howを明確に）"
 ```
 
 **検証内容**:
 
-- プロジェクト固有のビジネスルール
-- 組織の標準・規約
-- ベストプラクティス
-- ドメイン知識の反映
+- **条件付きルール**: statusやpriorityに応じた動的な検証
+- **ビジネスロジック**: 組織固有の開発プロセス要件
+- **品質基準**: 最低限の品質を保証するルール
+- **ドメイン知識**: 業界特有の制約や慣習
 
 ---
 
@@ -1369,10 +1516,10 @@ rules:
           "status": "failed",
           "errors": [
             {
-              "path": "ukiyoue:testCases",
-              "message": "要件には少なくとも1つのテストケースが必要です",
+              "path": "ukiyoue:dependsOn",
+              "message": "参照先のドキュメント 'FR-000' が見つかりません",
               "severity": "error",
-              "source": "SHACL"
+              "source": "Semantic Engine (Reference Check)"
             }
           ]
         },
@@ -1381,10 +1528,18 @@ rules:
           "errors": [
             {
               "ruleId": "REQ-001",
-              "message": "この要件に対応するテストケースが見つかりません",
+              "message": "承認済み要件には最低2個のテストケース（正常系+異常系）が必要です",
               "severity": "error",
-              "action": "テストケースを作成し、リンクを設定してください",
-              "reference": "/templates/test-case.json"
+              "action": "不足しているテストケースを追加してください",
+              "reference": "/templates/test-case.json",
+              "detail": "現在のテストケース数: 2, 必要数: 2 (status=approved時)"
+            },
+            {
+              "ruleId": "REQ-002",
+              "message": "high優先度の要件には最低3個の受入基準が必要です",
+              "severity": "error",
+              "action": "受入基準を追加してください（What/Why/Howを明確に）",
+              "detail": "現在の受入基準数: 2, 必要数: 3"
             }
           ]
         }
