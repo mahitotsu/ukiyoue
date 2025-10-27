@@ -984,6 +984,489 @@ my-project/                    # ユーザーのプロジェクトルート
 
 ---
 
+## 🔍 定義と検証の構造
+
+### 全体像：ドキュメントのライフサイクル
+
+Ukiyoueにおけるドキュメントは、**作成時**と**検証時**で異なる処理が行われます。
+
+```mermaid
+graph TD
+    subgraph "作成時（AI/人間）"
+        A1[JSONドキュメント作成] --> A2[JSON-LD Context参照]
+        A2 --> A3[意味を宣言 @type, @context]
+        A3 --> A4[ファイル保存]
+    end
+
+    subgraph "検証時（ukiyoue validate）"
+        B1[ドキュメント読み込み] --> B2[Level 1: 構造検証]
+        B2 --> B3{構造OK?}
+        B3 -->|Yes| B4[Level 2: 意味整合性検証]
+        B3 -->|No| E1[構造エラー報告]
+
+        B4 --> B5[JSON-LD展開]
+        B5 --> B6[RDF変換]
+        B6 --> B7[SHACL検証]
+        B7 --> B8{意味OK?}
+        B8 -->|Yes| B9[Level 3: カスタムルール]
+        B8 -->|No| E2[意味エラー報告]
+
+        B9 --> B10{ルールOK?}
+        B10 -->|Yes| R1[✅ 検証成功]
+        B10 -->|No| E3[ルール違反報告]
+    end
+
+    A4 -.->|後で実行| B1
+
+    style A1 fill:#e1f5ff
+    style B2 fill:#fff4e1
+    style B4 fill:#ffe1f5
+    style B9 fill:#f5e1ff
+    style R1 fill:#e1ffe1
+    style E1 fill:#ffe1e1
+    style E2 fill:#ffe1e1
+    style E3 fill:#fff4e1
+```
+
+---
+
+### Phase 1: ドキュメント作成（静的）
+
+**目的**: AIまたは人間がドキュメントを作成する
+
+**この時点で定義されるもの**:
+
+```json
+// docs/requirements/FR-001.json（ユーザーが作成）
+{
+  "@context": "https://ukiyoue.dev/context/v1", // ← 意味定義を**参照**
+  "@type": "FunctionalRequirement", // ← クラスを**宣言**
+  "id": "FR-001",
+  "title": "ユーザー認証機能",
+  "description": "ユーザーがメールアドレスとパスワードでログインできる",
+  "priority": "high",
+  "status": "draft",
+  "testCases": ["TC-001"], // ← 関連を**記述**
+  "dependsOn": []
+}
+```
+
+**重要な理解**:
+
+- ✅ この時点では**ただのJSONファイル**
+- ✅ `@context`は外部のJSON-LD定義を**参照しているだけ**（まだ解決されていない）
+- ✅ `@type`は**意味を宣言**しているが、まだ検証されていない
+- ❌ JSON-LDの展開・RDF変換は**まだ実行されていない**
+- ❌ 検証は**一切実行されていない**
+
+---
+
+### Phase 2: 検証実行（動的）
+
+**目的**: ドキュメントの正当性を3レベルで検証
+
+#### Level 1: 構造検証（JSON Schema）
+
+**実行タイミング**: 検証の最初
+
+**使用技術**:
+
+- JSON Schema (Draft 2020-12)
+- Ajv v8（検証エンジン）
+
+**処理フロー**:
+
+```typescript
+// Validation Engine内部
+import Ajv from "ajv";
+import addFormats from "ajv-formats";
+
+// 1. スキーマ読み込み
+const schema = await loadJsonSchema("requirement.schema.json");
+
+// 2. Ajvインスタンス作成
+const ajv = new Ajv({ allErrors: true, strict: true });
+addFormats(ajv);
+
+// 3. スキーマコンパイル
+const validate = ajv.compile(schema);
+
+// 4. ドキュメント検証
+const document = await loadDocument("FR-001.json");
+const isValid = validate(document);
+
+if (!isValid) {
+  // エラー詳細を取得
+  console.log(validate.errors);
+  // [
+  //   {
+  //     instancePath: "/testCases",
+  //     message: "must have required property 'testCases'"
+  //   }
+  // ]
+}
+```
+
+**検証内容**:
+
+| 項目           | 例                                                 |
+| -------------- | -------------------------------------------------- |
+| 必須項目       | `id`, `title`, `description`が存在するか           |
+| データ型       | `priority`が文字列か                               |
+| 列挙値         | `status`が`draft/approved/deprecated`のいずれか    |
+| フォーマット   | `id`が`^[A-Z]+-[0-9]+$`パターンに一致するか        |
+| 配列の要素数   | `testCases`が最低1個あるか                         |
+| ネストした構造 | `acceptanceCriteria`の各要素が正しいオブジェクトか |
+
+**エラー例**:
+
+```json
+{
+  "level": "structure",
+  "errors": [
+    {
+      "path": "/testCases",
+      "message": "必須項目 'testCases' が不足しています",
+      "expected": "array (minItems: 1)",
+      "actual": "undefined"
+    }
+  ]
+}
+```
+
+---
+
+#### Level 2: 意味整合性検証（JSON-LD + SHACL）
+
+**実行タイミング**: 構造検証が成功した後
+
+**使用技術**:
+
+- jsonld.js（JSON-LD処理）
+- rdf-validate-shacl（SHACL検証エンジン）
+
+**処理フロー**:
+
+##### Step 2-1: JSON-LD展開
+
+```typescript
+// Semantic Engine内部
+import * as jsonld from "jsonld";
+
+// 1. JSON-LD Contextを解決して展開
+const expanded = await jsonld.expand(document);
+
+// Before（元のJSON）:
+// {
+//   "@context": "https://ukiyoue.dev/context/v1",
+//   "@type": "FunctionalRequirement",
+//   "title": "ユーザー認証機能",
+//   "testCases": ["TC-001"]
+// }
+
+// After（展開後）:
+// [
+//   {
+//     "@type": ["https://ukiyoue.dev/vocab#FunctionalRequirement"],
+//     "http://purl.org/dc/terms/title": [
+//       { "@value": "ユーザー認証機能" }
+//     ],
+//     "https://ukiyoue.dev/vocab#testCases": [
+//       { "@id": "TC-001" }
+//     ]
+//   }
+// ]
+```
+
+**何が起こるか**:
+
+- 短縮形のプロパティ名が完全なIRI（URL）に展開
+- `@type`が完全なクラスIRIに解決
+- 関係性が`@id`で明示的に
+
+---
+
+##### Step 2-2: RDF変換
+
+```typescript
+// Semantic Engine内部
+import * as jsonld from "jsonld";
+
+// 2. JSON-LD → RDFグラフに変換
+const rdfDataset = await jsonld.toRDF(expanded, {
+  format: "application/n-quads",
+});
+
+// 生成されるRDFトリプル（概念的な表現）:
+// <FR-001> <rdf:type> <https://ukiyoue.dev/vocab#FunctionalRequirement> .
+// <FR-001> <dc:title> "ユーザー認証機能" .
+// <FR-001> <ukiyoue:priority> "high" .
+// <FR-001> <ukiyoue:testCases> <TC-001> .
+```
+
+**RDFグラフの構造**:
+
+RDFは「主語・述語・目的語」のトリプル（3つ組）の集合です：
+
+| 主語（Subject） | 述語（Predicate） | 目的語（Object）      |
+| --------------- | ----------------- | --------------------- |
+| FR-001          | rdf:type          | FunctionalRequirement |
+| FR-001          | dc:title          | "ユーザー認証機能"    |
+| FR-001          | ukiyoue:testCases | TC-001                |
+| FR-001          | ukiyoue:dependsOn | （空のリスト）        |
+
+このグラフ構造により、「FR-001はテストケースTC-001を持つ」という**意味的な関係**が明示されます。
+
+---
+
+##### Step 2-3: SHACL検証
+
+```typescript
+// Semantic Engine内部
+import factory from "rdf-ext";
+import SHACLValidator from "rdf-validate-shacl";
+
+// 3. SHACL Shapeを読み込み
+const shapesGraph = await loadShaclShapes("requirement.ttl");
+
+// SHACL Shape定義（Turtle形式）:
+// @prefix sh: <http://www.w3.org/ns/shacl#> .
+// @prefix ukiyoue: <https://ukiyoue.dev/vocab#> .
+//
+// ukiyoue:RequirementShape
+//   a sh:NodeShape ;
+//   sh:targetClass ukiyoue:FunctionalRequirement ;
+//   sh:property [
+//     sh:path ukiyoue:testCases ;
+//     sh:minCount 1 ;
+//     sh:message "要件には少なくとも1つのテストケースが必要です" ;
+//   ] .
+
+// 4. RDFグラフをSHACL Shapeで検証
+const validator = new SHACLValidator(shapesGraph);
+const report = validator.validate(rdfDataset);
+
+if (!report.conforms) {
+  // 違反が検出された場合
+  for (const result of report.results) {
+    console.log({
+      focusNode: result.focusNode.value, // "FR-001"
+      message: result.message[0].value, // "要件には少なくとも..."
+      path: result.path?.value, // "ukiyoue:testCases"
+      value: result.value?.value, // 実際の値
+    });
+  }
+}
+```
+
+**検証内容**:
+
+| 制約タイプ       | 例                                         |
+| ---------------- | ------------------------------------------ |
+| カーディナリティ | `testCases`は最低1個、最大10個             |
+| ノードの種類     | `dependsOn`の参照先は有効なIRIか           |
+| データ型         | `priority`は文字列型か                     |
+| 値の範囲         | `priority`は`high/medium/low`のいずれかか  |
+| グラフパターン   | `testCases`で参照されるTC-001は存在するか  |
+| 関係の整合性     | 循環参照がないか（AがBに依存、BがAに依存） |
+
+**SHACL vs JSON Schemaの違い**:
+
+| 観点             | JSON Schema              | SHACL                              |
+| ---------------- | ------------------------ | ---------------------------------- |
+| **対象**         | JSON文書の構造           | RDFグラフの意味・関係性            |
+| **検証レベル**   | データ型、フォーマット   | セマンティック制約、グラフパターン |
+| **参照の検証**   | 不可（文字列として扱う） | 可能（IRIとして解決し、存在確認）  |
+| **関係性の検証** | 困難                     | 得意（グラフベース）               |
+| **例**           | "testCasesが配列か"      | "testCasesの参照先が実在するか"    |
+
+---
+
+#### Level 3: カスタムルール検証（ドメイン固有）
+
+**実行タイミング**: 意味整合性検証が成功した後
+
+**使用技術**:
+
+- YAML/JSON定義
+- カスタムバリデーター（TypeScript実装）
+
+**処理フロー**:
+
+```typescript
+// Validation Engine内部
+
+// 1. カスタムルール読み込み
+const customRules = await loadCustomRules("consistency.yaml");
+
+// 2. 対象ドキュメントタイプに該当するルールを抽出
+const applicableRules = customRules.filter(
+  (rule) => rule.target.type === document["@type"]
+);
+
+// 3. 各ルールを実行
+for (const rule of applicableRules) {
+  const result = await executeRule(rule, document, rdfDataset);
+
+  if (!result.passed) {
+    errors.push({
+      ruleId: rule.id,
+      message: rule.validation.message,
+      action: rule.validation.action,
+      reference: rule.validation.reference,
+    });
+  }
+}
+```
+
+**カスタムルール例**:
+
+```yaml
+# semantics/rules/consistency.yaml
+rules:
+  - id: REQ-001
+    name: "要件にはテストケースが必要"
+    level: error
+    target:
+      type: FunctionalRequirement
+    validation:
+      check: hasLinkedTestCase
+      message: "この要件に対応するテストケースが見つかりません"
+      action: "テストケースを作成し、リンクを設定してください"
+      reference: "/templates/test-case.json"
+```
+
+**検証内容**:
+
+- プロジェクト固有のビジネスルール
+- 組織の標準・規約
+- ベストプラクティス
+- ドメイン知識の反映
+
+---
+
+### 検証結果の構造
+
+すべてのレベルの検証結果を統合したレポート：
+
+```json
+{
+  "summary": {
+    "totalDocuments": 1,
+    "passed": 0,
+    "failed": 1
+  },
+  "results": [
+    {
+      "document": "docs/requirements/FR-001.json",
+      "overall": "failed",
+      "levels": {
+        "structure": {
+          "status": "passed",
+          "errors": []
+        },
+        "semantic": {
+          "status": "failed",
+          "errors": [
+            {
+              "path": "ukiyoue:testCases",
+              "message": "要件には少なくとも1つのテストケースが必要です",
+              "severity": "error",
+              "source": "SHACL"
+            }
+          ]
+        },
+        "custom": {
+          "status": "failed",
+          "errors": [
+            {
+              "ruleId": "REQ-001",
+              "message": "この要件に対応するテストケースが見つかりません",
+              "severity": "error",
+              "action": "テストケースを作成し、リンクを設定してください",
+              "reference": "/templates/test-case.json"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}
+```
+
+---
+
+### ライブラリの役割分担
+
+| フェーズ              | ライブラリ                    | 役割                               |
+| --------------------- | ----------------------------- | ---------------------------------- |
+| **Level 1: 構造**     | Ajv v8                        | JSON Schemaコンパイル・検証実行    |
+| **Level 2: 意味**     | jsonld.js                     | JSON-LD展開・RDF変換               |
+|                       | rdf-validate-shacl            | RDFグラフのSHACL検証               |
+| **Level 3: カスタム** | Ukiyoue独自実装（TypeScript） | YAMLルール読み込み・実行エンジン   |
+| **共通**              | JSON Pointer（Ajv内蔵）       | エラー箇所の特定（/testCases/0等） |
+
+**補足**:
+
+- **Level 3 (カスタム)**: ユーザーはYAML/JSON形式でルール定義を記述するだけ。ルールの実行エンジンはUkiyoue Frameworkが提供
+- ユーザー側での実装は不要（設定ファイルの記述のみ）
+
+---
+
+### 重要な設計原則
+
+#### 1. 段階的検証（Fail Fast）
+
+```text
+構造検証 → 失敗 → 即座に報告（以降の検証はスキップ）
+構造検証 → 成功 → 意味検証 → 失敗 → 即座に報告
+構造検証 → 成功 → 意味検証 → 成功 → カスタム検証
+```
+
+**理由**:
+
+- 構造が壊れていれば、意味検証は無意味
+- 早期失敗により検証時間を短縮
+
+#### 2. 検証の独立性
+
+各レベルの検証は独立しており、個別に実行可能：
+
+```bash
+# 構造のみ
+ukiyoue validate --level structure
+
+# 意味検証まで
+ukiyoue validate --level semantic
+
+# すべて（デフォルト）
+ukiyoue validate --level content
+```
+
+#### 3. キャッシュ戦略
+
+検証結果はファイルハッシュでキャッシュ：
+
+```typescript
+const fileHash = await hashFile("FR-001.json");
+const cachedResult = cache.get(fileHash);
+
+if (cachedResult) {
+  return cachedResult; // キャッシュヒット
+}
+
+// 検証実行
+const result = await validate(document);
+cache.set(fileHash, result);
+```
+
+**効果**:
+
+- 変更されていないファイルは再検証不要
+- 大規模プロジェクトでの高速化
+
+---
+
 ## 📐 設計原則
 
 ### 1. AI-First Design
