@@ -254,5 +254,4 @@ Ukiyoue Frameworkでは、プロジェクトドキュメントをどの形式で
 - **ADR-003**: Semantic Definition - JSON-LD（セマンティック定義の方法）
 - **ADR-004**: Schema Validation Engine - Ajv（JSON Schema検証エンジン）
 - **ADR-005**: Element Identification - JSON Pointer（要素識別方法）
-- **ADR-010**: JSON Schema Library（JSON Schemaライブラリ選定）
 - **ADR-011**: JSON-LD Library（JSON-LDライブラリ選定）

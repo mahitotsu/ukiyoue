@@ -966,7 +966,7 @@ my-project/                    # ユーザーのプロジェクトルート
 
 | 用途                | ライブラリ                     | 選定根拠（詳細はADR参照） |
 | ------------------- | ------------------------------ | ------------------------- |
-| **JSON Schema検証** | Ajv v8 + ajv-formats           | ADR-010                   |
+| **JSON Schema検証** | Ajv v8 + ajv-formats           | ADR-004                   |
 | **JSON-LD処理**     | jsonld.js                      | ADR-011                   |
 | **SHACL検証**       | rdf-validate-shacl             | ADR-012                   |
 | **MCP SDK**         | @modelcontextprotocol/sdk (TS) | ADR-013                   |
