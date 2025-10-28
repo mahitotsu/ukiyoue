@@ -11,14 +11,18 @@ ADR-002でJSON Schemaによる構造検証、ADR-003でJSON-LDによるセマン
 **具体例**:
 
 - 構造検証（JSON Schema）: 「`dependsOn`フィールドは配列型で、各要素は文字列」
-- **セマンティック検証（必要）**: 「`dependsOn`で参照されたドキュメントIDが実際に存在する」
+- **セマンティック検証（必要）**: 「`dependsOn`の各要素が有効なIRI形式か」「`testCases`が最低1個以上か」
+
+**重要な注記**:
+
+「参照先のドキュメントIDが実際に存在するか」の検証は、SHACLの範囲外です。SHACLはIRIが**形式的に正しいか**（有効なURI構文か）を検証しますが、そのIRIが指すファイルが**実際にプロジェクト内に存在するか**は、Semantic Engineが別途実装します（詳細は`architecture.md`の「Level 2-3: SHACL検証」セクション参照）。
 
 **要求事項**:
 
 - ✅ RDFグラフレベルの制約定義
-- ✅ 関係性の整合性検証（リンク先の存在確認等）
-- ✅ カーディナリティ制約（1対多、多対多等）
+- ✅ 関係性の形式的検証（IRIの形式、カーディナリティ等）
 - ✅ 値の範囲制約（数値範囲、列挙値等）
+- ✅ データ型制約（文字列、日時、整数等）
 - ✅ W3C標準準拠
 - ✅ JSON-LDとの統合（ADR-003）
 - ✅ プログラマティックな検証
@@ -52,6 +56,7 @@ ADR-002でJSON Schemaによる構造検証、ADR-003でJSON-LDによるセマン
   - カーディナリティ（sh:minCount, sh:maxCount）
   - 値の範囲（sh:minInclusive, sh:maxInclusive）
   - 型制約（sh:datatype, sh:class）
+  - ノード種別制約（sh:nodeKind sh:IRI）- IRI形式の検証
   - パターン（sh:pattern）
   - ロジカル制約（sh:and, sh:or, sh:not）
 - ✅ 詳細なバリデーションレポート
@@ -64,6 +69,7 @@ ADR-002でJSON Schemaによる構造検証、ADR-003でJSON-LDによるセマン
 
 - ⚠️ RDF/Turtle記法の学習コスト
 - ⚠️ JavaScriptエコシステムではマイナー
+- ⚠️ IRI形式の検証はできるが、参照先の実在確認は別途実装が必要
 
 **実装例**:
 
@@ -161,7 +167,7 @@ ukiyoue:RequirementShape
 **Cons**:
 
 - ❌ セマンティックな制約を表現できない
-  - 例: リンク先の存在確認は不可能
+  - 例: IRI形式の検証、カーディナリティ制約
 - ❌ RDFグラフの検証不可
 - ❌ ADR-003のセマンティック定義が活かせない
 - ❌ 対話可能性（Conversational）が実現できない
@@ -228,6 +234,7 @@ ukiyoue:RequirementShape
 - ⚠️ **学習コスト**: RDF/Turtle記法の理解が必要
 - ⚠️ **JavaScriptエコシステムではマイナー**: ライブラリ選択肢が限定的
 - ⚠️ **パフォーマンス**: JSON Schemaより処理が重い
+- ⚠️ **検証範囲の制限**: IRI形式は検証できるが、参照先の実在確認は別途実装が必要
 
 ### Mitigation
 
@@ -242,6 +249,10 @@ ukiyoue:RequirementShape
   - JSON Schema検証を先に実行（早期リターン）
   - SHACL検証は構造的に正しいドキュメントのみに適用
   - 検証結果のキャッシュ
+- **参照先の実在確認**:
+  - Semantic Engineで別途実装（プロジェクト内のファイル検索）
+  - SHACLのIRI形式検証と組み合わせて、完全な参照整合性を保証
+  - 詳細は`architecture.md`の「Level 2: 意味整合性検証」を参照
 
 ## Implementation Notes
 
@@ -364,8 +375,8 @@ ukiyoue:DocumentShape
 ### 検証パイプライン
 
 ```typescript
-// 2段階検証: JSON Schema → SHACL
-async function validateDocument(document: unknown) {
+// 3段階検証: JSON Schema → SHACL → 参照実在確認
+async function validateDocument(document: unknown, projectRoot: string) {
   // Phase 1: 構造検証（JSON Schema）
   const structureValid = validateJsonSchema(document);
   if (!structureValid) {
@@ -375,7 +386,7 @@ async function validateDocument(document: unknown) {
     };
   }
 
-  // Phase 2: セマンティック検証（SHACL）
+  // Phase 2: セマンティック検証（SHACL - IRI形式等）
   const rdf = await jsonld.toRDF(document);
   const shapes = await loadShapes();
   const validator = new Validator(shapes);
@@ -388,28 +399,63 @@ async function validateDocument(document: unknown) {
     };
   }
 
+  // Phase 3: 参照先実在確認（Semantic Engine独自実装）
+  const referenceErrors = await checkReferenceExistence(document, projectRoot);
+  if (referenceErrors.length > 0) {
+    return {
+      level: "semantic",
+      errors: referenceErrors,
+    };
+  }
+
   return { level: "valid", errors: [] };
+}
+
+// Phase 3の実装例
+async function checkReferenceExistence(
+  document: UkiyoueDocument,
+  projectRoot: string
+): Promise<ValidationError[]> {
+  const errors: ValidationError[] = [];
+  const allDocuments = await loadAllDocuments(projectRoot);
+  const documentIds = new Set(allDocuments.map((d) => d.id));
+
+  // dependsOnの参照先確認
+  for (const ref of document.dependsOn || []) {
+    if (!documentIds.has(ref)) {
+      errors.push({
+        path: "dependsOn",
+        message: `参照先のドキュメント '${ref}' が見つかりません`,
+        severity: "error",
+      });
+    }
+  }
+
+  return errors;
 }
 ```
 
 ### カスタム制約（SPARQL）
 
 ```turtle
-ukiyoue:LinkExistenceConstraint
+# SPARQLクエリによる高度な制約例
+ukiyoue:CircularDependencyConstraint
   a sh:NodeShape ;
   sh:targetClass ukiyoue:Document ;
   sh:sparql [
-    sh:message "依存関係で参照されたドキュメントが存在しません: {$value}" ;
+    sh:message "循環依存が検出されました: {$this} ↔ {?dep}" ;
     sh:select """
       PREFIX ukiyoue: <https://ukiyoue.dev/vocab#>
-      SELECT $this ?value
+      SELECT $this ?dep
       WHERE {
-        $this ukiyoue:dependsOn ?value .
-        FILTER NOT EXISTS { ?value a ukiyoue:Document }
+        $this ukiyoue:dependsOn+ ?dep .
+        ?dep ukiyoue:dependsOn+ $this .
       }
     """ ;
   ] .
 ```
+
+**注**: 参照先ドキュメントの実在確認（ファイルがプロジェクト内に存在するか）は、RDFグラフ内では検証できません。これはSemantic Engineが別途実装します（`architecture.md`参照）。
 
 ### パフォーマンス最適化
 
