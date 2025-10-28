@@ -357,6 +357,10 @@ class SemanticEngine {
   expand(document: JsonLdDocument): ExpandedDocument;
   compact(expanded: ExpandedDocument, context: Context): JsonLdDocument;
 
+  // IRI解決（ADR-018）
+  resolveIris(document: JsonLdDocument, baseIri: string): JsonLdDocument;
+  buildRdfDataset(documents: JsonLdDocument[]): RdfDataset;
+
   // RDF変換
   toRDF(document: JsonLdDocument): RdfDataset;
   fromRDF(dataset: RdfDataset): JsonLdDocument;
@@ -963,6 +967,14 @@ my-project/                    # ユーザーのプロジェクトルート
 | **ランタイム**           | Bun 1.x        | ADR-009                   |
 | **パッケージマネージャ** | Bun (内蔵)     | ADR-009                   |
 
+以下では、実装言語の選定（`TypeScript 5.x`）について簡潔に理由を示します。選定の詳細と代替案の比較はADR-008を参照してください。
+
+- 開発体験と型安全性: TypeScriptは厳密な型付けを提供し、スキーマ中心の開発（JSON Schema→型生成）と相性が良いため、早期に不整合を検出できます。
+- エコシステムの親和性: `@modelcontextprotocol/sdk`や主要なJSON/JSON-LDライブラリにはTypeScript型定義が整備されており、統合コストが低い点を評価しました。
+- 長期保守性: 型情報によりリファクタリングが安全になり、PoCから本番移行までコードベースを安定して進化させやすくなります。
+
+（詳細な設計上の検討はADR-008に記載しています）
+
 ### ライブラリ
 
 | 用途                | ライブラリ                     | 選定根拠（詳細はADR参照） |
@@ -1005,7 +1017,8 @@ graph TD
         B3 -->|Yes| B4[Level 2: 意味整合性検証]
         B3 -->|No| E1[構造エラー報告]
 
-        B4 --> B5[JSON-LD展開]
+        B4 --> B4a[IRI解決<br/>相対パス→絶対IRI]
+        B4a --> B5[JSON-LD展開]
         B5 --> B6[RDF変換]
         B6 --> B7[SHACL検証<br/>IRI形式チェック]
         B7 --> B8[参照先存在確認<br/>プロジェクト内検索]
@@ -1235,6 +1248,32 @@ if (!isValid) {
 
 **処理フロー**:
 
+##### Step 2-0: IRI解決（ADR-018）
+
+```typescript
+// Semantic Engine内部
+
+// 0. 相対パスを絶対IRIに解決
+const baseIri = config.baseIri; // 例: "file:///path/to/project/docs/"
+const resolvedDocument = await semanticEngine.resolveIris(document, baseIri);
+
+// Before（相対パス）:
+// "testCases": ["../tests/TC-001", "../tests/TC-002"]
+// "dependsOn": ["./FR-000"]
+
+// After（絶対IRI）:
+// "testCases": ["file:///path/to/project/docs/tests/TC-001", "file:///path/to/project/docs/tests/TC-002"]
+// "dependsOn": ["file:///path/to/project/docs/requirements/FR-000"]
+```
+
+**何が起こるか**:
+
+- ドキュメント内の相対パス参照がプロジェクトのベースIRIと組み合わされる
+- すべての参照が完全なIRI形式になる
+- JSON-LD処理とSHACL検証で正しく扱えるようになる
+
+---
+
 ##### Step 2-1: JSON-LD展開
 
 ```typescript
@@ -1242,7 +1281,7 @@ if (!isValid) {
 import * as jsonld from "jsonld";
 
 // 1. JSON-LD Contextを解決して展開
-const expanded = await jsonld.expand(document);
+const expanded = await jsonld.expand(resolvedDocument);
 
 // Before（元のJSON）:
 // {
@@ -1695,8 +1734,11 @@ cache.set(fileHash, result);
 **Semantic Engine**:
 
 - [ ] JSON-LD拡張・圧縮
+- [ ] IRI解決（相対パス → 絶対IRI）（ADR-018）
+- [ ] 複数ドキュメントからのRDFグラフ構築
 - [ ] RDF変換
 - [ ] 基本的なSPARQLクエリ
+- [ ] 参照先存在確認
 
 **Feedback Generator**:
 
