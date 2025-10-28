@@ -947,12 +947,13 @@ my-project/                    # ユーザーのプロジェクトルート
 
 ### 検証層
 
-| 要素               | 技術選定                | 選定根拠（詳細はADR参照） |
-| ------------------ | ----------------------- | ------------------------- |
-| **構造検証**       | JSON Schema (Ajv v8)    | ADR-004                   |
-| **要素識別**       | JSON Pointer (RFC 6901) | ADR-005                   |
-| **意味整合性検証** | JSON-LD + SHACL         | ADR-006                   |
-| **カスタムルール** | YAML/JSON定義           | ADR-007                   |
+| 要素                 | 技術選定                | 選定根拠（詳細はADR参照） |
+| -------------------- | ----------------------- | ------------------------- |
+| **構造検証**         | JSON Schema (Ajv v8)    | ADR-004                   |
+| **要素識別**         | JSON Pointer (RFC 6901) | ADR-005                   |
+| **意味整合性検証**   | JSON-LD + SHACL         | ADR-006                   |
+| **カスタムルール**   | YAML/JSON定義           | ADR-007                   |
+| **ドキュメント参照** | 相対パス + Base IRI     | ADR-018                   |
 
 ### 実装層
 
@@ -1409,6 +1410,8 @@ for (const ref of document.testCases) {
 **補足: 参照先の存在確認**:
 
 SHACLは参照がIRI形式であることは検証できますが、実際のファイルがプロジェクト内に存在するかは別途確認が必要です。これはSemantic Engineの一部として実装されます。
+
+**IRI解決戦略**: ドキュメント内では相対パス（例: `"../tests/TC-001"`）で参照し、検証時にプロジェクトのベースIRIと組み合わせて完全なIRIに解決します。詳細は[ADR-018](adr/018-document-reference-strategy.md)を参照。
 
 ---
 
@@ -1911,7 +1914,8 @@ ukiyoue/
 │       ├── 014-cli-implementation.md
 │       ├── 015-test-framework.md
 │       ├── 016-lint-formatter.md
-│       └── 017-ci-cd-platform.md
+│       ├── 017-ci-cd-platform.md
+│       └── 018-document-reference-strategy.md
 │
 ├── schemas/                       # JSON Schema定義
 │   ├── document.schema.json       # 基本ドキュメント
