@@ -483,10 +483,8 @@ try {
 
 ---
 
-## Related
+## Based on
 
-- [ADR-003: Semantic Definition](./003-semantic-definition.md) - JSON-LDの採用決定
-- [ADR-006: Semantic Integrity Validation](./006-semantic-integrity-validation.md) - SHACLとの連携
-- [ADR-008: Implementation Language](./008-implementation-language.md) - TypeScriptとの統合
-- [ADR-009: Runtime Environment](./009-runtime-environment.md) - Bunとの互換性
-- [ADR-012: SHACL Library](./012-shacl-library.md) - RDF変換の活用
+- **ADR-003**: Semantic Definition - JSON-LDを採用
+- **ADR-008**: Implementation Language - TypeScriptを採用
+- **ADR-009**: Runtime Environment - Bunを採用

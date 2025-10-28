@@ -405,8 +405,8 @@ describe("Ajv Validation", () => {
 });
 ```
 
-## Related
+## Based on
 
-- **ADR-002**: Structure Validation - JSON Schemaを採用（Ajvで検証）
-- **ADR-008**: Implementation Language - TypeScript（Ajv型定義活用）
-- **ADR-009**: Runtime Environment - Bun（Ajv動作確認済み）
+- **ADR-002**: Structure Validation - JSON Schemaを採用
+- **ADR-008**: Implementation Language - TypeScript採用
+- **ADR-009**: Runtime Environment - Bun採用

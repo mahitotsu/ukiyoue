@@ -324,9 +324,6 @@ const query = `
 - **後方互換追加**: マイナーバージョン（v1.1, v1.2）
 - **`@version`フィールド**: JSON-LD 1.1機能の明示
 
-## Related
+## Based on
 
-- **ADR-001**: Document Format - JSON形式を採用（JSON-LD完全互換）
-- **ADR-002**: Structure Validation - JSON Schemaと併用可能
-- **ADR-006**: Semantic Integrity Validation - SHACLによるセマンティック検証
-- **ADR-011**: JSON-LD Library - jsonld.js選定
+- **ADR-001**: Document Format - JSON形式を採用

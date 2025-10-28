@@ -318,9 +318,7 @@ program.parse();
     path: validation-report.json
 ```
 
-## Related
+## Based on
 
-- architecture.md: Interface Layer（CLI Toolsの位置付け）
-- ADR-008: Implementation Language (TypeScript採用)
-- ADR-009: Runtime Environment (Bun採用)
-- ADR-013: MCP Implementation (MCPサーバーとコアロジック共有)
+- **ADR-008**: Implementation Language - TypeScriptを採用
+- **ADR-009**: Runtime Environment - Bunを採用

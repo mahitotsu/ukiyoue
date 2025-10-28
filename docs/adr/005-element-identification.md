@@ -420,8 +420,7 @@ describe("JSON Pointer", () => {
 });
 ```
 
-## Related
+## Based on
 
-- **ADR-001**: Document Format - JSON形式（JSON Pointer対応）
-- **ADR-004**: Schema Validation Engine - Ajv（JSON Pointer使用）
-- **ADR-002**: Structure Validation - JSON Schema `$ref`（JSON Pointer互換）
+- **ADR-001**: Document Format - JSON形式を採用
+- **ADR-002**: Structure Validation - JSON Schemaを採用

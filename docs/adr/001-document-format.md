@@ -239,10 +239,6 @@ Ukiyoue Frameworkでは、プロジェクトドキュメントをどの形式で
 | コメントが書けない   | 低     | 高       | `$comment`フィールド、別ファイルドキュメント    |
 | ファイルサイズの増加 | 低     | 中       | 圧縮、必要に応じてバイナリ形式も検討            |
 
-## Related
+## Based on
 
-- **ADR-002**: Structure Validation - JSON Schema（構造検証の方法）
-- **ADR-003**: Semantic Definition - JSON-LD（セマンティック定義の方法）
-- **ADR-004**: Schema Validation Engine - Ajv（JSON Schema検証エンジン）
-- **ADR-005**: Element Identification - JSON Pointer（要素識別方法）
-- **ADR-011**: JSON-LD Library（JSON-LDライブラリ選定）
+なし（基礎となるADR）

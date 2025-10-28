@@ -250,7 +250,7 @@ Ukiyoue Frameworkでは、ドキュメントの構造を厳密に定義・検証
 
 ### ツール選定
 
-- **検証エンジン**: Ajv v8 (ADR-010で詳細決定)
+- **検証エンジン**: Ajv v8 (ADR-004で詳細決定)
 - **型生成**: json-schema-to-typescript
 - **エディタサポート**: VS Code JSON Schema Store
 
@@ -291,9 +291,6 @@ if (!isValid) {
 - セマンティックバージョニング適用
 - 破壊的変更時はメジャーバージョンアップ
 
-## Related
+## Based on
 
-- **ADR-001**: Document Format - JSON形式を採用（JSON Schemaと完全互換）
-- **ADR-003**: Semantic Definition - JSON-LDと併用可能
-- **ADR-008**: Implementation Language - TypeScript型生成
-- **ADR-010**: JSON Schema Library - Ajv選定
+- **ADR-001**: Document Format - JSON形式を採用

@@ -224,7 +224,7 @@ import { describe, it, expect } from "bun:test";
   - `tsc`不要（Bun直接実行）
 - **ランタイム検証**:
   - JSON Schemaで入力検証（ADR-002）
-  - Ajvによる高速バリデーション（ADR-010）
+  - Ajvによる高速バリデーション（ADR-004）
 
 ## Implementation Notes
 
@@ -294,10 +294,6 @@ bun run json-schema-to-typescript schemas/*.schema.json --output src/types/gener
 - **推奨バージョン**: TypeScript 5.3+（最新の型システム機能）
 - **アップグレードポリシー**: マイナーバージョンは積極的に追従
 
-## Related
+## Based on
 
-- **ADR-009**: Runtime Environment - Bunで実行
-- **ADR-002**: Structure Validation - JSON Schemaから型生成
-- **ADR-010**: JSON Schema Library - Ajv (TypeScript)
-- **ADR-013**: MCP Implementation - TypeScript SDK使用
-- **ADR-015**: Test Framework - Bun test (TypeScript対応)
+なし（基礎となるADR）

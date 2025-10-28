@@ -247,8 +247,7 @@ await server.connect(transport);
 // → AI が理解して即座に修正
 ```
 
-## Related
+## Based on
 
-- architecture.md: Interface Layer（MCP Serverの位置付け）
-- ADR-008: Implementation Language (TypeScript採用)
-- ADR-009: Runtime Environment (Bun採用)
+- **ADR-008**: Implementation Language - TypeScriptを採用
+- **ADR-009**: Runtime Environment - Bunを採用

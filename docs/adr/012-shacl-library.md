@@ -173,10 +173,10 @@ ADR-006でSHACLによるセマンティック整合性検証を採用しまし�
 - ℹ️ Advanced Features（Property Paths等）が必要になった場合、他のライブラリとの組み合わせまたは機能追加を検討
 - ℹ️ パフォーマンスが課題になった場合、キャッシュ戦略やインデックス最適化で対応
 
-## Related
+## Based on
 
-- ADR-003: Semantic Definition (JSON-LD採用)
-- ADR-006: Semantic Integrity Validation (SHACL採用)
-- ADR-008: Implementation Language (TypeScript採用)
-- ADR-009: Runtime Environment (Bun採用)
-- ADR-011: JSON-LD Library (jsonld.js採用)
+- **ADR-003**: Semantic Definition - JSON-LDを採用
+- **ADR-006**: Semantic Integrity Validation - SHACLを採用
+- **ADR-008**: Implementation Language - TypeScriptを採用
+- **ADR-009**: Runtime Environment - Bunを採用
+- **ADR-011**: JSON-LD Library - jsonld.jsを採用（RDF変換に使用）

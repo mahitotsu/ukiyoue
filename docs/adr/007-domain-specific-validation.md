@@ -905,8 +905,7 @@ describe("Custom Rule Engine", () => {
 });
 ```
 
-## Related
+## Based on
 
-- **ADR-002**: Structure Validation - JSON Schema（構造検証の第1段階）
-- **ADR-006**: Semantic Integrity Validation - SHACL（セマンティック検証の第2段階）
-- **ADR-004**: Schema Validation Engine - Ajv（JSON Schema検証エンジン）
+- **ADR-002**: Structure Validation - JSON Schemaによる構造検証
+- **ADR-006**: Semantic Integrity Validation - SHACLによるセマンティック検証

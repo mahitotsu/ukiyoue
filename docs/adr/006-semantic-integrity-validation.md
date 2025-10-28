@@ -517,8 +517,7 @@ describe("SHACL Validation", () => {
 });
 ```
 
-## Related
+## Based on
 
-- **ADR-003**: Semantic Definition - JSON-LD（SHACLで検証）
-- **ADR-002**: Structure Validation - JSON Schema（構造検証の前段階）
-- **ADR-011**: JSON-LD Library - jsonld.js（RDF変換）
+- **ADR-002**: Structure Validation - JSON Schemaによる構造検証
+- **ADR-003**: Semantic Definition - JSON-LDによるセマンティック定義

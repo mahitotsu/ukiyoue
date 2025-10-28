@@ -312,10 +312,6 @@ console.log(`Listening on http://localhost:${server.port}`);
 - **推奨バージョン**: Bun 1.1+（安定版）
 - **アップグレードポリシー**: マイナーバージョン積極的に追従
 
-## Related
+## Based on
 
 - **ADR-008**: Implementation Language - TypeScriptを採用
-- **ADR-015**: Test Framework - Bun testを使用
-- **ADR-016**: Lint/Formatter - Biomeを使用（Bunで実行）
-- **ADR-010**: JSON Schema Library - Ajv (Bunで動作確認)
-- **ADR-013**: MCP Implementation - MCP SDK (Bunで動作確認)
