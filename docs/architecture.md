@@ -683,6 +683,7 @@ GitHub Actions:
 
 - [`concept.md`](concept.md) - フレームワークのコンセプトと背景
 - [`working-backwards.md`](working-backwards.md) - プレスリリース & FAQ
+- [`implementation-guide.md`](implementation-guide.md) - 実装詳細ガイド（エンジン、ライブラリの詳細）
 - [`adr/`](adr/) - Architecture Decision Records（技術選定の詳細根拠）
 - [`requirements.md`](requirements.md) - 詳細要件定義（TBD）
 

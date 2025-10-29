@@ -22,12 +22,20 @@ Ukiyoue: AI時代のドキュメンテーション・フレームワーク
    - MCPツール定義とCLIコマンド
    - ユーザープロジェクト構造
    - テスト戦略とCI/CD
+   - **詳細実装は [`implementation-guide.md`](../docs/implementation-guide.md) を参照**
 
 3. **[`docs/working-backwards.md`](../docs/working-backwards.md)** - プロダクトビジョンとFAQ
    - Amazon's Working Backwards手法によるPR/FAQ
-   - ユーザーシナリオと期待される効果
+   - ユーザーシナリオと期待される効果（統一されたYAML形式のカスタマージャーニー）
    - よくある質問と回答
    - プロダクトの価値提案
+   - **改善されたビジュアル表現**（二重の好循環図、Before vs After比較図）
+
+4. **[`docs/implementation-guide.md`](../docs/implementation-guide.md)** - 実装詳細ガイド
+   - 各エンジンの詳細実装（Validation, Semantic, Component, Feedback）
+   - ライブラリの使用方法
+   - コード例とベストプラクティス
+   - **architecture.mdから分離された技術詳細**
 
 ### コンテキスト理解のポイント
 
@@ -71,6 +79,7 @@ Ukiyoue: AI時代のドキュメンテーション・フレームワーク
 - **構造検証**: JSON Schema (Draft 2020-12)
 - **セマンティック定義**: JSON-LD 1.1
 - **セマンティック検証**: SHACL
+- **ドキュメント参照**: 相対パス + Base IRI（ADR-018）
 - **実装言語**: TypeScript 5.x
 - **ランタイム**: Bun 1.x
 - **主要ライブラリ**: Ajv, jsonld.js, rdf-validate-shacl, @modelcontextprotocol/sdk

@@ -8,8 +8,9 @@
 
 - 📰 **[プレスリリース & FAQ](./docs/working-backwards.md)** - プレスリリース形式でのビジョンと価値提案（推奨）
 - 🎯 **[コンセプト & 背景](./docs/concept.md)** - フレームワークのコンセプトと技術的背景
+- 🏗️ **[アーキテクチャ](./docs/architecture.md)** - システムアーキテクチャと技術設計
+- 🔧 **[実装ガイド](./docs/implementation-guide.md)** - 各エンジンの詳細実装とライブラリ使用方法
 - 📋 **[要件定義](./docs/requirements.md)** - 詳細要件（開発中）
-- 🏗️ **[アーキテクチャ](./docs/architecture.md)** - アーキテクチャ設計（開発中）
 
 ### どこから読むべきか
 
@@ -43,3 +44,7 @@
 - [ADR-015: Test Framework](./docs/adr/015-test-framework.md) - Bun testを採用
 - [ADR-016: Lint and Formatter](./docs/adr/016-lint-formatter.md) - Biomeを採用
 - [ADR-017: CI/CD Platform](./docs/adr/017-ci-cd-platform.md) - GitHub Actionsを採用
+
+**アーキテクチャ設計（018-）**:
+
+- [ADR-018: Document Reference Method](./docs/adr/018-document-reference-method.md) - 相対パス + Base IRIを採用
