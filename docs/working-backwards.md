@@ -374,48 +374,60 @@ ukiyoue validate
 
 ```mermaid
 graph TB
-    subgraph "ミクロの好循環<br/>（セッション内・分〜時間）"
-        A1[AI生成<br/>30分] -->|構造化<br/>ドキュメント| A2[自動検証<br/>数秒]
-        A2 -->|エラー +<br/>アクション提案| A3[フィードバック<br/>コンテキスト追加]
-        A3 -->|精度向上| A4[AI修正<br/>試行錯誤減]
-        A4 -->|高品質<br/>成果物| A5[完成<br/>知識蓄積]
-        A5 -.->|次の作業で<br/>再利用| A1
+    subgraph micro["ミクロの好循環（セッション内・短期）"]
+        A[AI生成] -->|高速にドキュメント生成| B[自動検証]
+        B -->|スキーマ・ルールで検証| C[フィードバック]
+        C -->|エラー + アクション提案| D[作業精度向上]
+        D -->|コンテキスト理解し修正| E[成果物完成]
+        E -->|高品質な成果物| A
     end
 
-    subgraph "マクロの好循環<br/>（コミュニティ全体・週〜月）"
-        B1[全プロジェクトで<br/>利用] -->|実績データ<br/>匿名化| B2[統計分析<br/>パターン抽出]
-        B2 -->|効果的な<br/>ルール特定| B3[スキーマ改善<br/>ルール追加]
-        B3 -->|より的確な<br/>提案可能に| B4[精度加速<br/>全員が恩恵]
-        B4 -.->|改善された<br/>フレームワーク| B1
+    subgraph macro["マクロの好循環（コミュニティ全体・長期）"]
+        F[Ukiyoue利用] -->|多様なプロジェクトで| G[実績蓄積]
+        G -->|検証結果・パターン収集| H[分析・改善]
+        H -->|統計的分析で改善点特定| I[スキーマ進化]
+        I -->|定義改善・ルール追加| J[精度加速]
+        J -->|より効果的なフィードバック| F
     end
 
-    A5 ===>|成果物+検証履歴<br/>を提供| B2
-    B3 ===>|改善されたスキーマ<br/>を提供| A2
+    E -.->|成果物と検証履歴を提供| G
+    I -.->|改善されたスキーマを提供| B
 
-    style A1 fill:#e1f5ff
-    style A2 fill:#fff4e1
-    style A3 fill:#ffe1f5
-    style A4 fill:#f5e1ff
-    style A5 fill:#e1ffe1
+    style A fill:#e1f5ff
+    style B fill:#fff4e1
+    style C fill:#ffe1f5
+    style D fill:#f5e1ff
+    style E fill:#e1ffe1
 
-    style B1 fill:#e1ffe8
-    style B2 fill:#fff9e1
-    style B3 fill:#ffe1ec
-    style B4 fill:#e1f0ff
+    style F fill:#e1ffe8
+    style G fill:#fff9e1
+    style H fill:#ffe1ec
+    style I fill:#f0e1ff
+    style J fill:#e1f0ff
 ```
 
-**説明**:
+**相互作用**:
 
-- **細い矢印**: 各循環内の流れ
-- **太い矢印**: 2つの好循環の相互作用（加速効果）
-- **点線矢印**: ループの完結
+- **ミクロ → マクロ**: 高品質な成果物と検証履歴がマクロの改善に活用される（点線矢印）
+- **マクロ → ミクロ**: 改善されたスキーマにより、次のミクロの好循環が高い精度で開始できる（点線矢印）
+
+**時間スケール**:
+
+- **ミクロ**: 分〜時間（個別セッション内）
+- **マクロ**: 週〜月（コミュニティ全体）
+
+**効果範囲**:
+
+- **ミクロ**: 個別プロジェクト
+- **マクロ**: 全プロジェクト、コミュニティ全体
+
+**結果**: 2つの好循環が相互に強化し合い、加速度的に品質が向上する
 
 ### Before vs After Comparison
 
 ```mermaid
 graph LR
-    subgraph "従来のドキュメント管理"
-        direction TB
+    subgraph before["❌ 従来のドキュメント管理"]
         T1[作成<br/>手動・時間かかる] --> T2[放置<br/>更新されない]
         T2 --> T3[陳腐化<br/>実態と乖離]
         T3 --> T4[信頼性低下<br/>使われない]
@@ -423,8 +435,7 @@ graph LR
         T5 -.->|悪循環| T2
     end
 
-    subgraph "Ukiyoue"
-        direction TB
+    subgraph after["✅ Ukiyoue"]
         U1[生成<br/>AI支援・高速] --> U2[検証<br/>自動・即時]
         U2 --> U3[フィードバック<br/>アクション提案]
         U3 --> U4[改善<br/>精度向上]
@@ -434,10 +445,13 @@ graph LR
         U6 -.->|全体に還元| U1
     end
 
-    style T2 fill:#ffe1e1
-    style T3 fill:#ffcccc
-    style T4 fill:#ffb3b3
-    style T5 fill:#ff9999
+    before ==>|🚀 変革| after
+
+    style T1 fill:#ffe1e1
+    style T2 fill:#ffcccc
+    style T3 fill:#ffb3b3
+    style T4 fill:#ff9999
+    style T5 fill:#ff8080
 
     style U1 fill:#e1ffe1
     style U2 fill:#ccffcc
@@ -561,76 +575,107 @@ graph LR
 
 #### Day 1: Ukiyoueとの出会い
 
-```bash
-# 同僚の紹介でUkiyoueを知る
-# まずは試しにインストール
-npm install -g @ukiyoue/cli
+```yaml
+状況:
+  - 同僚の紹介でUkiyoueを知る
+  - まずは試しにインストール
 
-# 既存プロジェクトを分析
-ukiyoue analyze ./docs
-# → 「50個のドキュメント、整合性エラー12個検出」
+実施内容:
+  インストール:
+    - npm install -g @ukiyoue/cli
 
-# おっ、と思う
+  プロジェクト初期化:
+    - ukiyoue init my-new-api-project
+    - プロジェクト構造が生成される
+    - .ukiyoue/config.json が作成される
+    - サンプルテンプレートが配置される
+
+  テンプレート確認:
+    - ukiyoue component search "API"
+    - api-spec, api-endpoint, error-response など表示
+
+田中さんの心の声: 「JSON形式か...でもスキーマで型安全なら、
+  むしろAIとの相性は良さそうだ」
 ```
 
 #### Day 2: 最初の生成
 
-```bash
-# 新しいAPI仕様をAIと協働で作成
-ukiyoue generate --template api-spec --ai
+```yaml
+状況:
+  - 新しいAPI仕様をAIと協働で作成
+  - Claude Desktop（MCP統合）で作業
 
-# AI: 「ユーザー管理APIの仕様を生成します」
-# → 30分で初稿完成
+作業フロー:
+  1. テンプレート検索:
+    - Claude が ukiyoue_search_components("API endpoint") を実行
+    - 適切なテンプレートを発見
 
-# 自動検証
-ukiyoue validate --actionable
+  2. ドキュメント生成:
+    - テンプレートベースでJSON形式のドキュメント生成
+    - 30分で初稿完成（docs/api/user-management.json）
 
-# 結果:
-# ❌ 必須項目 'errorResponses' が不足
-# 💡 次のアクション: エラーレスポンスを定義してください
-#    推奨形式: { "code": 400, "message": "Bad Request" }
-#    参考: 同様のAPIでは3〜5個のエラーが定義されています
+  3. 自動検証:
+    - Claude が ukiyoue_validate() を自動実行
+    - 結果: ❌ 必須項目 'errorResponses' が不足
+    - 💡 次のアクション: エラーレスポンスを定義してください
+         推奨形式: { "code": 400, "message": "Bad Request" }
+         参考: 同様のAPIでは3〜5個のエラーが定義されています
 
-# AIに提案を伝えると、すぐに修正
-# → 2回目の検証で ✅ Pass
+  4. 修正と再検証:
+    - Claude がフィードバックを理解し、即座に修正
+    - 再度 ukiyoue_validate() を実行
+    - 結果: ✅ Pass
+
+田中さんの感想: 「うわ、これは良い。AIの出力を即座に検証できて、
+  しかも次に何をすべきか教えてくれる。
+  しかもClaudeが自分で検証ツールを呼んで修正までやってくれる」
 ```
-
-**田中さんの感想**:
-「うわ、これは良い。AIの出力を即座に検証できて、しかも次に何をすべきか教えてくれる」
 
 #### Day 3: チームへの共有
 
-```bash
-# チームミーティングで共有
-# デモを見せると、メンバーも興味津々
+```yaml
+状況:
+  - チームミーティングで共有
+  - デモを見せると、メンバーも興味津々
 
-# メンバーA: 「テストケースも作れる？」
-ukiyoue generate --template test-case --ai
+質疑応答:
+  メンバーA: 「テストケースも作れる？」
+  田中さん: 「もちろん。test-caseテンプレートがあるよ」
 
-# メンバーB: 「既存のドキュメントは移行できる？」
-ukiyoue migrate ./docs/old-spec.md --template api
+  メンバーB: 「既存のドキュメントは？」
+  田中さん: 「既存のはWord/Markdownだから、
+    新しいドキュメントから始めて、必要に応じて手動で移行かな。
+    でも、AIに既存ドキュメントを読ませてJSON形式で生成させれば
+    意外と早いかも」
 
-# 全員納得
+  メンバーC: 「JSON形式って読みにくくない？」
+  田中さん: 「確かに生のJSONは読みにくいけど、
+    VS Code拡張があれば見やすくなるし、
+    むしろ構造化されてるから機械処理しやすい。
+    AIとの相性は抜群だよ」
+
+結果: 全員納得し、試験的導入を決定
 ```
 
 #### Day 4: CI/CDへの統合
 
 ```yaml
-# .github/workflows/docs-validation.yml
-name: Validate Documentation
+状況:
+  - GitHub Actionsにバリデーションを追加
+  - .github/workflows/docs-validation.yml を作成
 
-on: [push, pull_request]
+実装内容:
+  トリガー: push, pull_request
+  処理:
+    - Ukiyoue CLIをインストール
+    - ドキュメント自動検証（ukiyoue validate --actionable）
 
-jobs:
-  validate:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - run: npm install -g @ukiyoue/cli
-      - run: ukiyoue validate --actionable
+効果:
+  - PRごとにドキュメントが自動検証される
+  - 品質ゲートとして機能
+
+田中さんの心の声: 「これでレビュー負荷が減る」
 ```
-
-**効果**: PRごとにドキュメントが自動検証される
 
 #### Day 5: 最初の成功体験
 
