@@ -2,10 +2,12 @@
 
 ## 📋 このドキュメントの目的
 
-**What**: Ukiyoue Frameworkの全体アーキテクチャと設計原則
-**Why**: システムの全体像と設計判断の根拠を明確化
-**Who**: すべてのステークホルダー（開発者、新メンバー、意思決定者）
-**When**: 全体設計を理解する時、設計判断時
+| 項目     | 内容                                                       |
+| -------- | ---------------------------------------------------------- |
+| **What** | Ukiyoue Frameworkの全体アーキテクチャと設計原則            |
+| **Why**  | システムの全体像と設計判断の根拠を明確化                   |
+| **Who**  | すべてのステークホルダー（開発者、新メンバー、意思決定者） |
+| **When** | 全体設計を理解する時、設計判断時                           |
 
 **関連ドキュメント**:
 
@@ -446,58 +448,6 @@ my-project/                    # ユーザーのプロジェクトルート
 
 ### 設計原則
 
-````json
-// schemas/requirement.schema.json
-{
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://ukiyoue.dev/schemas/requirement.schema.json",
-  "type": "object",
-  "required": [
-    "@context",
-    "@type",
-    "id",
-    "title",
-    "description",
-    "priority",
-    "status"
-  ],
-  "properties": {
-    "@context": { "type": "string" },
-    "@type": { "type": "string" },
-    "id": {
-      "type": "string",
-      "pattern": "^FR-[0-9]{3}$"
-    },
-    "title": {
-      "type": "string",
-      "minLength": 5,
-      "maxLength": 100
-    },
-    "description": {
-      "type": "string",
-      "minLength": 10
-    },
-    "priority": {
-      "type": "string",
-      "enum": ["high", "medium", "low"]
-    },
-    "status": {
-      "type": "string",
-      "enum": ["draft", "approved", "implemented", "deprecated"]
-    },
-    "acceptanceCriteria": {
-      "type": "array",
-      "items": { "type": "string" },
-      "minItems": 1
-    },
-    "testCases": {
-      "type": "array",
-      "items": { "type": "string" }
-    },
-    "dependsOn": {
-      "type": "array",
-
-
 ```yaml
 Privacy by Design:
   原則1: 完全ローカル実行
@@ -526,7 +476,7 @@ Security:
     - すべての外部入力を厳密に検証
     - パストラバーサル対策
     - コードインジェクション対策
-````
+```
 
 ---
 
