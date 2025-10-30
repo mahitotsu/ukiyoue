@@ -45,9 +45,9 @@
 
 **MCP Server**:
 
-- [ ] `ukiyoue_validate` ツール
-- [ ] `ukiyoue_get_component` ツール
-- [ ] Claude Desktopとの統合
+- [ ] `validate` ツール
+- [ ] `get_component` ツール
+- [ ] GitHub Copilotとの統合
 
 **CLI**:
 
@@ -173,8 +173,8 @@ gantt
 #### 10〜12日目: MCP Server実装
 
 - [ ] MCPプロトコル統合（@modelcontextprotocol/sdk）
-- [ ] `ukiyoue_validate` ツール実装
-- [ ] `ukiyoue_get_component` ツール実装
+- [ ] `validate` ツール実装
+- [ ] `get_component` ツール実装
 - [ ] Claude Desktop設定ファイル作成
 - [ ] 統合テスト
 
@@ -200,7 +200,7 @@ gantt
 #### 15〜16日目: 統合テスト
 
 - [ ] エンド・ツー・エンドテスト実装
-- [ ] Claude Desktop実機テスト
+- [ ] GitHub Copilot実機テスト
 - [ ] パフォーマンステスト（100ドキュメント）
 - [ ] バグ修正
 
@@ -333,17 +333,17 @@ Phase 3 (v2.0+):
 #### シナリオ 5: MCP統合テスト
 
 ```yaml
-目的: Claude DesktopからMCPツールが呼び出せることを確認
+目的: GitHub CopilotからMCPツールが呼び出せることを確認
 
-手順: 1. Claude Desktopを起動
+手順: 1. GitHub Copilotを起動
   2. "このプロジェクトのドキュメントを検証して"と指示
-  3. Claude が ukiyoue_validate ツールを呼び出す
+  3. Copilot が validate ツールを呼び出す
   4. 検証結果を受け取る
 
 期待結果:
   - MCPツールが正常に呼び出される
   - 検証結果が構造化された形式で返される
-  - Claude が結果を理解して説明できる
+  - Copilot が結果を理解して説明できる
 ```
 
 #### シナリオ 6〜10: （追加予定）
@@ -379,7 +379,7 @@ bun build
   }
 }
 
-# 3. Claude Desktopを再起動
+# 3. GitHub Copilotを再起動
 ```
 
 #### テストケース
@@ -390,7 +390,7 @@ bun build
 プロンプト: |
   このプロジェクトのdocs/requirements/FR-001.jsonを検証してください。
 
-期待される動作: 1. Claude が ukiyoue_validate ツールを呼び出す
+期待される動作: 1. Copilot が validate ツールを呼び出す
   2. 検証結果を受け取る
   3. 結果を人間が理解できる形で説明
 
@@ -407,7 +407,7 @@ bun build
   docs/requirements/FR-001.jsonに検証エラーがあります。
   エラーを修正してください。
 
-期待される動作: 1. Claude が ukiyoue_validate を呼び出してエラーを確認
+期待される動作: 1. Copilot が validate を呼び出してエラーを確認
   2. アクション提案を理解
   3. 修正案を提示
   4. 再度検証して確認
@@ -424,7 +424,7 @@ bun build
 プロンプト: |
   REST APIエンドポイントのテンプレートを取得してください。
 
-期待される動作: 1. Claude が ukiyoue_get_component を呼び出す
+期待される動作: 1. Copilot が get_component を呼び出す
   2. テンプレートを取得
   3. 内容を説明
 

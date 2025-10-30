@@ -199,7 +199,7 @@ graph TB
 
 ```mermaid
 sequenceDiagram
-    participant AI as AI Agent (Claude)
+    participant AI as AI Agent (Copilot)
     participant MCP as MCP Server
     participant VE as Validation Engine
     participant SE as Semantic Engine
@@ -213,7 +213,7 @@ sequenceDiagram
 
     Note over AI,Cache: 検証フロー
 
-    AI->>MCP: ukiyoue_validate(path)
+    AI->>MCP: validate(path)
     MCP->>UD: ファイル読み込み
     UD-->>MCP: ドキュメント内容
     MCP->>VE: 検証リクエスト
@@ -238,7 +238,7 @@ sequenceDiagram
 
     Note over AI: フィードバックを理解し<br/>精度高く修正
 
-    AI->>MCP: ukiyoue_validate(path)
+    AI->>MCP: validate(path)
     MCP->>UD: ファイル読み込み
     UD-->>MCP: 修正版ドキュメント
     MCP->>VE: 再検証
@@ -265,11 +265,9 @@ Ukiyoueは4層のアーキテクチャで構成されています。各レイヤ
 
 **提供ツール**:
 
-- `ukiyoue_validate` - ドキュメント検証
-- `ukiyoue_search_components` - コンポーネント検索
-- `ukiyoue_get_component` - コンポーネント取得
-- `ukiyoue_create_variation` - バリエーション作成
-- `ukiyoue_analyze_project` - プロジェクト分析
+- `validate` - ドキュメント検証（参照整合性チェック含む）
+- `search_components` - コンポーネント検索
+- `get_component` - コンポーネント取得
 
 **なぜMCPが主要か**: Ukiyoueの中心コンセプトは「AIの作業品質向上」。AIが直接利用できる形式が最適。
 

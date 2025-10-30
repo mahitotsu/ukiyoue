@@ -191,30 +191,34 @@ const server = new MCPServer({
   version: "0.1.0",
 });
 
-// ukiyoue_validate ツール
+// validate ツール
 server.tool(
-  "ukiyoue_validate",
+  "validate",
   "Validate Ukiyoue documents with actionable feedback",
   {
     path: {
       type: "string",
-      description: "File or directory path to validate",
+      description: "File, directory, or project root path to validate",
     },
     level: {
       type: "string",
       enum: ["structure", "semantic", "content"],
       description: "Validation level",
-      default: "semantic",
+      default: "content",
     },
-    actionable: {
+    checkReferences: {
       type: "boolean",
-      description: "Include action suggestions",
+      description:
+        "Check reference integrity (missing components, traceability issues)",
       default: true,
     },
   },
-  async ({ path, level, actionable }) => {
+  async ({ path, level, checkReferences }) => {
     // Validation Engine呼び出し
-    const result = await validationEngine.validate(path, { level, actionable });
+    const result = await validationEngine.validate(path, {
+      level,
+      checkReferences,
+    });
     return result;
   }
 );
@@ -242,7 +246,7 @@ await server.connect(transport);
 
 // AIエージェントからのツール呼び出し（自動）
 // User: "このAPI仕様を検証して"
-// AI: ukiyoue_validate({ path: "./docs/api-spec.json", actionable: true })
+// AI: validate({ path: "./docs/api-spec.json" })
 // → フィードバック受信
 // → AI が理解して即座に修正
 ```

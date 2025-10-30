@@ -80,15 +80,14 @@ Ukiyoueは、**スキーマ駆動の構造化 + セマンティック技術 + �
 # 1. MCPサーバーのインストール
 npm install -g @ukiyoue/mcp-server
 
-# 2. AI環境（Claude Desktop等）に設定
-# claude_desktop_config.json に追加:
+# 2. AI環境（GitHub Copilot等）に設定
+# VS Codeの設定に追加:
 {
-  "mcpServers": {
-    "ukiyoue": {
-      "command": "ukiyoue-mcp",
-      "args": ["--project", "./my-project"]
+  "github.copilot.chat.codeGeneration.instructions": [
+    {
+      "text": "Use @ukiyoue MCP server for document validation"
     }
-  }
+  ]
 }
 
 # 3. AIと協働してドキュメント作成開始
@@ -603,11 +602,11 @@ graph LR
 ```yaml
 状況:
   - 新しいAPI仕様をAIと協働で作成
-  - Claude Desktop（MCP統合）で作業
+  - GitHub Copilot（MCP統合）で作業
 
 作業フロー:
   1. テンプレート検索:
-    - Claude が ukiyoue_search_components("API endpoint") を実行
+    - Copilot が ukiyoue_search_components("API endpoint") を実行
     - 適切なテンプレートを発見
 
   2. ドキュメント生成:
@@ -615,20 +614,20 @@ graph LR
     - 30分で初稿完成（docs/api/user-management.json）
 
   3. 自動検証:
-    - Claude が ukiyoue_validate() を自動実行
+    - Copilot が validate() を自動実行
     - 結果: ❌ 必須項目 'errorResponses' が不足
     - 💡 次のアクション: エラーレスポンスを定義してください
          推奨形式: { "code": 400, "message": "Bad Request" }
          参考: 同様のAPIでは3〜5個のエラーが定義されています
 
   4. 修正と再検証:
-    - Claude がフィードバックを理解し、即座に修正
-    - 再度 ukiyoue_validate() を実行
+    - Copilot がフィードバックを理解し、即座に修正
+    - 再度 validate() を実行
     - 結果: ✅ Pass
 
 田中さんの感想: 「うわ、これは良い。AIの出力を即座に検証できて、
   しかも次に何をすべきか教えてくれる。
-  しかもClaudeが自分で検証ツールを呼んで修正までやってくれる」
+  しかもCopilotが自分で検証ツールを呼んで修正までやってくれる」
 ```
 
 #### Day 3: チームへの共有
@@ -904,18 +903,18 @@ Year 3: スケーリング
 
 ### 戦略的柱
 
-#### 1. グローバル標準化```yaml
+#### 1. グローバル標準化
 
+```yaml
 目標: AI時代のプロジェクトドキュメントのデファクトスタンダード
 
 戦略:
+  - ISO/IEC標準化団体との連携
+  - 主要フレームワーク（OpenAPI、AsyncAPI）との相互運用
+  - 多言語対応（英語、日本語、中国語、スペイン語等）
+  - 業界別スキーマの整備（金融、医療、製造等）
+```
 
-- ISO/IEC標準化団体との連携
-- 主要フレームワーク（OpenAPI、AsyncAPI）との相互運用
-- 多言語対応（英語、日本語、中国語、スペイン語等）
-- 業界別スキーマの整備（金融、医療、製造等）
-
-````yaml
 #### 2. エコシステム構築
 
 ```yaml
@@ -927,7 +926,7 @@ Year 3: スケーリング
   - プロジェクト管理ツール連携（Jira、Linear、Asana等）
   - AI Agents連携（LangChain、AutoGPT等）
   - コミュニティマーケットプレイス（スキーマ・テンプレート共有）
-````
+```
 
 #### 3. AI Agents時代への対応
 

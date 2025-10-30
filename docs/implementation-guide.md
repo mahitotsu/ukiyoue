@@ -822,7 +822,7 @@ End-to-End Tests:
   フレームワーク: Bun test
   対象:
     - 実際のドキュメント生成→検証フロー
-    - Claude Desktop実機テスト（手動）
+    - GitHub Copilot実機テスト（手動）
     - ユーザーシナリオベース
 
 Performance Tests:
