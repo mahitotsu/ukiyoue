@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ukiyoue.dev/schemas/success-metric.schema.json",
+  "title": "SuccessMetric",
+  "description": "成功指標定義。ビジネスゴールの達成度を測定する指標。",
+  "type": "object",
+  "required": [
+    "@context",
+    "@type",
+    "id",
+    "title",
+    "description",
+    "metricType",
+    "baseline",
+    "target",
+    "unit",
+    "measuresGoal"
+  ],
+  "properties": {
+    "@context": {
+      "type": "string",
+      "description": "JSON-LD Context URI",
+      "const": "https://ukiyoue.dev/context/v1"
+    },
+    "@type": {
+      "type": "string",
+      "description": "ドキュメントタイプ",
+      "const": "SuccessMetric"
+    },
+    "id": {
+      "type": "string",
+      "description": "一意のID（例: SM-001）",
+      "pattern": "^SM-[0-9]{3}$"
+    },
+    "title": {
+      "type": "string",
+      "description": "指標のタイトル",
+      "minLength": 3,
+      "maxLength": 100
+    },
+    "description": {
+      "type": "string",
+      "description": "指標の詳細説明",
+      "minLength": 10
+    },
+    "metricType": {
+      "type": "string",
+      "description": "指標のタイプ",
+      "enum": ["traffic", "conversion", "engagement", "revenue", "quality", "time", "cost"]
+    },
+    "baseline": {
+      "type": "number",
+      "description": "ベースライン値（現状）"
+    },
+    "target": {
+      "type": "number",
+      "description": "目標値"
+    },
+    "unit": {
+      "type": "string",
+      "description": "単位（例: PV/月, %, 円, 時間）",
+      "minLength": 1
+    },
+    "measurementMethod": {
+      "type": "string",
+      "description": "測定方法"
+    },
+    "measuresGoal": {
+      "type": "string",
+      "description": "この指標が測定するビジネスゴール（BusinessGoalへの参照）",
+      "pattern": "^BG-[0-9]{3}$"
+    }
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,82 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ukiyoue.dev/schemas/constraint.schema.json",
+  "title": "Constraint",
+  "description": "制約条件定義。プロジェクトの技術的・ビジネス的制約を記述する。",
+  "type": "object",
+  "required": ["@context", "@type", "id", "title", "description", "type", "rationale"],
+  "properties": {
+    "@context": {
+      "type": "string",
+      "description": "JSON-LD Context URI",
+      "const": "https://ukiyoue.dev/context/v1"
+    },
+    "@type": {
+      "type": "string",
+      "description": "ドキュメントタイプ",
+      "const": "Constraint"
+    },
+    "id": {
+      "type": "string",
+      "description": "一意のID（例: CN-001）",
+      "pattern": "^CN-[0-9]{3}$"
+    },
+    "title": {
+      "type": "string",
+      "description": "制約のタイトル",
+      "minLength": 5,
+      "maxLength": 100
+    },
+    "description": {
+      "type": "string",
+      "description": "制約の詳細説明",
+      "minLength": 10
+    },
+    "type": {
+      "type": "string",
+      "description": "制約のタイプ",
+      "enum": ["technical", "business", "legal", "resource", "time", "budget"]
+    },
+    "rationale": {
+      "type": "string",
+      "description": "この制約が存在する理由・根拠",
+      "minLength": 10
+    },
+    "scope": {
+      "type": "string",
+      "description": "制約が適用される範囲（例: phase1,全体）"
+    },
+    "impact": {
+      "type": "string",
+      "description": "この制約がもたらす影響"
+    },
+    "relatedGoal": {
+      "type": "string",
+      "description": "関連するビジネスゴール（BusinessGoalへの参照）",
+      "pattern": "^BG-[0-9]{3}$"
+    },
+    "alternatives": {
+      "type": "array",
+      "description": "検討された代替案",
+      "items": {
+        "type": "object",
+        "required": ["option"],
+        "properties": {
+          "option": {
+            "type": "string",
+            "description": "代替案"
+          },
+          "selected": {
+            "type": "string",
+            "description": "選択された理由"
+          },
+          "rejected": {
+            "type": "string",
+            "description": "却下された理由"
+          }
+        }
+      }
+    }
+  },
+  "additionalProperties": false
+}

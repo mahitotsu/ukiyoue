@@ -1,0 +1,120 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ukiyoue.dev/schemas/business-goal.schema.json",
+  "title": "BusinessGoal",
+  "description": "ビジネスゴール - プロジェクトの目的と価値を定義するドキュメント",
+  "type": "object",
+  "required": [
+    "@context",
+    "@type",
+    "id",
+    "title",
+    "description",
+    "businessValue",
+    "priority",
+    "status"
+  ],
+  "properties": {
+    "@context": {
+      "type": "string",
+      "description": "JSON-LD Context URI",
+      "const": "https://ukiyoue.dev/context/v1"
+    },
+    "@type": {
+      "type": "string",
+      "description": "ドキュメントタイプ",
+      "const": "BusinessGoal"
+    },
+    "id": {
+      "type": "string",
+      "description": "ビジネスゴールの一意識別子",
+      "pattern": "^BG-[0-9]{3}$",
+      "examples": ["BG-001", "BG-002"]
+    },
+    "title": {
+      "type": "string",
+      "description": "ビジネスゴールのタイトル",
+      "minLength": 5,
+      "maxLength": 100,
+      "examples": ["SEO最適化による読者獲得"]
+    },
+    "description": {
+      "type": "string",
+      "description": "ビジネスゴールの詳細説明",
+      "minLength": 10,
+      "maxLength": 1000,
+      "examples": ["検索エンジンからの流入を増やし、月間1,000PVを達成する"]
+    },
+    "businessValue": {
+      "type": "string",
+      "description": "ビジネス価値・ROI",
+      "minLength": 5,
+      "examples": ["個人ブランド構築、将来的な収益化の基盤"]
+    },
+    "priority": {
+      "type": "string",
+      "description": "優先度",
+      "enum": ["high", "medium", "low"],
+      "examples": ["high"]
+    },
+    "status": {
+      "type": "string",
+      "description": "ステータス",
+      "enum": ["draft", "approved", "in-progress", "completed", "cancelled"],
+      "examples": ["draft"]
+    },
+    "rationale": {
+      "type": "string",
+      "description": "なぜこのゴールが必要か（新規プロジェクトの場合）",
+      "minLength": 10,
+      "examples": ["個人ブログの成功には検索流入が不可欠。SNS頼みでは持続性がない。"]
+    },
+    "hasMetric": {
+      "type": "array",
+      "description": "このゴールに紐づく成功指標（SuccessMetricのIDリスト）",
+      "items": {
+        "type": "string",
+        "pattern": "^SM-[0-9]{3}$"
+      },
+      "minItems": 1,
+      "examples": [["SM-001", "SM-002"]]
+    },
+    "hasUseCase": {
+      "type": "array",
+      "description": "このゴールを実現するユースケース（UseCaseのIDリスト）",
+      "items": {
+        "type": "string",
+        "pattern": "^UC-[0-9]{3}$"
+      },
+      "minItems": 1,
+      "examples": [["UC-001", "UC-002"]]
+    },
+    "constrainedBy": {
+      "type": "array",
+      "description": "このゴールに影響する制約条件（ConstraintのIDリスト）",
+      "items": {
+        "type": "string",
+        "pattern": "^CN-[0-9]{3}$"
+      },
+      "examples": [["CN-001"]]
+    },
+    "metadata": {
+      "type": "object",
+      "description": "メタデータ",
+      "properties": {
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "author": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "additionalProperties": false
+}
