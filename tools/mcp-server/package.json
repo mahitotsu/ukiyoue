@@ -1,0 +1,25 @@
+{
+  "name": "@ukiyoue/mcp-server",
+  "version": "0.1.0",
+  "description": "Ukiyoue Framework - MCP Server",
+  "type": "module",
+  "bin": {
+    "ukiyoue-mcp": "./dist/index.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "bun build src/index.ts --outfile dist/index.js --target node --format esm",
+    "dev": "bun run src/index.ts",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.4",
+    "@ukiyoue/core": "file:../core"
+  },
+  "devDependencies": {
+    "@types/node": "^24.9.2",
+    "typescript": "^5.9.3"
+  }
+}
