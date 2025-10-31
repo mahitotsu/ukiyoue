@@ -1,0 +1,10 @@
+{
+  "name": "blog-system-example",
+  "version": "0.1.0",
+  "description": "Blog management system example using Ukiyoue Framework",
+  "type": "module",
+  "private": true,
+  "dependencies": {
+    "@ukiyoue/mcp-server": "file:../../tools/mcp-server"
+  }
+}

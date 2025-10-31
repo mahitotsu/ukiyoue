@@ -1,0 +1,13 @@
+{
+  "@context": "https://ukiyoue.dev/context/v1",
+  "@type": "SuccessMetric",
+  "id": "SM-001",
+  "title": "検索流入数",
+  "description": "Google検索経由でブログにアクセスした月間ユニークユーザー数。オーガニック検索からの流入を測定し、SEO施策の効果を評価する。",
+  "metricType": "traffic",
+  "baseline": 100,
+  "target": 1000,
+  "unit": "unique_visitors/month",
+  "measurementMethod": "Google Analytics 4のオーガニック検索セッション数を月次で集計",
+  "measuresGoal": "BG-001"
+}

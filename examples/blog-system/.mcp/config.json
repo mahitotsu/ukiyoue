@@ -1,0 +1,11 @@
+{
+  "$schema": "https://modelcontextprotocol.io/schema/config.json",
+  "mcpServers": {
+    "ukiyoue": {
+      "command": "node_modules/.bin/ukiyoue-mcp",
+      "env": {
+        "NODE_ENV": "development"
+      }
+    }
+  }
+}

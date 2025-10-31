@@ -1,0 +1,22 @@
+{
+  "@context": "https://ukiyoue.dev/context/v1",
+  "@type": "Constraint",
+  "id": "CN-001",
+  "title": "外部API依存の最小化",
+  "description": "Phase 1では外部有料APIを使用しない。Google Search Console APIなどのSEOツールAPIは使用せず、手動での分析とオープンソースツールで代替する。",
+  "type": "technical",
+  "rationale": "個人開発のため、初期コストとメンテナンス負荷を最小化する必要がある。また、PoC段階ではポータビリティを優先し、どの環境でもデモ実行できることを重視する。",
+  "scope": "phase1",
+  "impact": "SEOキーワード分析は手動で実施する必要がある。競合分析ツールは無料範囲で利用。",
+  "relatedGoal": "BG-001",
+  "alternatives": [
+    {
+      "option": "Google Search Console API利用",
+      "rejected": "月間API料金が発生する可能性があり、個人開発には高コスト"
+    },
+    {
+      "option": "無料SEOツールの利用",
+      "selected": "UbersuggestやKeyword Surferなど無料範囲内で利用可能"
+    }
+  ]
+}
