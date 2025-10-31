@@ -35,6 +35,7 @@
       "schemas": true,
       "semantics": true,
       "tools": true,
+      "templates": true,
       "examples": true,
     },
     "editor.formatOnSave": true,

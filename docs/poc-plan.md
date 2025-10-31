@@ -2,72 +2,400 @@
 
 ## 📋 このドキュメントの目的
 
-| 項目     | 内容                                      |
-| -------- | ----------------------------------------- |
-| **What** | Ukiyoue Framework Phase 1 (PoC)の実行計画 |
-| **Why**  | PoC実装の指針とタスク管理を明確化         |
-| **Who**  | PoC実装チーム                             |
-| **When** | PoC実装期間中（2〜3週間）                 |
+| 項目     | 内容                                       |
+| -------- | ------------------------------------------ |
+| **What** | Ukiyoue Framework Phase 1 (PoC)の実行計画  |
+| **Why**  | ドキュメント駆動開発で段階的にツールを構築 |
+| **Who**  | PoC実装チーム                              |
+| **When** | PoC実装期間中（2週間集中）                 |
 
 **関連ドキュメント**:
 
 - [`architecture.md`](architecture.md) - 全体設計と原則
-- [`implementation-guide.md`](implementation-guide.md) - 実装詳細
+- [`implementation-guide.md`](implementation-guide.md) - 実装詳細とライフサイクル
 
 ---
 
-## 🎯 PoCスコープ（Phase 1）
+## 🎯 PoC最優先目標
 
-### 実装する機能
+### 目的: ドキュメントライフサイクルの完全検証
 
-#### ✅ 必須機能（Phase 1）
+[`implementation-guide.md`](implementation-guide.md)に記載されたライフサイクル全体を、**ドキュメントを作りながら**検証します。
 
-**Validation Engine**:
+```text
+Phase 1: ドキュメント作成（静的）
+  ↓
+Phase 2: 検証実行（動的）
+  ├─ Level 1: 構造検証（JSON Schema + Ajv）
+  ├─ Level 2: 意味整合性検証（JSON-LD + 参照先存在確認）
+  └─ Level 3: カスタムルール検証（YAML定義 + カスタム実装）
+```
 
-- [ ] JSON Schema検証
-- [ ] 基本的なSHACL検証
-- [ ] カスタムルール検証（YAML定義）
-- [ ] エラーメッセージ生成
+### 実装戦略
 
-**Semantic Engine**:
+```yaml
+アプローチ: ドキュメントを作りながらツールを育てる
 
-- [ ] JSON-LD拡張・圧縮
-- [ ] IRI解決（相対パス → 絶対IRI）（ADR-018）
-- [ ] 複数ドキュメントからのRDFグラフ構築
-- [ ] RDF変換
-- [ ] 基本的なSPARQLクエリ
-- [ ] 参照先存在確認
+原則: 1. スキーマから始める（ドキュメント構造を先に定義）
+  2. サンプルで検証する（実際のドキュメントで試す）
+  3. 段階的に複雑化（構造 → 参照 → 検証 → MCP）
+  4. 早期フィードバック（Week 1で基本コンセプト検証）
 
-**Feedback Generator**:
+なぜこの順序か:
+  - ツールを完璧にしてからでは遅い
+  - 実際の使用感を早期に検証
+  - フィードバックループを回す
+```
 
-- [ ] 構造的エラーのアクション提案
-- [ ] テンプレート参照の提示
+---
 
-**MCP Server**:
+## 📦 PoC題材: 新規ブログ管理システム構築
 
-- [ ] `validate` ツール
-- [ ] `get_component` ツール
-- [ ] GitHub Copilotとの統合
+### プロジェクト概要
 
-**CLI**:
+```yaml
+題材: 個人ブロガーがゼロから構築するブログ管理システム
 
-- [ ] `ukiyoue validate` コマンド
-- [ ] `ukiyoue component get` コマンド
-- [ ] `ukiyoue init` コマンド
+特徴:
+  - 新規プロジェクト（既存システム改善ではない）
+  - SEOに強く、継続的に更新しやすい
+  - 個人開発のため、コストと運用負荷を最小化
+  - Phase分けで段階的に機能追加
 
-**Schema & Examples**:
+実装の目的:
+  - ドキュメント駆動開発でUkiyoueツールを育てる
+  - 実際のビジネス要件定義プロセスを検証
+  - ポータブルなデモシステムを構築
+```
 
-- [ ] 基本ドキュメントスキーマ
-- [ ] API仕様スキーマ
-- [ ] 10個のサンプルドキュメント
+### 必要なドキュメントタイプ（5種類）
 
-#### ⏭️ Phase 2以降に延期
+#### 1. BusinessGoal（ビジネスゴール）
 
-- セマンティック検索の最適化
-- コンポーネント自動抽出
+**なぜ作るのか** - プロジェクトの目的と価値
+
+- ビジネス価値の明確化
+- 優先順位付け
+- 成功指標との紐付け
+
+#### 2. ContextDiagram（コンテキストダイアグラム）
+
+**何を作るのか** - システム境界とステークホルダー
+
+- システムの範囲定義
+- 外部依存の明確化
+- アクターと責務の定義
+
+#### 3. UseCase（ユースケース）
+
+**誰が何をするのか** - 具体的な利用シナリオ
+
+- ユーザーストーリー
+- 受入基準
+- ビジネスゴールへのトレーサビリティ
+
+#### 4. SuccessMetric（成功指標）
+
+**成功をどう測るのか** - 定量的な目標設定
+
+- baseline → target の設定
+- 測定方法の明確化
+- ビジネスゴールとの紐付け
+
+#### 5. Constraint（制約条件）
+
+**何ができない/しないのか** - 技術的・ビジネス的制約
+
+- スコープの限定
+- 外部依存の制限
+- 意思決定の記録
+
+### ドキュメント間の参照関係
+
+```text
+BusinessGoal (BG-001: SEO最適化)
+  ├─→ hasMetric → SuccessMetric (SM-001: 検索流入 100→1,000PV/月)
+  ├─→ hasUseCase → UseCase (UC-001: キーワード選定)
+  ├─→ hasUseCase → UseCase (UC-002: メタデータ最適化)
+  └─→ constrainedBy → Constraint (CN-001: 外部API不使用)
+
+UseCase (UC-001: キーワード選定)
+  └─→ derivedFrom → BusinessGoal (BG-001)
+
+SuccessMetric (SM-001)
+  └─→ measuresGoal → BusinessGoal (BG-001)
+
+Constraint (CN-001)
+  └─→ relatedGoal → BusinessGoal (BG-001)
+```
+
+### 検証シナリオ
+
+| ID  | シナリオ             | 検証内容                                       |
+| --- | -------------------- | ---------------------------------------------- |
+| S1  | 正常系               | BG → UC → SM の参照が全て正常                  |
+| S2  | 構造エラー           | BG-002で必須項目不足                           |
+| S3  | 参照エラー           | BG-003が存在しないUC-999を参照                 |
+| S4  | 双方向参照不整合     | BG-004 → UC-003 だが UC-003 → BG-999（不一致） |
+| S5  | カスタムルール違反   | high優先度BG-005だが、UCが1個しかない          |
+| S6  | 孤立ドキュメント検出 | UC-006がどのBGからも参照されていない           |
+| S7  | エンドツーエンド修正 | エラー検出 → AI修正 → 再検証 → Pass            |
+
+---
+
+## 📅 Phase 1: ドキュメント駆動の段階的実装（2週間）
+
+### Week 1: スキーマとサンプル
+
+#### Phase 1-A: 構造検証（Day 1-3）
+
+**目的**: スキーマとサンプルドキュメントの妥当性を検証
+
+**実装するもの**:
+
+```yaml
+schemas/:
+  - business-goal.schema.json
+  - context-diagram.schema.json
+  - use-case.schema.json
+  - success-metric.schema.json
+  - constraint.schema.json
+
+examples/blog-system/:
+  - BG-001-seo-optimization.json
+  - CD-001-system-boundary.json
+  - UC-001-keyword-selection.json
+  - SM-001-search-traffic.json
+  - CN-001-no-external-api.json
+
+scripts/:
+  - validate-structure.ts # Ajvで構造検証のみ
+```
+
+**検証方法**:
+
+```bash
+# スキーマ作成 → サンプル作成 → 検証
+bun run scripts/validate-structure.ts examples/blog-system/BG-001-seo-optimization.json
+```
+
+**成功基準**:
+
+- [ ] 5種類のスキーマが定義されている
+- [ ] 各スキーマに対応するサンプルが1個ずつある
+- [ ] 構造検証がPassする
+- [ ] エラーメッセージが理解できる
+
+---
+
+#### Phase 1-B: 参照関係（Day 4-5）
+
+**目的**: ドキュメント間参照が表現できることを確認
+
+**実装するもの**:
+
+```yaml
+semantics/:
+  - context.jsonld  # 基本的な@context定義のみ
+
+examples/blog-system/に参照を追加:
+  - BG-001: hasMetric: ["SM-001"], hasUseCase: ["UC-001", "UC-002"]
+  - UC-001: derivedFrom: "BG-001"
+  - SM-001: measuresGoal: "BG-001"
+
+scripts/:
+  - check-references.ts  # 参照先が存在するか簡易チェック
+```
+
+**検証方法**:
+
+```bash
+# 参照の存在だけチェック（SHACLはまだ使わない）
+bun run scripts/check-references.ts examples/blog-system/
+```
+
+**成功基準**:
+
+- [ ] context.jsonldで参照を定義できる
+- [ ] サンプルドキュメントに参照が追加されている
+- [ ] 参照先の存在確認スクリプトが動作する
+- [ ] 存在しない参照を検出できる
+
+---
+
+### Week 2: 検証エンジンとMCP統合
+
+#### Phase 1-C: 検証エンジン（Day 6-8）
+
+**目的**: 3レベル検証を実装し、エラーメッセージを改善
+
+**実装するもの**:
+
+```yaml
+tools/core/:
+  - validation-engine.ts # Level 1: JSON Schema + Ajv
+  - semantic-engine.ts # Level 2: 参照存在確認
+  - custom-rule-engine.ts # Level 3: 簡易カスタムルール
+
+semantics/rules/:
+  - consistency.yaml # カスタムルール定義
+
+tools/core/tests/:
+  - validation-engine.test.ts
+  - semantic-engine.test.ts
+  - custom-rule-engine.test.ts
+```
+
+**カスタムルール例**:
+
+```yaml
+# semantics/rules/consistency.yaml
+rules:
+  - id: BG-001
+    name: "高優先度ゴールには複数のユースケース必須"
+    target:
+      type: BusinessGoal
+      priority: "high"
+    validation:
+      check: hasMinimumUseCases
+      minCount: 2
+      message: "high優先度のビジネスゴールには最低2個のユースケースが必要です"
+```
+
+**検証方法**:
+
+```bash
+# 統合検証スクリプト
+bun run scripts/validate.ts examples/blog-system/BG-001-seo-optimization.json
+```
+
+**成功基準**:
+
+- [ ] 3レベルすべての検証が動作する
+- [ ] エラーメッセージが具体的でわかりやすい
+- [ ] ユニットテストがPass
+- [ ] シナリオS1-S7が検証できる
+
+---
+
+#### Phase 1-D: MCP統合（Day 9-11）
+
+**目的**: Claude Desktopから呼び出せるようにする
+
+**実装するもの**:
+
+```yaml
+tools/mcp-server/:
+  - src/index.ts         # MCP Server本体
+  - src/tools/
+      - validate.ts      # validateツール
+      - get-component.ts # テンプレート取得
+  - package.json
+  - tsconfig.json
+```
+
+**検証方法**:
+
+```bash
+# MCPサーバー起動
+cd tools/mcp-server
+bun run src/index.ts
+
+# Claude Desktopで実際に使ってみる
+プロンプト: "BG-001のドキュメントを検証して"
+```
+
+**成功基準**:
+
+- [ ] MCPサーバーが起動する
+- [ ] validateツールがClaude Desktopから呼び出せる
+- [ ] 検証結果が構造化されて返される
+- [ ] エラー内容が理解できる
+
+---
+
+#### Phase 1-E: 実践検証（Day 12-14)
+
+**目的**: 実際にブログ管理システムのドキュメントを作ってみる
+
+**実施内容**:
+
+Claude Desktopを使って、ゼロからドキュメントを作成:
+
+1. ビジネスゴール定義（BG-001, BG-002, BG-003）
+2. コンテキストダイアグラム作成（CD-001）
+3. ユースケース展開（UC-001 ~ UC-008）
+4. 成功指標設定（SM-001 ~ SM-005）
+5. 制約条件定義（CN-001 ~ CN-003）
+6. エラー修正のループ体験
+
+**検証項目**:
+
+- [ ] ドキュメント作成フローが自然か
+- [ ] エラーメッセージが理解できるか
+- [ ] 修正提案が適切か
+- [ ] セッション内で完結できるか
+- [ ] フィードバックループが機能するか
+
+**成果物**:
+
+```yaml
+examples/blog-system/:
+  # ビジネスゴール
+  - BG-001-seo-optimization.json
+  - BG-002-content-quality.json
+  - BG-003-continuous-publishing.json
+
+  # コンテキスト
+  - CD-001-system-boundary.json
+
+  # ユースケース
+  - UC-001-keyword-selection.json
+  - UC-002-metadata-optimization.json
+  - UC-003-outline-creation.json
+  - UC-004-markdown-writing.json
+  - UC-005-seo-checklist.json
+  - UC-006-publish-workflow.json
+  - UC-007-article-update.json
+  - UC-008-draft-management.json
+
+  # 成功指標
+  - SM-001-search-traffic.json
+  - SM-002-reading-rate.json
+  - SM-003-monthly-articles.json
+  - SM-004-search-ranking.json
+  - SM-005-bounce-rate.json
+
+  # 制約
+  - CN-001-no-external-api.json
+  - CN-002-monthly-cost-limit.json
+  - CN-003-static-hosting-only.json
+
+templates/:
+  - business-goal.json
+  - context-diagram.json
+  - use-case.json
+  - success-metric.json
+  - constraint.json
+```
+
+---
+
+## ⏭️ Phase 2以降に延期する機能
+
+### Phase 2（v0.2.0-beta、PoC成功後 4〜8週間）
+
+- SHACL完全対応（RDF変換、グラフベース検証）
+- CLI実装（ukiyoue validate, ukiyoue init）
+- パフォーマンス最適化（キャッシュ、並列処理）
+- セマンティック検索の基本実装
+
+### Phase 3（v1.0、将来）
+
 - 統計分析（マクロの好循環）
 - VS Code拡張機能
 - Web UI
+- マルチプロジェクト対応
 
 ---
 
@@ -76,400 +404,21 @@
 ### 技術的検証
 
 - [ ] MCPツールとしてClaude Desktopから呼び出せる
-- [ ] 100ドキュメントの検証が5秒以内
-- [ ] SHACL検証が正常に動作
-- [ ] Bunですべてのライブラリが動作
+- [ ] Level 1〜3すべての検証が動作する
+- [ ] 参照先存在確認が正常に動作する
+- [ ] カスタムルールが正常に動作する
 
 ### 品質検証
 
-- [ ] アクション提案の適切性80%以上（10シナリオで評価）
-- [ ] フィードバックを受けてAIが修正できる
-- [ ] セッション内での試行錯誤が30%削減
+- [ ] 7つのシナリオ（S1〜S7）すべてが検証できる
+- [ ] アクション提案の適切性（主観評価）
+- [ ] エラーメッセージの明確性
 
 ### 開発効率
 
-- [ ] API仕様書作成時間が従来比50%削減
-- [ ] ドキュメント探索時間が90%削減
-
----
-
-## 🚀 開発ロードマップ
-
-### Phase 1: PoC (2〜3週間) - 🎯 現在
-
-```mermaid
-gantt
-    title Ukiyoue PoC Development
-    dateFormat  YYYY-MM-DD
-    section 設計フェーズ
-    アーキテクチャ設計           :done, arch, 2025-01-01, 1d
-    ADR作成                     :active, adr, after arch, 3d
-
-    section 実装フェーズ 第1週
-    環境セットアップ             :setup, after adr, 1d
-    スキーマ定義                 :schema, after setup, 2d
-    Validation Engine実装        :engine1, after schema, 3d
-    Semantic Engine実装（基本）  :engine2, after schema, 3d
-
-    section 実装フェーズ 第2週
-    Feedback Generator実装       :engine3, after engine1, 2d
-    MCP Server実装               :mcp, after engine1, 3d
-    CLI実装                      :cli, after mcp, 2d
-    サンプル作成                 :examples, after schema, 5d
-
-    section テスト・リリース
-    統合テスト                   :test, after cli, 2d
-    ドキュメント作成             :docs, after cli, 2d
-    α版リリース                  :release, after test, 1d
-```
-
-### 第1週: コアエンジン開発
-
-#### 1日目: 環境セットアップ
-
-- [ ] Bunランタイムのインストール
-- [ ] プロジェクト構造の作成
-- [ ] 依存関係のインストール（Ajv, jsonld.js, rdf-validate-shacl等）
-- [ ] TypeScript設定（tsconfig.json）
-- [ ] Biome設定（biome.json）
-- [ ] Git設定（.gitignore, .github/workflows）
-
-#### 2〜3日目: スキーマ定義
-
-- [ ] 基本ドキュメントスキーマ（document.schema.json）
-- [ ] API仕様スキーマ（api-spec.schema.json）
-- [ ] 要件スキーマ（requirement.schema.json）
-- [ ] JSON-LD Context（context.jsonld）
-- [ ] SHACL Shapes（document.ttl, requirement.ttl）
-- [ ] カスタムルール定義（consistency.yaml）
-
-#### 4〜7日目: Validation Engine + Semantic Engine実装
-
-##### Validation Engine (4〜5日目)
-
-- [ ] スキーマローダー実装
-- [ ] Ajv統合（JSON Schema検証）
-- [ ] エラーメッセージ生成
-- [ ] ユニットテスト作成
-
-##### Semantic Engine (6〜7日目)
-
-- [ ] IRI解決ロジック実装
-- [ ] JSON-LD展開・圧縮（jsonld.js統合）
-- [ ] RDF変換
-- [ ] SHACL検証（rdf-validate-shacl統合）
-- [ ] 参照先存在確認
-- [ ] ユニットテスト作成
-
-### 第2週: インターフェース開発
-
-#### 8〜9日目: Feedback Generator実装
-
-- [ ] 検証結果の解析
-- [ ] アクション提案の生成ロジック
-- [ ] テンプレート参照の提示
-- [ ] ユニットテスト作成
-
-#### 10〜12日目: MCP Server実装
-
-- [ ] MCPプロトコル統合（@modelcontextprotocol/sdk）
-- [ ] `validate` ツール実装
-- [ ] `get_component` ツール実装
-- [ ] Claude Desktop設定ファイル作成
-- [ ] 統合テスト
-
-#### 13〜14日目: CLI実装、サンプル作成
-
-##### CLI (13日目)
-
-- [ ] Commander.js統合
-- [ ] `validate` コマンド実装
-- [ ] `component get` コマンド実装
-- [ ] `init` コマンド実装
-- [ ] ヘルプメッセージ、エラーハンドリング
-
-##### サンプル (14日目)
-
-- [ ] API仕様サンプル（3個）
-- [ ] 要件サンプル（3個）
-- [ ] テストケースサンプル（3個）
-- [ ] README作成（examples/）
-
-### 第3週: テスト・リリース
-
-#### 15〜16日目: 統合テスト
-
-- [ ] エンド・ツー・エンドテスト実装
-- [ ] GitHub Copilot実機テスト
-- [ ] パフォーマンステスト（100ドキュメント）
-- [ ] バグ修正
-
-#### 17〜18日目: ドキュメント作成
-
-- [ ] README更新
-- [ ] インストール手順
-- [ ] クイックスタートガイド
-- [ ] API リファレンス（MCP, CLI）
-- [ ] トラブルシューティング
-
-#### 19日目: α版リリース
-
-- [ ] バージョンタグ作成（v0.1.0-alpha）
-- [ ] npm公開（canary）
-- [ ] GitHub Release作成
-- [ ] コミュニティへの告知
-
----
-
-## 📊 パフォーマンス目標
-
-### レイテンシ目標
-
-| 操作                       | 目標レイテンシ | 測定条件               |
-| -------------------------- | -------------- | ---------------------- |
-| 単一ドキュメント検証       | < 100ms        | 標準的なAPI仕様（1KB） |
-| 100ドキュメント一括検証    | < 5秒          | 平均1KB/doc            |
-| 1,000ドキュメント一括検証  | < 30秒         | 平均1KB/doc            |
-| 10,000ドキュメント一括検証 | < 5分          | 平均1KB/doc            |
-| セマンティック検索         | < 200ms        | 1,000ドキュメント対象  |
-| SPARQL クエリ              | < 500ms        | 中規模クエリ           |
-| MCPツール呼び出し          | < 500ms        | ラウンドトリップ全体   |
-
-### リソース目標
-
-| リソース       | 目標値  | 測定条件                  |
-| -------------- | ------- | ------------------------- |
-| メモリ使用量   | < 512MB | 1,000ドキュメント読み込み |
-| ディスク使用量 | < 100MB | フレームワーク本体        |
-| CPU使用率      | < 50%   | 検証実行中                |
-| 起動時間       | < 1秒   | MCPサーバー起動           |
-
-### スケーラビリティ目標
-
-```yaml
-Phase 1 (PoC):
-  対象: 10〜100ドキュメント
-  アプローチ: シングルプロセス、メモリ内処理
-
-Phase 2 (v1.0):
-  対象: 100〜1,000ドキュメント
-  アプローチ: 並列処理、インデックス最適化
-
-Phase 3 (v2.0+):
-  対象: 1,000〜10,000+ドキュメント
-  アプローチ: 分散処理、データベース統合
-```
-
----
-
-## 🧪 検証計画
-
-### 統合テストシナリオ
-
-#### シナリオ 1: 基本的なAPI仕様の検証
-
-```yaml
-目的: 構造検証が正しく機能することを確認
-
-手順: 1. API仕様ドキュメント（api-spec-example.json）を作成
-  2. ukiyoue validate api-spec-example.json を実行
-  3. 検証結果を確認
-
-期待結果:
-  - 構造検証: Pass
-  - セマンティック検証: Pass
-  - カスタムルール検証: Pass
-  - 総合: Pass
-```
-
-#### シナリオ 2: 構造エラーの検出
-
-```yaml
-目的: 構造エラーが適切に検出・報告されることを確認
-
-手順: 1. 必須項目を欠いたドキュメントを作成
-  2. ukiyoue validate を実行
-  3. エラーメッセージを確認
-
-期待結果:
-  - 構造検証: Fail
-  - エラーメッセージ: "必須項目 'title' が不足しています"
-  - アクション提案: "title フィールドを追加してください"
-```
-
-#### シナリオ 3: 参照エラーの検出
-
-```yaml
-目的: 存在しない参照が検出されることを確認
-
-手順: 1. 存在しないテストケースを参照する要件を作成
-  2. ukiyoue validate を実行
-  3. エラーメッセージを確認
-
-期待結果:
-  - 構造検証: Pass
-  - セマンティック検証: Fail
-  - エラーメッセージ: "参照先のテストケース 'TC-999' が見つかりません"
-  - アクション提案: "テストケース TC-999 を作成するか、参照を削除してください"
-```
-
-#### シナリオ 4: カスタムルール違反の検出
-
-```yaml
-目的: カスタムルールが正しく適用されることを確認
-
-手順: 1. high優先度だが受入基準が少ない要件を作成
-  2. ukiyoue validate を実行
-  3. エラーメッセージを確認
-
-期待結果:
-  - 構造検証: Pass
-  - セマンティック検証: Pass
-  - カスタムルール検証: Fail
-  - エラーメッセージ: "high優先度の要件には最低3個の受入基準が必要です"
-  - アクション提案: "受入基準を追加してください（What/Why/Howを明確に）"
-```
-
-#### シナリオ 5: MCP統合テスト
-
-```yaml
-目的: GitHub CopilotからMCPツールが呼び出せることを確認
-
-手順: 1. GitHub Copilotを起動
-  2. "このプロジェクトのドキュメントを検証して"と指示
-  3. Copilot が validate ツールを呼び出す
-  4. 検証結果を受け取る
-
-期待結果:
-  - MCPツールが正常に呼び出される
-  - 検証結果が構造化された形式で返される
-  - Copilot が結果を理解して説明できる
-```
-
-#### シナリオ 6〜10: （追加予定）
-
-- シナリオ 6: 大量ドキュメントの一括検証
-- シナリオ 7: キャッシュ機能の動作確認
-- シナリオ 8: エラーからの修正フロー
-- シナリオ 9: コンポーネント取得
-- シナリオ 10: プロジェクト初期化
-
-### Claude Desktop実機テスト手順
-
-#### セットアップ
-
-```bash
-# 1. MCPサーバーをインストール
-cd tools/mcp-server
-bun install
-bun build
-
-# 2. Claude Desktop設定ファイルに追加
-# ~/Library/Application Support/Claude/claude_desktop_config.json (macOS)
-# %APPDATA%\Claude\claude_desktop_config.json (Windows)
-{
-  "mcpServers": {
-    "ukiyoue": {
-      "command": "bun",
-      "args": ["run", "/path/to/ukiyoue/tools/mcp-server/dist/index.js"],
-      "env": {
-        "NODE_ENV": "production"
-      }
-    }
-  }
-}
-
-# 3. GitHub Copilotを再起動
-```
-
-#### テストケース
-
-##### TC-1: 基本的な検証
-
-```yaml
-プロンプト: |
-  このプロジェクトのdocs/requirements/FR-001.jsonを検証してください。
-
-期待される動作: 1. Copilot が validate ツールを呼び出す
-  2. 検証結果を受け取る
-  3. 結果を人間が理解できる形で説明
-
-確認項目:
-  - ツールが正常に呼び出されるか
-  - エラーメッセージが適切か
-  - アクション提案が表示されるか
-```
-
-##### TC-2: エラー修正フロー
-
-```yaml
-プロンプト: |
-  docs/requirements/FR-001.jsonに検証エラーがあります。
-  エラーを修正してください。
-
-期待される動作: 1. Copilot が validate を呼び出してエラーを確認
-  2. アクション提案を理解
-  3. 修正案を提示
-  4. 再度検証して確認
-
-確認項目:
-  - エラーを正しく理解できるか
-  - 適切な修正案を提示できるか
-  - 修正後に再検証できるか
-```
-
-##### TC-3: コンポーネント取得
-
-```yaml
-プロンプト: |
-  REST APIエンドポイントのテンプレートを取得してください。
-
-期待される動作: 1. Copilot が get_component を呼び出す
-  2. テンプレートを取得
-  3. 内容を説明
-
-確認項目:
-  - コンポーネント検索が機能するか
-  - 取得した内容が正しいか
-```
-
-### パフォーマンステスト手順
-
-#### 準備
-
-```bash
-# テストデータ生成スクリプト
-bun run scripts/generate-test-data.ts --count 100
-
-# 生成されるファイル:
-# test-data/
-#   api-spec-001.json
-#   api-spec-002.json
-#   ...
-#   api-spec-100.json
-```
-
-#### 測定方法
-
-```bash
-# シングルドキュメント検証
-time ukiyoue validate test-data/api-spec-001.json
-
-# 一括検証
-time ukiyoue validate test-data/
-
-# プロファイリング
-bun run --prof tools/cli/src/index.ts validate test-data/
-```
-
-#### 目標値
-
-| ドキュメント数 | 目標時間 | 測定時間 | 結果 |
-| -------------- | -------- | -------- | ---- |
-| 1              | < 100ms  | -        | -    |
-| 10             | < 1s     | -        | -    |
-| 100            | < 5s     | -        | -    |
-| 1,000          | < 30s    | -        | -    |
+- [ ] ドキュメントを作りながらツールが改善される
+- [ ] フィードバックループが機能する（S7シナリオ）
+- [ ] セッション内での試行錯誤が可能
 
 ---
 
@@ -477,165 +426,27 @@ bun run --prof tools/cli/src/index.ts validate test-data/
 
 ### 技術的リスク
 
-#### リスク 1: SHACL検証がBunで動作しない
+#### リスク 1: スキーマ設計の妥当性
 
-**影響**: 高（セマンティック検証が実装できない）
+**影響**: 高（後続の全実装に影響）
 **発生確率**: 中
 
 **対応策**:
 
-- **事前調査**: rdf-validate-shaclのBun互換性を確認（第1週、1日目）
-- **代替案**: Node.jsランタイムでの実行（Bunからspawn）
-- **最悪のシナリオ**: SHACL検証をPhase 2に延期し、JSON Schemaのみで進める
+- Phase 1-Aで早期に検証
+- サンプルドキュメントで実用性を確認
+- 必要に応じて柔軟に修正
 
-#### リスク 2: パフォーマンス目標未達成
-
-**影響**: 中（α版リリースは可能だが、大規模利用に制限）
-**発生確率**: 中
-
-**対応策**:
-
-- **早期測定**: 第2週の時点でパフォーマンステストを実施
-- **最適化**: キャッシュ戦略の見直し、並列処理の導入
-- **段階的改善**: Phase 1では小規模プロジェクト向けと割り切る
-
-#### リスク 3: MCP統合の複雑さ
+#### リスク 2: MCP統合の複雑さ
 
 **影響**: 高（主要機能が使えない）
 **発生確率**: 低
 
 **対応策**:
 
-- **プロトタイプ**: 第2週の初日に最小限の統合をテスト
-- **ドキュメント参照**: MCP SDK公式ドキュメント・サンプルを活用
-- **コミュニティ**: MCP開発者コミュニティに質問
-
-### スケジュールリスク
-
-#### リスク 4: 第1週の遅延
-
-**影響**: 高（全体スケジュールに影響）
-**発生確率**: 中
-
-**対応策**:
-
-- **並行作業**: スキーマ定義とエンジン実装を可能な限り並行
-- **スコープ削減**: カスタムルール検証をPhase 2に延期（構造+セマンティックのみ）
-- **リソース追加**: コントリビューターの追加募集
-
-#### リスク 5: 第3週のテスト期間不足
-
-**影響**: 中（品質に影響）
-**発生確率**: 高
-
-**対応策**:
-
-- **テスト先行**: 第1〜2週でユニットテストを並行作成
-- **自動化**: CI/CDで継続的にテスト実行
-- **α版の位置づけ**: 不完全でも問題ないことを明示
-
----
-
-## 📈 Phase 2への移行計画
-
-### α版からβ版への道筋
-
-#### α版（v0.1.0-alpha）の位置づけ
-
-- **目的**: 技術的実現可能性の検証
-- **対象**: 初期コントリビューター、技術評価者
-- **制限事項**:
-  - 小規模プロジェクト向け（10-100ドキュメント）
-  - 英語のみ
-  - バグ・破壊的変更の可能性あり
-
-#### β版（v0.2.0-beta）へのステップ
-
-```yaml
-α版リリース後 4〜8週間 (約1ヶ月): β版開発
-
-追加機能:
-  - セマンティック検索の最適化
-  - コンポーネント自動抽出（基本）
-  - エラーメッセージの改善
-  - ドキュメントの充実（日本語対応）
-
-改善項目:
-  - パフォーマンス最適化（1,000ドキュメント対応）
-  - バグ修正
-  - ユーザビリティ向上
-
-リリース判断基準:
-  - 破壊的変更なしで1ヶ月以上運用できる
-  - 3つ以上の実プロジェクトで使用されている
-  - ドキュメントが整備されている
-```
-
-### コミュニティフィードバック収集方法
-
-#### フィードバックチャネル
-
-1. **GitHub Issues**: バグ報告、機能リクエスト
-2. **GitHub Discussions**: 使用感、質問、アイデア
-3. **Discord**: リアルタイム質問・議論
-4. **アンケート**: 定期的な満足度調査
-
-#### 収集したい情報
-
-```yaml
-技術的フィードバック:
-  - 動作環境（OS, Bun/Node.jsバージョン等）
-  - パフォーマンス（ドキュメント数、検証時間）
-  - エラー・クラッシュ情報
-  - 互換性問題
-
-ユーザビリティ:
-  - エラーメッセージの分かりやすさ
-  - アクション提案の適切性
-  - ドキュメントの充実度
-  - セットアップの難易度
-
-機能要望:
-  - 必要な機能
-  - 優先順位
-  - ユースケース
-```
-
-### 改善優先順位の決定方法
-
-#### 優先度マトリクス
-
-| 項目             | 影響度 | 緊急度 | 優先度 |
-| ---------------- | ------ | ------ | ------ |
-| クリティカルバグ | 高     | 高     | P0     |
-| パフォーマンス   | 高     | 中     | P1     |
-| 機能追加         | 中     | 中     | P2     |
-| UI/UX改善        | 中     | 低     | P3     |
-| ドキュメント     | 低     | 低     | P4     |
-
-#### 判断基準
-
-```yaml
-P0 (即座に対応):
-  - システムが動作しない
-  - データ損失のリスク
-  - セキュリティ脆弱性
-
-P1 (1週間以内):
-  - パフォーマンス問題（目標値の50%以下）
-  - 主要機能の不具合
-  - 複数ユーザーからの報告
-
-P2 (1ヶ月以内):
-  - 機能追加リクエスト（5名以上）
-  - ユーザビリティ改善
-  - 互換性問題
-
-P3 (Phase 2以降):
-  - マイナーな改善
-  - エッジケース
-  - Nice-to-have機能
-```
+- Phase 1-Dでプロトタイプ作成
+- MCP SDK公式ドキュメント参照
+- 最悪の場合、Phase 2に延期してCLI優先
 
 ---
 
