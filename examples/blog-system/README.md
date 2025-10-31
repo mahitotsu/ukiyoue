@@ -31,43 +31,32 @@ MCPサーバーは`node_modules/.bin/ukiyoue-mcp`として利用できます。
 - `scripts/` - テスト・開発用スクリプト
 - `.mcp/` - MCP設定
 
-## 🔧 Claude Desktopでの設定
+## 🔧 GitHub Copilotでの設定
 
 このプロジェクトは、Ukiyoue FrameworkのPhase 1 PoCとして、
-Claude Desktopとの連携による実践検証を目的としています。
+GitHub Copilotとの連携による実践検証を目的としています。
 
 ### 設定方法
 
-`~/.config/Claude/claude_desktop_config.json` (Linux/Mac) または  
-`%APPDATA%\Claude\claude_desktop_config.json` (Windows) に以下を追加:
+VS Codeの設定ファイルに以下を追加:
 
 ```json
 {
-  "mcpServers": {
-    "ukiyoue": {
-      "command": "node_modules/.bin/ukiyoue-mcp"
+  "github.copilot.chat.codeGeneration.instructions": [
+    {
+      "text": "Use Ukiyoue Framework MCP tools for document validation"
     }
-  }
+  ]
 }
 ```
 
-または、グローバルインストール後:
-
-```json
-{
-  "mcpServers": {
-    "ukiyoue": {
-      "command": "ukiyoue-mcp"
-    }
-  }
-}
-```
+MCPサーバーは`node_modules/.bin/ukiyoue-mcp`として利用できます。
 
 ## 🚀 使用方法
 
 ### Phase 1-E: 実践検証
 
-Claude Desktopを使って、ドキュメント駆動開発を体験：
+GitHub Copilotを使って、ドキュメント駆動開発を体験：
 
 #### 1. 既存ドキュメントの検証
 
