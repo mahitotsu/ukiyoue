@@ -1,0 +1,70 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ukiyoue.dev/schemas/use-case.schema.json",
+  "title": "UseCase",
+  "description": "ユースケース定義。ユーザーがシステムで達成したい目標を記述する。",
+  "type": "object",
+  "required": ["@context", "@type", "id", "title", "actor", "action", "benefit", "derivedFrom"],
+  "properties": {
+    "@context": {
+      "type": "string",
+      "description": "JSON-LD Context URI",
+      "const": "https://ukiyoue.dev/context/v1"
+    },
+    "@type": {
+      "type": "string",
+      "description": "ドキュメントタイプ",
+      "const": "UseCase"
+    },
+    "id": {
+      "type": "string",
+      "description": "一意のID（例: UC-001）",
+      "pattern": "^UC-[0-9]{3}$"
+    },
+    "title": {
+      "type": "string",
+      "description": "ユースケースのタイトル",
+      "minLength": 5,
+      "maxLength": 100
+    },
+    "actor": {
+      "type": "string",
+      "description": "アクター（このユースケースを実行する人/システム）",
+      "minLength": 2
+    },
+    "action": {
+      "type": "string",
+      "description": "実行するアクション",
+      "minLength": 5
+    },
+    "benefit": {
+      "type": "string",
+      "description": "得られる利益・価値",
+      "minLength": 5
+    },
+    "derivedFrom": {
+      "type": "string",
+      "description": "このユースケースが実現するビジネスゴール（BusinessGoalへの参照）",
+      "pattern": "^BG-[0-9]{3}$"
+    },
+    "description": {
+      "type": "string",
+      "description": "詳細説明"
+    },
+    "acceptanceCriteria": {
+      "type": "array",
+      "description": "受入基準（このユースケースが成功したと判断する条件）",
+      "items": {
+        "type": "string",
+        "minLength": 5
+      },
+      "minItems": 1
+    },
+    "priority": {
+      "type": "string",
+      "description": "優先度",
+      "enum": ["high", "medium", "low"]
+    }
+  },
+  "additionalProperties": false
+}
