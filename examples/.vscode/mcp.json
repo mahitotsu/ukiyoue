@@ -1,0 +1,13 @@
+{
+  "servers": {
+    "ukiyoueBlogSystem": {
+      "command": "node",
+      "args": [
+        "${workspaceFolder}/../tools/mcp-server/dist/index.js"
+      ],
+      "env": {
+        "PROJECT_ROOT": "${workspaceFolder}/blog-system"
+      }
+    }
+  }
+}
