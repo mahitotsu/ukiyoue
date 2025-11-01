@@ -48,3 +48,4 @@
 **アーキテクチャ設計（018-）**:
 
 - [ADR-018: Document Reference Method](./docs/adr/018-document-reference-method.md) - 相対パス + Base IRIを採用
+- [ADR-019: Document Metadata Strategy](./docs/adr/019-document-metadata-strategy.md) - Git履歴からメタデータを取得

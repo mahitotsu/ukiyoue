@@ -97,23 +97,6 @@
         "pattern": "^CN-[0-9]{3}$"
       },
       "examples": [["CN-001"]]
-    },
-    "metadata": {
-      "type": "object",
-      "description": "メタデータ",
-      "properties": {
-        "createdAt": {
-          "type": "string",
-          "format": "date-time"
-        },
-        "updatedAt": {
-          "type": "string",
-          "format": "date-time"
-        },
-        "author": {
-          "type": "string"
-        }
-      }
     }
   },
   "additionalProperties": false

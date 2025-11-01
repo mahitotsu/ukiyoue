@@ -38,6 +38,12 @@ const schema = loader.loadSchema("definitions/business-goal.schema.json");
 - `name`: ドキュメント名
 - `description`: 詳細説明
 
+### メタデータについて
+
+**ドキュメント作成日時、更新日時、作成者などのメタデータは、スキーマに含めません**。これらの情報はGit履歴から動的に取得されます。詳細は [ADR-019: Document Metadata Strategy](../docs/adr/019-document-metadata-strategy.md) を参照してください。
+
+ビジネス的な意味を持つメタデータ（承認者、レビュー日、期限など）は、各ドキュメントタイプに個別に定義できます。
+
 ### 参照関係
 
 ドキュメント間の関係は以下のフィールドで表現されます：

@@ -10,10 +10,5 @@
   "rationale": "個人ブログの成功には検索流入が不可欠。SNSは一時的な流入しか期待できず、持続性がない。検索エンジンからの自然流入を確保することで、長期的な読者獲得が可能になる。",
   "hasMetric": ["SM-001"],
   "hasUseCase": ["UC-001", "UC-002"],
-  "constrainedBy": ["CN-001"],
-  "metadata": {
-    "createdAt": "2025-10-31T00:00:00Z",
-    "updatedAt": "2025-10-31T00:00:00Z",
-    "author": "blog-owner"
-  }
+  "constrainedBy": ["CN-001"]
 }
