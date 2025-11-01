@@ -19,8 +19,11 @@
     "semantics"
   ],
   "scripts": {
-    "build": "bun build src/index.ts --outdir dist --target node --format esm && bun run tsc --project tsconfig.build.json --emitDeclarationOnly && bun run copy-assets",
-    "copy-assets": "mkdir -p dist/schemas dist/semantics && cp -rL schemas/* dist/schemas/ && cp -rL semantics/* dist/semantics/",
+    "build": "bun build src/index.ts --outdir dist --target node --format esm && bun run tsc --project tsconfig.build.json --emitDeclarationOnly",
+    "prepack": "bun run build && bun run copy-schemas",
+    "postpack": "bun run restore-symlinks",
+    "copy-schemas": "rm -rf schemas semantics && cp -rL ../../schemas . && cp -rL ../../semantics .",
+    "restore-symlinks": "rm -rf schemas semantics && ln -s ../../schemas . && ln -s ../../semantics .",
     "dev": "bun run src/index.ts",
     "type-check": "tsc --noEmit"
   },

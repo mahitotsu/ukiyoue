@@ -19,9 +19,9 @@ function getPackageRoot(): string {
   const currentFile = new URL(import.meta.url).pathname;
   const currentDir = dirname(currentFile);
 
-  // dist/ ディレクトリ内から実行されているか確認
+  // dist/ ディレクトリ内から実行されている場合
   if (currentDir.endsWith('/dist')) {
-    return currentDir; // dist/schemas を使用
+    return resolve(currentDir, '..'); // パッケージルートへ（dist/ の親）
   }
 
   // src/ ディレクトリから実行されている場合
@@ -30,7 +30,7 @@ function getPackageRoot(): string {
   }
 
   // その他の場合（node_modules 経由など）
-  return currentDir;
+  return resolve(currentDir, '..');
 }
 
 export class SchemaLoader {

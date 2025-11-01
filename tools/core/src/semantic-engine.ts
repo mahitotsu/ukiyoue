@@ -44,30 +44,24 @@ function resolveAssetPath(assetType: 'schemas' | 'semantics'): string {
   const currentDir = dirname(currentFile);
 
   // 開発時: tools/core/src/semantic-engine.ts → tools/core/schemas
-  // 本番時: tools/core/dist/index.js → tools/core/dist/schemas
-  // または: tools/mcp-server/dist/index.js → tools/mcp-server/dist/schemas
+  // 本番時: tools/core/dist/semantic-engine.js → tools/core/schemas
+  // npm install後: node_modules/@ukiyoue/core/dist/semantic-engine.js → node_modules/@ukiyoue/core/schemas
 
-  // まず、同じディレクトリに schemas/semantics があるかチェック（dist/ の場合）
-  const sameLevelPath = resolve(currentDir, assetType);
-  try {
-    if (statSync(sameLevelPath).isDirectory()) {
-      return sameLevelPath;
-    }
-  } catch {
-    // ファイルが存在しない場合は次へ
+  // dist/ ディレクトリ内から実行されている場合
+  if (currentDir.endsWith('/dist')) {
+    const packageRoot = resolve(currentDir, '..'); // dist/ の親がパッケージルート
+    return join(packageRoot, assetType);
   }
 
-  // 次に、親ディレクトリに schemas/semantics があるかチェック（src/ の場合）
-  const parentLevelPath = resolve(currentDir, '..', assetType);
-  try {
-    if (statSync(parentLevelPath).isDirectory()) {
-      return parentLevelPath;
-    }
-  } catch {
-    // ファイルが存在しない場合はエラー
+  // src/ ディレクトリから実行されている場合
+  if (currentDir.includes('/src')) {
+    const packageRoot = resolve(currentDir, '..'); // src/ の親がパッケージルート
+    return join(packageRoot, assetType);
   }
 
-  throw new Error(`Cannot find ${assetType} directory from ${currentDir}`);
+  // その他の場合
+  const packageRoot = resolve(currentDir, '..');
+  return join(packageRoot, assetType);
 }
 
 export class SemanticEngine {
