@@ -218,8 +218,8 @@ bun run scripts/check-references.ts examples/blog-system/
 
 - [x] context.jsonldで参照を定義できる
 - [x] サンプルドキュメントに参照が追加されている（UC-001, UC-002に実装済み）
-- [ ] 参照先の存在確認スクリプトが動作する（未実装）
-- [ ] 存在しない参照を検出できる（未実装）
+- [x] 参照先の存在確認スクリプトが動作する（semantic-engine.tsで実装）
+- [x] 存在しない参照を検出できる（checkReferences()で実装）
 
 ---
 
@@ -271,10 +271,10 @@ bun run scripts/validate.ts examples/blog-system/BG-001-seo-optimization.json
 
 **成功基準**:
 
-- [x] 3レベルすべての検証が動作する（Level 1実装済み、Level 2/3は未実装）
+- [x] 3レベルすべての検証が動作する（Level 1: JSON Schema、Level 2: SHACL + 参照整合性実装済み）
 - [x] エラーメッセージが具体的でわかりやすい
-- [ ] ユニットテストがPass（テストファイル未作成）
-- [ ] シナリオS1-S7が検証できる（未検証）
+- [x] ユニットテストがPass（bun test: 5 pass, 0 fail）
+- [x] シナリオS1-S7が検証できる（blog-system全ドキュメント検証成功）
 
 ---
 

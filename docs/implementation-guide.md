@@ -300,68 +300,82 @@ const resolvedDocument = await semanticEngine.resolveIris(document, baseIri);
 
 ---
 
-### Step 2-1: JSON-LD展開
+### Step 2-1: JSON-LD → RDF変換
 
 ```typescript
 // Semantic Engine内部
 import * as jsonld from "jsonld";
+import { Parser as N3Parser } from "n3";
+import factory from "rdf-ext";
 
-// 1. JSON-LD Contextを解決して展開
-const expanded = await jsonld.expand(resolvedDocument);
+// 1. カスタム document loader でローカル context を読み込み
+const documentLoader = async (url: string) => {
+  if (url === "https://ukiyoue.dev/context/v1") {
+    const contextPath = resolve(
+      __dirname,
+      "../semantics/contexts/context.jsonld"
+    );
+    const contextContent = readFileSync(contextPath, "utf-8");
+    return {
+      contextUrl: undefined,
+      document: JSON.parse(contextContent),
+      documentUrl: url,
+    };
+  }
+  throw new Error(`Unable to load remote context: ${url}`);
+};
 
-// Before（元のJSON）:
-// {
-//   "@context": "https://ukiyoue.dev/context/v1",
-//   "@type": "FunctionalRequirement",
-//   "title": "ユーザー認証機能",
-//   "testCases": ["TC-001", "TC-002"],
-//   "dependsOn": ["FR-000"]
-// }
+// 2. JSON-LD を N-Quads 形式に変換
+const nquads = await jsonld.toRDF(document, {
+  format: "application/n-quads",
+  documentLoader,
+});
 
-// After（展開後）:
-// [
-//   {
-//     "@type": ["https://ukiyoue.dev/vocab#FunctionalRequirement"],
-//     "http://purl.org/dc/terms/title": [
-//       { "@value": "ユーザー認証機能" }
-//     ],
-//     "https://ukiyoue.dev/vocab#testCases": [
-//       { "@id": "TC-001" },
-//       { "@id": "TC-002" }
-//     ],
-//     "https://ukiyoue.dev/vocab#dependsOn": [
-//       { "@id": "FR-000" }
-//     ]
-//   }
-// ]
+// 3. N-Quads を rdf-ext dataset に変換
+const dataset = factory.dataset();
+const parser = new N3Parser({ format: "application/n-quads" });
+
+return new Promise((resolve, reject) => {
+  parser.parse(nquads, (error, quad) => {
+    if (error) {
+      reject(error);
+    } else if (quad) {
+      const rdfQuad = factory.quad(
+        factory.namedNode(quad.subject.value),
+        factory.namedNode(quad.predicate.value),
+        quad.object.termType === "Literal"
+          ? factory.literal(
+              quad.object.value,
+              quad.object.language || quad.object.datatype?.value
+            )
+          : factory.namedNode(quad.object.value)
+      );
+      dataset.add(rdfQuad);
+    } else {
+      resolve(dataset);
+    }
+  });
+});
 ```
 
-**何が起こるか**:
+**重要ポイント**:
 
-- 短縮形のプロパティ名が完全なIRI（URL）に展開
-- `@type`が完全なクラスIRIに解決
-- 関係性が`@id`で明示的に
+- カスタム document loader で**ローカル context.jsonld** を読み込み（ネットワーク不要）
+- `@base` を使って相対 ID を絶対 IRI に変換（例: `"BG-001"` → `https://ukiyoue.dev/doc/BG-001`）
+- rdf-ext の dataset 形式に変換して SHACL validator に渡す
 
 ---
 
-### Step 2-2: RDF変換
+### Step 2-2: RDFグラフの構造
 
-```typescript
-// Semantic Engine内部
-import * as jsonld from "jsonld";
+生成される RDF トリプル：
 
-// 2. JSON-LD → RDFグラフに変換
-const rdfDataset = await jsonld.toRDF(expanded, {
-  format: "application/n-quads",
-});
-
-// 生成されるRDFトリプル（概念的な表現）:
-// <FR-001> <rdf:type> <https://ukiyoue.dev/vocab#FunctionalRequirement> .
-// <FR-001> <dc:title> "ユーザー認証機能" .
-// <FR-001> <ukiyoue:priority> "high" .
-// <FR-001> <ukiyoue:testCases> <TC-001> .
-// <FR-001> <ukiyoue:testCases> <TC-002> .
-// <FR-001> <ukiyoue:dependsOn> <FR-000> .
+```turtle
+# BusinessGoal の例
+<https://ukiyoue.dev/doc/BG-001> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://ukiyoue.dev/vocab#BusinessGoal> .
+<https://ukiyoue.dev/doc/BG-001> <http://purl.org/dc/terms/title> "SEO最適化"@ja .
+<https://ukiyoue.dev/doc/BG-001> <http://purl.org/dc/terms/description> "検索エンジンからの流入を増やす"@ja .
+<https://ukiyoue.dev/doc/BG-001> <https://ukiyoue.dev/vocab#hasMetric> <https://ukiyoue.dev/doc/SM-001> .
 ```
 
 **RDFグラフの構造**:
@@ -384,99 +398,146 @@ RDFは「主語・述語・目的語」のトリプル（3つ組）の集合で�
 
 ```typescript
 // Semantic Engine内部
-import factory from "rdf-ext";
 import SHACLValidator from "rdf-validate-shacl";
 
-// 3. SHACL Shapeを読み込み
-const shapesGraph = await loadShaclShapes("requirement.ttl");
+// 1. SHACL shapes を読み込み（Turtle 形式）
+const shapesDataset = await loadShapes();
 
-// SHACL Shape定義（Turtle形式）:
-// @prefix sh: <http://www.w3.org/ns/shacl#> .
-// @prefix ukiyoue: <https://ukiyoue.dev/vocab#> .
-//
-// ukiyoue:RequirementShape
-//   a sh:NodeShape ;
-//   sh:targetClass ukiyoue:FunctionalRequirement ;
-//   sh:property [
-//     sh:path ukiyoue:dependsOn ;
-//     sh:nodeKind sh:IRI ;
-//     sh:message "依存関係の参照先が有効なIRIではありません" ;
-//   ] ;
-//   sh:property [
-//     sh:path ukiyoue:testCases ;
-//     sh:nodeKind sh:IRI ;
-//     sh:message "テストケースの参照先が有効なIRIではありません" ;
-//   ] .
+// 2. Validator を作成（factory オプションなし）
+const validator = new SHACLValidator(shapesDataset);
 
-// 4. RDFグラフをSHACL Shapeで検証
-const validator = new SHACLValidator(shapesGraph);
-const report = validator.validate(rdfDataset);
+// 3. データグラフを検証
+const report = await validator.validate(dataDataset);
 
-if (!report.conforms) {
-  // 違反が検出された場合
-  for (const result of report.results) {
-    console.log({
-      focusNode: result.focusNode.value, // "FR-001"
-      message: result.message[0].value, // "依存関係の参照先が..."
-      path: result.path?.value, // "ukiyoue:dependsOn"
-      value: result.value?.value, // 実際の値
-    });
-  }
-}
-
-// 5. 参照先の存在確認（プロジェクト内のドキュメント）
-// SHACLでIRI形式は検証できるが、実際のファイル存在確認は別途必要
-const allDocuments = await loadAllDocuments(projectRoot);
-const documentIds = new Set(allDocuments.map((d) => d.id));
-
-for (const ref of document.dependsOn) {
-  if (!documentIds.has(ref)) {
-    errors.push({
-      path: "dependsOn",
-      message: `参照先のドキュメント '${ref}' が見つかりません`,
-      severity: "error",
-    });
-  }
-}
-
-for (const ref of document.testCases) {
-  if (!documentIds.has(ref)) {
-    errors.push({
-      path: "testCases",
-      message: `参照先のテストケース '${ref}' が見つかりません`,
-      severity: "error",
-    });
-  }
+if (report.conforms) {
+  // ✅ 検証成功
+  return { valid: true };
+} else {
+  // ❌ 検証失敗 - エラーを整形
+  const errors = report.results.map((result) => ({
+    path: result.path?.value || "unknown",
+    message: result.message?.[0]?.value || "Constraint violated",
+    focusNode: result.focusNode?.value,
+    severity: result.severity?.value.includes("Violation")
+      ? "Violation"
+      : "Warning",
+  }));
+  return { valid: false, errors };
 }
 ```
 
-### 検証内容
+**SHACL Shape の例**（`semantics/shapes/business-goal.ttl`）：
 
-| 制約タイプ     | 例                                                                |
-| -------------- | ----------------------------------------------------------------- |
-| ノードの種類   | `dependsOn`の各要素が有効なIRI形式か                              |
-| ノードの種類   | `testCases`の各要素が有効なIRI形式か                              |
-| データ型       | `priority`は文字列型か（RDFリテラル）                             |
-| 値の範囲       | `status`は定義された列挙値のいずれかか                            |
-| 参照の存在確認 | `dependsOn`で参照されるFR-000がプロジェクト内に存在するか         |
-| 参照の存在確認 | `testCases`で参照されるTC-001, TC-002がプロジェクト内に存在するか |
-| 関係の整合性   | 循環参照がないか（AがBに依存、BがAに依存）                        |
+```turtle
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix ukiyoue: <https://ukiyoue.dev/vocab#> .
+@prefix dc: <http://purl.org/dc/terms/> .
 
-### SHACL vs JSON Schemaの違い
+ukiyoue:BusinessGoalShape
+  a sh:NodeShape ;
+  sh:targetClass ukiyoue:BusinessGoal ;
 
-| 観点             | JSON Schema              | SHACL                              |
-| ---------------- | ------------------------ | ---------------------------------- |
-| **対象**         | JSON文書の構造           | RDFグラフの意味・関係性            |
-| **検証レベル**   | データ型、フォーマット   | セマンティック制約、グラフパターン |
-| **参照の検証**   | 不可（文字列として扱う） | 可能（IRIとして解決し、存在確認）  |
-| **関係性の検証** | 困難                     | 得意（グラフベース）               |
-| **例**           | "testCasesが配列か"      | "testCasesの参照先が実在するか"    |
+  # title は必須で 1-200 文字
+  sh:property [
+    sh:path dc:title ;
+    sh:minLength 1 ;
+    sh:maxLength 200 ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:message "title は必須で、1〜200文字である必要があります" ;
+  ] ;
 
-### 補足: 参照先の存在確認
+  # hasMetric は IRI の配列
+  sh:property [
+    sh:path ukiyoue:hasMetric ;
+    sh:nodeKind sh:IRI ;
+    sh:message "hasMetric は有効な IRI である必要があります" ;
+  ] .
+```
 
-SHACLは参照がIRI形式であることは検証できますが、実際のファイルがプロジェクト内に存在するかは別途確認が必要です。Ukiyoueでは、Semantic Engineがこの役割を担い、RDF検証後にプロジェクト内のドキュメントIDを照合して参照の実在性をチェックします。
+**重要ポイント**：
 
-**IRI解決戦略**: ドキュメント内では相対パス（例: `"../tests/TC-001"`）で参照し、検証時にプロジェクトのベースIRIと組み合わせて完全なIRIに解決します。詳細は[ADR-018](adr/018-document-reference-strategy.md)を参照。
+- `sh:datatype xsd:string` を指定しない（rdf:langString も許可）
+- `sh:nodeKind sh:IRI` で参照フィールドの IRI 形式を検証
+- `sh:minCount`/`sh:maxCount` で必須・任意を制御
+
+---
+
+### Step 2-4: 参照整合性チェック
+
+```typescript
+// Semantic Engine内部
+
+// 1. プロジェクト内の全ドキュメント ID を取得
+async getAllDocumentIds(): Promise<Set<string>> {
+  const allIds = new Set<string>();
+  const jsonFiles = this.findJsonFiles(this.projectRoot);
+
+  for (const file of jsonFiles) {
+    const content = JSON.parse(readFileSync(file, "utf-8"));
+    if (content.id) {
+      allIds.add(content.id);
+    }
+  }
+  return allIds;
+}
+
+// 2. 参照フィールドをチェック
+async checkReferences(document: Record<string, unknown>): Promise<SemanticValidationError[]> {
+  const errors: SemanticValidationError[] = [];
+  const allDocumentIds = await this.getAllDocumentIds();
+
+  const referenceFields = ["hasMetric", "hasUseCase", "constrainedBy", "measuresGoal", "relatedGoal"];
+
+  for (const field of referenceFields) {
+    const value = document[field];
+    if (!value) continue;
+
+    const references = Array.isArray(value) ? value : [value];
+
+    for (const ref of references) {
+      if (typeof ref !== "string") continue;
+
+      // IRI から ID 部分を抽出（例: "BG-001"）
+      const id = this.extractIdFromIri(ref);
+
+      if (!allDocumentIds.has(id)) {
+        errors.push({
+          path: field,
+          message: `参照先のドキュメント '${id}' が見つかりません`,
+          focusNode: document["id"] as string,
+          severity: "Violation",
+        });
+      }
+    }
+  }
+
+  return errors;
+}
+```
+
+**検証内容**：
+
+1. SHACL で IRI 形式を検証（`sh:nodeKind sh:IRI`）
+2. プロジェクト内の全ドキュメント ID を収集
+3. 参照先 ID が実際に存在するかチェック
+4. 存在しない場合はエラーを報告
+
+### エラー例
+
+```json
+{
+  "level": "semantic",
+  "errors": [
+    {
+      "path": "derivedFrom",
+      "message": "参照先のドキュメント 'BG-999' が見つかりません",
+      "focusNode": "UC-001",
+      "severity": "Violation"
+    }
+  ]
+}
+```
 
 ---
 
