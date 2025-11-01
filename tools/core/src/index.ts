@@ -11,3 +11,10 @@ export type {
 
 export { SchemaLoader } from './schema-loader.js';
 export type { SchemaLoaderOptions } from './schema-loader.js';
+
+export { SemanticEngine } from './semantic-engine.js';
+export type {
+  SemanticEngineOptions,
+  SemanticValidationError,
+  SemanticValidationResult,
+} from './semantic-engine.js';

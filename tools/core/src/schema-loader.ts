@@ -15,17 +15,22 @@ export interface SchemaLoaderOptions {
  * @returns パッケージルートの絶対パス
  */
 function getPackageRoot(): string {
-  // require.resolveを使って@ukiyoue/coreのpackage.jsonを見つける
-  try {
-    // ESMでもrequire.resolveは使える（Bun/Node.js）
-    // @ts-ignore - CommonJS require in ESM context
-    const packageJson = require.resolve('@ukiyoue/core/package.json');
-    return dirname(packageJson);
-  } catch {
-    // フォールバック: process.cwdから相対的に探す
-    // 開発環境用（tools/core自体から実行される場合）
-    return process.cwd();
+  // import.meta.url からファイルパスを取得
+  const currentFile = new URL(import.meta.url).pathname;
+  const currentDir = dirname(currentFile);
+
+  // dist/ ディレクトリ内から実行されているか確認
+  if (currentDir.endsWith('/dist')) {
+    return currentDir; // dist/schemas を使用
   }
+
+  // src/ ディレクトリから実行されている場合
+  if (currentDir.includes('/src')) {
+    return resolve(currentDir, '../..'); // tools/core ルートへ
+  }
+
+  // その他の場合（node_modules 経由など）
+  return currentDir;
 }
 
 export class SchemaLoader {
