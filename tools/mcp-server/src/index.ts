@@ -7,6 +7,7 @@
 import { Server } from '@modelcontextprotocol/sdk/server/index.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { CallToolRequestSchema, ListToolsRequestSchema } from '@modelcontextprotocol/sdk/types.js';
+import { validateDirectoryTool } from './tools/validate-directory.js';
 import { validateTool } from './tools/validate.js';
 
 const server = new Server(
@@ -28,7 +29,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
       {
         name: 'validate',
         description:
-          'Ukiyoueドキュメントの構造検証を実行します。JSON Schemaによる必須項目チェック、データ型検証、フォーマット検証を行います。',
+          'Ukiyoueドキュメントの構造検証とセマンティック検証を実行します。JSON Schema検証、SHACL検証、参照整合性チェックを含みます。',
         inputSchema: {
           type: 'object',
           properties: {
@@ -40,12 +41,27 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
               type: 'string',
               description: 'プロジェクトルートのパス（省略時はカレントディレクトリ）',
             },
-            frameworkRoot: {
-              type: 'string',
-              description: 'Ukiyoueフレームワークルートのパス（省略時はprojectRoot）',
-            },
           },
           required: ['documentPath'],
+        },
+      },
+      {
+        name: 'validate_directory',
+        description:
+          'ディレクトリ内のすべてのUkiyoueドキュメントを横断検証します。SHACL検証と参照整合性チェックを含む包括的な検証を実行します。',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            directoryPath: {
+              type: 'string',
+              description: '検証するディレクトリのパス（プロジェクトルートからの相対パス）',
+            },
+            projectRoot: {
+              type: 'string',
+              description: 'プロジェクトルートのパス（省略時はカレントディレクトリ）',
+            },
+          },
+          required: ['directoryPath'],
         },
       },
     ],
@@ -56,9 +72,16 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
 server.setRequestHandler(CallToolRequestSchema, async (request) => {
   const { name, arguments: args } = request.params;
 
+  // 環境変数からドキュメントルートを取得してデフォルト値として使用
+  const documentRoot = process.env.UKIYOUE_DOCUMENT_ROOT;
+  const enrichedArgs = documentRoot ? { projectRoot: documentRoot, ...args } : args;
+
   switch (name) {
     case 'validate':
-      return await validateTool(args as any);
+      return await validateTool(enrichedArgs as any);
+
+    case 'validate_directory':
+      return await validateDirectoryTool(enrichedArgs as any);
 
     default:
       throw new Error(`Unknown tool: ${name}`);

@@ -3,7 +3,7 @@
  * ドキュメントの検証を実行するMCPツール
  */
 
-import { SchemaLoader, ValidationEngine } from '@ukiyoue/core';
+import { SchemaLoader, SemanticEngine, ValidationEngine } from '@ukiyoue/core';
 import { readFileSync } from 'fs';
 import { resolve } from 'path';
 
@@ -19,31 +19,20 @@ export async function validateTool(input: ValidateToolInput) {
 
   try {
     // スキーマローダーとバリデーションエンジンを初期化
-    // schemaDir未指定 → @ukiyoue/core/schemas/ を使用
     const schemaLoader = new SchemaLoader();
     const validationEngine = new ValidationEngine();
+    const semanticEngine = new SemanticEngine({ projectRoot });
 
     // ドキュメントを読み込み
     const documentContent = readFileSync(documentPath, 'utf-8');
     const document = JSON.parse(documentContent);
 
-    // スキーマを推測して読み込み
+    // Level 1: 構造検証 (JSON Schema)
     const schema = schemaLoader.loadSchemaForDocument(documentPath);
+    const structureResult = validationEngine.validate(document, schema);
 
-    // 検証実行
-    const result = validationEngine.validate(document, schema);
-
-    if (result.valid) {
-      return {
-        content: [
-          {
-            type: 'text',
-            text: `✅ 検証成功: ${input.documentPath}\n\nすべての必須項目が正しく定義されています。`,
-          },
-        ],
-      };
-    } else {
-      const errorMessages = result.errors
+    if (!structureResult.valid) {
+      const errorMessages = structureResult.errors
         ?.map((err, idx) => {
           let msg = `${idx + 1}. パス: ${err.path}\n   メッセージ: ${err.message}`;
           if (err.params) {
@@ -60,11 +49,46 @@ export async function validateTool(input: ValidateToolInput) {
         content: [
           {
             type: 'text',
-            text: `❌ 検証失敗: ${input.documentPath}\n\nエラー詳細:\n${errorMessages}`,
+            text: `❌ 検証失敗 (Level 1: 構造検証): ${input.documentPath}\n\nエラー詳細:\n${errorMessages}`,
           },
         ],
       };
     }
+
+    // Level 2: セマンティック検証 (SHACL + 参照チェック)
+    const semanticResult = await semanticEngine.validate(document);
+
+    if (!semanticResult.valid) {
+      const errorMessages = semanticResult.errors
+        ?.map((err, idx) => {
+          let msg = `${idx + 1}. パス: ${err.path}\n   メッセージ: ${err.message}`;
+          if (err.focusNode) {
+            msg += `\n   対象ノード: ${err.focusNode}`;
+          }
+          msg += `\n   重要度: ${err.severity}`;
+          return msg;
+        })
+        .join('\n\n');
+
+      return {
+        content: [
+          {
+            type: 'text',
+            text: `❌ 検証失敗 (Level 2: セマンティック検証): ${input.documentPath}\n\nエラー詳細:\n${errorMessages}`,
+          },
+        ],
+      };
+    }
+
+    // すべての検証が成功
+    return {
+      content: [
+        {
+          type: 'text',
+          text: `✅ 検証成功: ${input.documentPath}\n\nすべての検証をパスしました:\n- Level 1: 構造検証 (JSON Schema) ✓\n- Level 2: セマンティック検証 (SHACL + 参照チェック) ✓`,
+        },
+      ],
+    };
   } catch (error) {
     return {
       content: [
