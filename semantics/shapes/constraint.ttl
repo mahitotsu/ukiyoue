@@ -1,0 +1,33 @@
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix ukiyoue: <https://ukiyoue.dev/vocab#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix dc: <http://purl.org/dc/terms/> .
+
+ukiyoue:ConstraintShape
+  a sh:NodeShape ;
+  sh:targetClass ukiyoue:Constraint ;
+  
+  # title は必須で 1-200 文字
+  sh:property [
+    sh:path dc:title ;
+    sh:minLength 1 ;
+    sh:maxLength 200 ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:message "title は必須で、1〜200文字である必要があります" ;
+  ] ;
+  
+  # description は必須
+  sh:property [
+    sh:path dc:description ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:message "description は必須です" ;
+  ] ;
+  
+  # relatedGoal は IRI
+  sh:property [
+    sh:path ukiyoue:relatedGoal ;
+    sh:nodeKind sh:IRI ;
+    sh:message "relatedGoal は有効な IRI である必要があります" ;
+  ] .

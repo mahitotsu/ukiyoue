@@ -1,24 +1,13 @@
 {
   "@context": {
     "@version": 1.1,
+    "@base": "https://ukiyoue.dev/doc/",
     "@vocab": "https://ukiyoue.dev/vocab#",
 
-    "BusinessGoal": {
-      "@id": "https://ukiyoue.dev/vocab#BusinessGoal",
-      "@type": "@id"
-    },
-    "UseCase": {
-      "@id": "https://ukiyoue.dev/vocab#UseCase",
-      "@type": "@id"
-    },
-    "SuccessMetric": {
-      "@id": "https://ukiyoue.dev/vocab#SuccessMetric",
-      "@type": "@id"
-    },
-    "Constraint": {
-      "@id": "https://ukiyoue.dev/vocab#Constraint",
-      "@type": "@id"
-    },
+    "BusinessGoal": "https://ukiyoue.dev/vocab#BusinessGoal",
+    "UseCase": "https://ukiyoue.dev/vocab#UseCase",
+    "SuccessMetric": "https://ukiyoue.dev/vocab#SuccessMetric",
+    "Constraint": "https://ukiyoue.dev/vocab#Constraint",
 
     "hasMetric": {
       "@id": "https://ukiyoue.dev/vocab#hasMetric",
@@ -51,7 +40,24 @@
     "id": "@id",
     "type": "@type",
 
-    "title": "http://purl.org/dc/terms/title",
-    "description": "http://purl.org/dc/terms/description"
+    "title": {
+      "@id": "http://purl.org/dc/terms/title",
+      "@type": "http://www.w3.org/2001/XMLSchema#string"
+    },
+    "description": {
+      "@id": "http://purl.org/dc/terms/description",
+      "@type": "http://www.w3.org/2001/XMLSchema#string"
+    },
+
+    "metricType": "https://ukiyoue.dev/vocab#metricType",
+    "baseline": "https://ukiyoue.dev/vocab#baseline",
+    "target": "https://ukiyoue.dev/vocab#target",
+    "unit": "https://ukiyoue.dev/vocab#unit",
+    "measurementMethod": "https://ukiyoue.dev/vocab#measurementMethod",
+    "priority": "https://ukiyoue.dev/vocab#priority",
+    "actors": "https://ukiyoue.dev/vocab#actors",
+    "testCases": "https://ukiyoue.dev/vocab#testCases",
+    "rationale": "https://ukiyoue.dev/vocab#rationale",
+    "alternatives": "https://ukiyoue.dev/vocab#alternatives"
   }
 }

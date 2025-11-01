@@ -1,0 +1,47 @@
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix ukiyoue: <https://ukiyoue.dev/vocab#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix dc: <http://purl.org/dc/terms/> .
+
+ukiyoue:BusinessGoalShape
+  a sh:NodeShape ;
+  sh:targetClass ukiyoue:BusinessGoal ;
+  
+  # title は必須で 1-200 文字
+  sh:property [
+    sh:path dc:title ;
+    sh:minLength 1 ;
+    sh:maxLength 200 ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:message "title は必須で、1〜200文字である必要があります" ;
+  ] ;
+  
+  # description は必須
+  sh:property [
+    sh:path dc:description ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:message "description は必須です" ;
+  ] ;
+  
+  # hasMetric は IRI の配列
+  sh:property [
+    sh:path ukiyoue:hasMetric ;
+    sh:nodeKind sh:IRI ;
+    sh:message "hasMetric の各要素は有効な IRI である必要があります" ;
+  ] ;
+  
+  # hasUseCase は IRI の配列
+  sh:property [
+    sh:path ukiyoue:hasUseCase ;
+    sh:nodeKind sh:IRI ;
+    sh:message "hasUseCase の各要素は有効な IRI である必要があります" ;
+  ] ;
+  
+  # constrainedBy は IRI の配列
+  sh:property [
+    sh:path ukiyoue:constrainedBy ;
+    sh:nodeKind sh:IRI ;
+    sh:message "constrainedBy の各要素は有効な IRI である必要があります" ;
+  ] .
